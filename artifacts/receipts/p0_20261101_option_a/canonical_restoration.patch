@@ -1,0 +1,54 @@
+--- CANONICAL.before-P0.md
++++ CANONICAL.md
+@@ -474,51 +474,4 @@
+ - This specification + Codex instructions: **authored**.
+ - Implementation code, mocks, UI, tests and all six final submission deliverables: **NOT YET VERIFIED / DO NOT CLAIM COMPLETE**.
+ 
+-**END OF CANONICAL `ORANGE-FOUNDINGAI-20261101-001`.**
+----
+-
+-## CTO ADDENDUM `ORANGE-20261101-G1-AUDIT-G2-ORDER` — 1 November 2026 (approved design update, not a completion claim)
+-
+-**Reason:** Existing canonical/implementation were discovered on the sponsor's Windows host after an independent draft was begun. **The existing `CANONICAL.md` remains authoritative; do not overwrite or reset it.** Host repo: `C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment`. The independent `/mnt/data/orange_invest_assignment/CANONICAL_ORANGE_INVEST_FOUNDING_AI_ENGINEER.md` is a drafting copy **not** authoritative and must NOT be copied into the repo. This appendix records a reconciled CTO decision and independently observed gate.
+-
+-### New ground truth (independent CTO observation)
+-
+-- Existing repo `main` has substantial uncommitted changes, including `DECISIONS.md` and new `app`, `tests`, `docs`, `README.md`, `artifacts` and original PDF. Preserve all files. Do not `git reset --hard`, clean, overwrite canonical, or run agents concurrently against the same working tree.
+-- G1: **28 / 28 unittest tests PASS, exit code 0**, independently rerun 2026-11-01 on Windows using `C:\Users\marke\AppData\Local\Programs\Python\Python312\python.exe -m unittest discover -s tests -v`. Statistical smoke of 10,000 seeded scenarios: 7,041 success, 1,517 slot_taken, 723 timeout-after-success, 719 timeout-without-booking. This is **not** 10,000 complete user-agent evaluations. Existing `docs/actual_progress.md`, `artifacts/receipts/g1_final.txt`, and hash manifests preserve original evidence.
+-- Exactly eight mock provider tools now exist under `app/provider_mock/tools.py`, with durable SQLite provider state and fixed faults. `G2`–`G5` are **NOT STARTED / NOT ACCEPTED**. An untrusted review fixture existing at G1 does not prove a prompt-injection-resistant model or UI.
+-- Three actual G1 defects are documented with red failures and subsequent fixes (WAL journal setting inside transaction; nine SQL placeholders for eight columns; 409 instead of 403). These are valid candidate bug narratives but must be accompanied by precise red log, fix diff/commit (where available) and regression; never invent additional bugs to meet the employer's requirement.
+-- README's three-command path currently avoids external dependencies where possible; pytest was not available in G1 and its installation stalled. G2 must not depend on successfully installing the optional pytest unless empirically available. Prefer built-in `unittest` for immediate, bounded progress.
+-
+-### Research-derived architecture decisions — dated 2026-11-01
+-
+-| Pattern already used by established agent systems | Primary reference | Orange Invest decision |
+-|---|---|---|
+-| Anthropic's workflow-vs-agent distinction, simplest composable path | https://www.anthropic.com/research/building-effective-agents | Use one typed language-understanding adapter around a deterministic booking state machine; no multi-agent architecture for a bounded 8-tool local task. |
+-| Anthropic's outcome/trace-based evals, code graders + trials | https://www.anthropic.com/research/demystifying-evals-for-ai-agents | Script simulated users; grade provider DB + approval ledger + traces, not reassuring assistant prose. Freeze scenario IDs and seeds. |
+-| AWS Bedrock Agents user confirmation and return-of-control | https://aws.amazon.com/blogs/machine-learning/implement-human-in-the-loop-confirmation-with-amazon-bedrock-agents/ | Application/domain controller stores exact approval and owns mutation calls; model's approval text is not an authorization record. |
+-| AWS AgentCore with Step Functions deterministic booking validators | https://aws.amazon.com/blogs/compute/validating-multi-agent-decisions-with-step-functions-and-bedrock-agentcore/ | Verify action constraints after agent proposes, **before** provider write; do NOT add AWS/cloud to local mock assignment. |
+-| AWS Well-Architected Agentic AI Lens: scoped memory, security, outcomes and traces | https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/ | Minimal scoped preference memory, trace, human oversight, hard budgets and replay tests. |
+-| LangGraph HITL interrupts can replay side effects | https://github.com/langchain-ai/docs/blob/main/src/oss/langgraph/interrupts.mdx | Do not run a mutating tool before persistent approval checkpoint; replays require idempotent persisted operations. |
+-| Temporal durable execution and retries | https://github.com/temporalio/documentation/blob/main/docs/evaluate/understanding-temporal.mdx | Recover unknown side-effect outcomes with persistent operation IDs / status reads, not blind retry. No Temporal server needed. |
+-| AWS Durable Execution explicit no-exactly-once warning | https://docs.aws.amazon.com/durable-execution/patterns/best-practices/idempotency/ | Database uniqueness and provider idempotency keys, not vague exactly-once claims. |
+-
+-These are **public architecture patterns**, not evidence that another vendor shipped this particular assignment or that our implementation has passed G2. Do not claim these sources endorse the code.
+-
+-### CTO G2 execution contract: next bounded assignment for Codex
+-
+-1. **Read full** existing `CANONICAL.md`, `AGENTS.md`, employer `source/FoundingEngineer-Assignment.pdf`, `DECISIONS.md`, `docs/actual_progress.md`, G1 source and tests. Inspect `git status` and preserve uncommitted work. Record the present state in progress. Do not reimplement G1.
+-2. Write a **test-first G2 acceptance traceability matrix** mapping every action and business invariant to a failing test: exact hold quote + 10-minute TTL, explicit stored approval with fingerprint including action/provider/slot/price, invalidation of all variants, stable idempotency across duplicate yes and restart, authoritative status read after timeout-after-success, unknown-safe user messaging, cancellation 503 same-key retry and reschedule conflict.
+-3. Implement **minimal SQLite workflow state + persisted approval + operation/recovery ledger**, reusing the eight fixed provider tools without signature changes. Ensure all **mutation entrypoints** (HTTP or internal) call the same deterministic authorization gate. If LLM emits a tool call directly, no DB approval means DENY; no bypass via chat UI or test helper.
+-4. **Price ambiguity:** book binds `hold_slot.quoted_price`, never search display price. Cancel/reschedule provider API cannot independently supply a new price; represent known original booking quote plus explicit `unknown` if new price unavailable, and document the interpretation. Never invent a reschedule quote. If code cannot establish safe consent for price-changing reschedule, block that specific case and explain reason.
+-5. **Exactly once effect:** source/provider may execute before caller receives success. Persist operation and key before call. On timeout or restart **read `get_booking_status` first**. Do not issue another different key for the same intent. Concurrency test independent connections; key+payload binding and provider slot uniqueness. `UNKNOWN_SAFE` is a valid honest end state when no authoritative result exists.
+-6. First target **G2**, not G3/G4/UI polish. Retain full red test trace for each bug and fix, and return G2 evidence receipt with tests, actual provider state, db queries, trace path, exact commands, SHA-256 and known failures. **Do not mark G2 pass** on mock-unit-only tests; require an actual controller-to-provider state transition and test under restart. After G2 passes, proceed to bounded G3 (memory, trace, budgets, prompt injection); only then G4 eval harness and G5 docs/demo.
+-7. Don't claim any nice-to-have or surprise new feature. Employer explicitly allows at most one and no extra credit. An excellent basic solution with perfect evidence outperforms broad but unproved "second brain" additions.
+-
+-### CTO key challenge and defense
+-
+-- **Assumed:** the provider layer passing means the agent is safe. **False** until all mutating action paths check persisted approval.
+-- **Missed:** router bypass, duplicate *logical intent* with multiple idempotency keys, restart between commit and receipt, lost approvals and forgotten memory resurrected through chat. Add negative tests.
+-- **Looks right but isn't:** success in reply and one record in trace while authoritative provider DB differs; a review-injection fixture without actual assistant-run isolation; 28 provider tests misrepresented as 28 autonomous eval scenarios; a synthetic front-end demo not tied to real DB state.
+-- **Defend:** exact contract, enforced state machine, persisted approvals, idempotent provider calls, authoritative reconciliation, scoped memory with forgetting, deterministic independent evals, actual three bugs and a live screen recording linked to trace.
+-
+-**Status update:** `G0 PASS; G1 independently reverified PASS; G2–G5 NOT ACCEPTED`. Only the user manually starts Codex. This appendix is a **written CTO instruction for the next Codex run**, not evidence that Codex has executed it.+**END OF CANONICAL `ORANGE-FOUNDINGAI-20261101-001`.**

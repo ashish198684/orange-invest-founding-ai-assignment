@@ -1,0 +1,65 @@
+{
+  "G0": {
+    "status": "PASS",
+    "commit": "NOT_COMMITTED",
+    "baseline_commit": "d63a1d8c313797135a6c1c1c8703c7d7723df780",
+    "command": "python scripts/check_contract.py",
+    "exit_code": 0,
+    "tests_run": 0,
+    "source_hash_checks_passed": 4,
+    "evidence": [
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g0_contract.txt",
+        "sha256": "772a0586a9f84c02badbcec79e7d6f6883dab064df33996c29d242ac028dd7a4"
+      },
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\source\\FoundingEngineer-Assignment.pdf",
+        "sha256": "dc74d7e214479744e998e8471e68104b7790c8845de7241c34c28dd2cfa2db7d"
+      }
+    ],
+    "observation": "Original PDF copied and hash matches; canonical/AGENTS/transcription unchanged; plan and ADRs present."
+  },
+  "G1": {
+    "status": "PASS",
+    "commit": "NOT_COMMITTED",
+    "baseline_commit": "d63a1d8c313797135a6c1c1c8703c7d7723df780",
+    "command": "python -X utf8 scripts/run_checks.py --label g1_final",
+    "child_command": "python -X utf8 -m unittest discover -s tests -v",
+    "exit_code": 0,
+    "passed": 28,
+    "tests_run": 28,
+    "skipped": 0,
+    "evidence": [
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g1_final.txt",
+        "sha256": "e71955e05f84a4b5ae56bdbed10bea24bbffee6fea31f4a98af6f0b9b3704d55"
+      },
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g1_final.json",
+        "sha256": "4c4c06b1ceb3afc2c887141811fe1768de2afe9547008c007efd7968352de7b4"
+      },
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\provider_timeout.json",
+        "sha256": "83f90c119755e32ad22f04ff4c4da37814cf13bea3fe64938e1a198753ab3309"
+      },
+      {
+        "path": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\provider_timeout.sqlite3",
+        "sha256": "ddbac5863b495a015ae69a85fed4ffd3e33358e507c643dda021bbc866f9643e"
+      }
+    ],
+    "observation": "Provider tests pass; timeout-after-success persisted and same-key replay returns one ID; cancellation/reschedule/restart/concurrency asserted.",
+    "claims_boundary": "Direct provider tests only; not workflow safety, scripted-user evals or end-to-end trace."
+  },
+  "G2": {
+    "status": "NOT_STARTED"
+  },
+  "G3": {
+    "status": "NOT_STARTED"
+  },
+  "G4": {
+    "status": "NOT_STARTED"
+  },
+  "G5": {
+    "status": "NOT_STARTED"
+  }
+}

@@ -1,0 +1,602 @@
+test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) ... 
+  test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='book_success', status='booked', code=None, count=1) ... ERROR
+  test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='slot_taken', status='failed', code='slot_taken', count=0) ... ERROR
+  test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='hold_expired', status='failed', code='hold_expired', count=0) ... ERROR
+  test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='timeout_after_success', status='booked', code='timeout', count=1) ... ERROR
+  test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='timeout_without_booking', status='not_found', code='timeout', count=0) ... ERROR
+test_baseline_statistical_smoke_over_stable_seeds (test_provider_contract.ProviderContractTests.test_baseline_statistical_smoke_over_stable_seeds) ... ok
+test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) ... 
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=1) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=7) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=42) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=71) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=99) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=123) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=500) ... ERROR
+  test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=20261101) ... ERROR
+test_cancel_503_retry_same_key_survives_restart (test_provider_contract.ProviderContractTests.test_cancel_503_retry_same_key_survives_restart) ... ERROR
+test_cancel_changed_payload_rejected_during_transient (test_provider_contract.ProviderContractTests.test_cancel_changed_payload_rejected_during_transient) ... ERROR
+test_concurrent_same_key_booking_returns_one_id (test_provider_contract.ProviderContractTests.test_concurrent_same_key_booking_returns_one_id) ... ERROR
+test_configured_reschedule_conflict_retains_old_slot (test_provider_contract.ProviderContractTests.test_configured_reschedule_conflict_retains_old_slot) ... ERROR
+test_exact_eight_tool_signatures (test_provider_contract.ProviderContractTests.test_exact_eight_tool_signatures) ... ok
+test_expired_hold_cannot_steal_reheld_slot (test_provider_contract.ProviderContractTests.test_expired_hold_cannot_steal_reheld_slot) ... ERROR
+test_hold_exact_ttl_quote_and_availability (test_provider_contract.ProviderContractTests.test_hold_exact_ttl_quote_and_availability) ... ok
+test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) ... 
+  test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=599, expires=False) ... ERROR
+  test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=600, expires=True) ... ERROR
+  test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=601, expires=True) ... ERROR
+test_invalid_date_windows_rejected (test_provider_contract.ProviderContractTests.test_invalid_date_windows_rejected) ... ok
+test_invalid_resource_and_key_errors_do_not_book (test_provider_contract.ProviderContractTests.test_invalid_resource_and_key_errors_do_not_book) ... ERROR
+test_real_process_exit_after_provider_timeout_preserves_truth (test_provider_contract.ProviderContractTests.test_real_process_exit_after_provider_timeout_preserves_truth) ... FAIL
+test_reschedule_occupied_and_held_slot_conflict (test_provider_contract.ProviderContractTests.test_reschedule_occupied_and_held_slot_conflict) ... ERROR
+test_reschedule_success_replay_and_changed_payload (test_provider_contract.ProviderContractTests.test_reschedule_success_replay_and_changed_payload) ... ERROR
+test_same_key_dedupe_changed_payload_and_cross_action (test_provider_contract.ProviderContractTests.test_same_key_dedupe_changed_payload_and_cross_action) ... ERROR
+test_search_contract_and_filtering (test_provider_contract.ProviderContractTests.test_search_contract_and_filtering) ... ok
+test_simultaneous_holds_only_one_wins (test_provider_contract.ProviderContractTests.test_simultaneous_holds_only_one_wins) ... ok
+test_sqlite_constraints_and_restart_config (test_provider_contract.ProviderContractTests.test_sqlite_constraints_and_restart_config) ... ERROR
+test_timeout_after_success_same_key_replay_after_expiry_and_restart (test_provider_contract.ProviderContractTests.test_timeout_after_success_same_key_replay_after_expiry_and_restart) ... ERROR
+test_untrusted_review_is_free_text_without_side_effects (test_provider_contract.ProviderContractTests.test_untrusted_review_is_free_text_without_side_effects) ... ok
+test_user_isolation_hold_booking_status_and_key (test_provider_contract.ProviderContractTests.test_user_isolation_hold_booking_status_and_key) ... ERROR
+
+======================================================================
+ERROR: test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='book_success', status='booked', code=None, count=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 137, in test_all_forced_book_branches_persist_before_error
+    assert p.book(h['hold_id'], 'key')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='slot_taken', status='failed', code='slot_taken', count=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in test_all_forced_book_branches_persist_before_error
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in <lambda>
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='hold_expired', status='failed', code='hold_expired', count=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in test_all_forced_book_branches_persist_before_error
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in <lambda>
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='timeout_after_success', status='booked', code='timeout', count=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in test_all_forced_book_branches_persist_before_error
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in <lambda>
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_all_forced_book_branches_persist_before_error (test_provider_contract.ProviderContractTests.test_all_forced_book_branches_persist_before_error) (branch='timeout_without_booking', status='not_found', code='timeout', count=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in test_all_forced_book_branches_persist_before_error
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 133, in <lambda>
+    exc = error(code, lambda: p.book(h['hold_id'], 'key'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=71)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=99)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=123)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 363, in test_baseline_tool_delivery_matches_seeded_branch
+    error('slot_taken' if branch == 'slot_taken' else 'timeout', lambda: p.book(hold['hold_id'], 'baseline'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 363, in <lambda>
+    error('slot_taken' if branch == 'slot_taken' else 'timeout', lambda: p.book(hold['hold_id'], 'baseline'))
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=500)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_baseline_tool_delivery_matches_seeded_branch (test_provider_contract.ProviderContractTests.test_baseline_tool_delivery_matches_seeded_branch) (seed=20261101)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 361, in test_baseline_tool_delivery_matches_seeded_branch
+    assert p.book(hold['hold_id'], 'baseline')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_cancel_503_retry_same_key_survives_restart (test_provider_contract.ProviderContractTests.test_cancel_503_retry_same_key_survives_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 175, in test_cancel_503_retry_same_key_survives_restart
+    bid, pid, slots, _ = booked(p)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_cancel_changed_payload_rejected_during_transient (test_provider_contract.ProviderContractTests.test_cancel_changed_payload_rejected_during_transient)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 192, in test_cancel_changed_payload_rejected_during_transient
+    bid, _, _, _ = booked(p)
+                   ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_concurrent_same_key_booking_returns_one_id (test_provider_contract.ProviderContractTests.test_concurrent_same_key_booking_returns_one_id)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 305, in test_concurrent_same_key_booking_returns_one_id
+    results = list(pool.map(commit, [a, b]))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 303, in commit
+    return p.book(h['hold_id'], 'same-key')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_configured_reschedule_conflict_retains_old_slot (test_provider_contract.ProviderContractTests.test_configured_reschedule_conflict_retains_old_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 215, in test_configured_reschedule_conflict_retains_old_slot
+    bid, _, slots, _ = booked(p)
+                       ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_expired_hold_cannot_steal_reheld_slot (test_provider_contract.ProviderContractTests.test_expired_hold_cannot_steal_reheld_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 333, in test_expired_hold_cannot_steal_reheld_slot
+    error('hold_expired', lambda: a.book(old['hold_id'], 'late'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 333, in <lambda>
+    error('hold_expired', lambda: a.book(old['hold_id'], 'late'))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=599, expires=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 122, in test_hold_expiry_boundary
+    assert p.book(h['hold_id'], 'key')['booking_id']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=600, expires=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 118, in test_hold_expiry_boundary
+    error('hold_expired', lambda: p.book(h['hold_id'], 'key'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 118, in <lambda>
+    error('hold_expired', lambda: p.book(h['hold_id'], 'key'))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_hold_expiry_boundary (test_provider_contract.ProviderContractTests.test_hold_expiry_boundary) (seconds=601, expires=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 118, in test_hold_expiry_boundary
+    error('hold_expired', lambda: p.book(h['hold_id'], 'key'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 118, in <lambda>
+    error('hold_expired', lambda: p.book(h['hold_id'], 'key'))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_invalid_resource_and_key_errors_do_not_book (test_provider_contract.ProviderContractTests.test_invalid_resource_and_key_errors_do_not_book)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 380, in test_invalid_resource_and_key_errors_do_not_book
+    error('hold_not_found', lambda: p.book('missing', 'missing-hold'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 380, in <lambda>
+    error('hold_not_found', lambda: p.book('missing', 'missing-hold'))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 152, in _operate
+    db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+sqlite3.OperationalError: table provider_operation_outcomes has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_reschedule_occupied_and_held_slot_conflict (test_provider_contract.ProviderContractTests.test_reschedule_occupied_and_held_slot_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 225, in test_reschedule_occupied_and_held_slot_conflict
+    bid, pid, slots, _ = booked(p)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_reschedule_success_replay_and_changed_payload (test_provider_contract.ProviderContractTests.test_reschedule_success_replay_and_changed_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 201, in test_reschedule_success_replay_and_changed_payload
+    bid, pid, slots, _ = booked(p)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_same_key_dedupe_changed_payload_and_cross_action (test_provider_contract.ProviderContractTests.test_same_key_dedupe_changed_payload_and_cross_action)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 163, in test_same_key_dedupe_changed_payload_and_cross_action
+    bid, pid, slots, h = booked(p)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_sqlite_constraints_and_restart_config (test_provider_contract.ProviderContractTests.test_sqlite_constraints_and_restart_config)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 253, in test_sqlite_constraints_and_restart_config
+    bid, pid, slots, h = booked(p)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_timeout_after_success_same_key_replay_after_expiry_and_restart (test_provider_contract.ProviderContractTests.test_timeout_after_success_same_key_replay_after_expiry_and_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 151, in test_timeout_after_success_same_key_replay_after_expiry_and_restart
+    error('timeout', lambda: p.book(h['hold_id'], 'stable'))
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 38, in error
+    call()
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 151, in <lambda>
+    error('timeout', lambda: p.book(h['hold_id'], 'stable'))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+ERROR: test_user_isolation_hold_booking_status_and_key (test_provider_contract.ProviderContractTests.test_user_isolation_hold_booking_status_and_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 237, in test_user_isolation_hold_booking_status_and_key
+    bid, pid, slots, h = booked(a)
+                         ^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 33, in booked
+    result = p.book(hold['hold_id'], key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+======================================================================
+FAIL: test_real_process_exit_after_provider_timeout_preserves_truth (test_provider_contract.ProviderContractTests.test_real_process_exit_after_provider_timeout_preserves_truth)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\tests\test_provider_contract.py", line 317, in test_real_process_exit_after_provider_timeout_preserves_truth
+    assert run.returncode == 23, run.stderr
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 190, in book
+    return self._operate('book', [hold_id], idempotency_key, execute)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 151, in _operate
+    response, error = handler(db, old)
+                      ^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\app\provider_mock\tools.py", line 185, in execute
+    db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+sqlite3.OperationalError: table provider_bookings has 8 columns but 9 values were supplied
+
+
+----------------------------------------------------------------------
+Ran 23 tests in 4.598s
+
+FAILED (failures=1, errors=28)
+BASELINE_10000_SEEDS={"book_success": 7041, "slot_taken": 1517, "timeout_after_success": 723, "timeout_without_booking": 719}

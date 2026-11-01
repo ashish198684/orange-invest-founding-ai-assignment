@@ -1,0 +1,102 @@
+[
+  {
+    "tool": "hold_slot",
+    "args": [
+      "plumber-0-0",
+      "2026-11-02T09:00:00+05:30"
+    ],
+    "result": {
+      "hold_id": "65b78d47ea26453dbb5112f005822df3",
+      "expires_at": "2026-11-01T09:10:00+05:30",
+      "quoted_price": 900
+    }
+  },
+  {
+    "tool": "book",
+    "args": [
+      "65b78d47ea26453dbb5112f005822df3",
+      "historical-book"
+    ],
+    "result": {
+      "booking_id": "b3a7e8b63130472f8ac3c40032709fd2"
+    }
+  },
+  {
+    "tool": "list_bookings",
+    "args": [
+      "alice"
+    ],
+    "result": [
+      {
+        "id": "b3a7e8b63130472f8ac3c40032709fd2",
+        "provider": "plumber-0-0",
+        "service": "plumber",
+        "slot": "2026-11-02T09:00:00+05:30",
+        "status": "booked"
+      }
+    ]
+  },
+  {
+    "tool": "list_bookings",
+    "args": [
+      "alice"
+    ],
+    "result": [
+      {
+        "id": "b3a7e8b63130472f8ac3c40032709fd2",
+        "provider": "plumber-0-0",
+        "service": "plumber",
+        "slot": "2026-11-02T09:00:00+05:30",
+        "status": "booked"
+      }
+    ]
+  },
+  {
+    "tool": "cancel",
+    "args": [
+      "b3a7e8b63130472f8ac3c40032709fd2",
+      "operation-1940e827b6be465b920713b1e12c2bca"
+    ],
+    "error": "ProviderError"
+  },
+  {
+    "tool": "list_bookings",
+    "args": [
+      "alice"
+    ],
+    "result": [
+      {
+        "id": "b3a7e8b63130472f8ac3c40032709fd2",
+        "provider": "plumber-0-0",
+        "service": "plumber",
+        "slot": "2026-11-02T09:00:00+05:30",
+        "status": "booked"
+      }
+    ]
+  },
+  {
+    "tool": "cancel",
+    "args": [
+      "b3a7e8b63130472f8ac3c40032709fd2",
+      "operation-1940e827b6be465b920713b1e12c2bca"
+    ],
+    "result": {
+      "status": "cancelled"
+    }
+  },
+  {
+    "tool": "list_bookings",
+    "args": [
+      "alice"
+    ],
+    "result": [
+      {
+        "id": "b3a7e8b63130472f8ac3c40032709fd2",
+        "provider": "plumber-0-0",
+        "service": "plumber",
+        "slot": "2026-11-02T09:00:00+05:30",
+        "status": "cancelled"
+      }
+    ]
+  }
+]

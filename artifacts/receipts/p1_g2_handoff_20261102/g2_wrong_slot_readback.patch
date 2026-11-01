@@ -1,0 +1,12 @@
+--- g2_adversarial_readback_red_20261102/app/workflow.py
++++ 3d79a207bffd3bda1505333e3c7804bf00e657ae/app/workflow.py
+@@ -472,7 +472,8 @@
+             if status['status']=='booked':
+                 rows=self.provider.list_bookings(self.context.user_id)
+                 booking=next((b for b in rows if b['id']==status.get('booking_id')),None)
+-                if not booking or booking['status']!='booked' or booking['provider']!=s['provider_id']:
++                if (not booking or booking['status']!='booked' or booking['provider']!=s['provider_id']
++                        or booking['slot']!=s['new_slot']):
+                     return 'unknown',None
+                 return 'done',booking
+             return status['status'],None

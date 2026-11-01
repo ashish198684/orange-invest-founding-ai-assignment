@@ -1,0 +1,13 @@
+--- g2_first_implementation_20261102/app/workflow.py
++++ g2_after_sql_connection_fix_20261102/app/workflow.py
+@@ -414,7 +414,9 @@
+                 raise SafetyError('request_locked')
+             oid=uuid.uuid4().hex
+             key='operation-'+oid
+-            db.execute('INSERT INTO operations VALUES (?,?,?,?,?,?,?,?,?,?,?,0,NULL,NULL,NULL)',
++            db.execute('INSERT INTO operations (operation_id,workflow_id,user_id,action,booking_id,'
++                       'idempotency_key,approval_id,snapshot_json,payload_fingerprint,status) '
++                       'VALUES (?,?,?,?,?,?,?,?,?,?)',
+                        (oid,workflow_id,self.context.user_id,s['action'],s['booking_id'],key,approval_id,
+                         a['snapshot_json'],a['payload_fingerprint'],'PREPARED'))
+             db.execute("UPDATE approval_snapshots SET status='GRANTED',approved_at=? WHERE approval_id=?",

@@ -1,0 +1,29 @@
+--- g1_after_outcome_fix/app/provider_mock/tools.py
++++ g1_final/app/provider_mock/tools.py
+@@ -67,7 +67,7 @@
+                    "WHERE status='held' AND expires_at<=?", (self._now().isoformat(),))
+ 
+     def _available(self, db, pid, slot):
+-        return (db.execute('SELECT 1 FROM provider_slots WHERE provider_id=? AND slot=?',
++        return (db.execute("SELECT 1 FROM provider_slots WHERE provider_id=? AND slot=? AND state='available'",
+                            (pid, slot)).fetchone() is not None
+                 and _time(slot) > self._now()
+                 and db.execute("SELECT 1 FROM provider_bookings WHERE provider_id=? "
+@@ -159,7 +159,7 @@
+         if error:
+             if error.startswith('timeout'):
+                 raise ProviderTimeout()
+-            raise ProviderError(error, 503 if error == 'transient_503' else 409)
++            raise ProviderError(error, 503 if error == 'transient_503' else (403 if error == 'forbidden' else 409))
+         return response
+ 
+     def book(self, hold_id, idempotency_key):
+@@ -176,6 +176,8 @@
+             if h['status'] != 'held':
+                 return None, 'slot_taken'
+             if branch == 'slot_taken':
++                db.execute("UPDATE provider_slots SET state='taken' WHERE provider_id=? AND slot=?",
++                           (h['provider_id'], h['slot']))
+                 db.execute("UPDATE provider_holds SET status='failed' WHERE id=?", (hold_id,))
+                 return None, 'slot_taken'
+             if branch == 'timeout_without_booking':

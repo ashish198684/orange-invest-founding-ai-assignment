@@ -1,0 +1,1732 @@
+diff --git a/.gitignore b/.gitignore
+index 945974a..f711948 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -10,3 +10,4 @@ tmp/
+ .env
+ .env.*
+ !.env.example
++*.controller.lock
+diff --git a/DECISIONS.md b/DECISIONS.md
+index c495d2b..8f92549 100644
+--- a/DECISIONS.md
++++ b/DECISIONS.md
+@@ -63,3 +63,13 @@
+ - **Preservation:** docs/proposals/20261101_cto_addendum_NOT_AUTHORITATIVE_NOT_APPROVED/addendum_unchanged.md preserves the complete appended bytes unchanged; its README explicitly marks the proposal NOT AUTHORITATIVE / NOT APPROVED. CANONICAL_before_P0.md preserves the full pre-P0 working file, SHA-256 a5187084ff50451cc7813dcdb8a2310cdaecac0e0959d27632509278ed37d325. Historical approval language in the archived text does not grant current authority.
+ - **Verification / evidence:** Run the unchanged scripts/check_contract.py under the existing Python 3.12 interpreter. Exact command, actual stdout/stderr, exit code, before/after Git status, canonical diffs, preservation inventories and evidence hashes are recorded in artifacts/receipts/p0_20261101_option_a/. The generated receipt, rather than this ADR, establishes the check result.
+ - **Scope:** No application code, tests, historical receipts, source snapshots, AGENTS.md or assignment PDF changed. No G1 closeout, G2 work, Groq integration or onward phase authorized. Stop after P0 for CTO review.
++
++## ADR-007 / 2026-11-02 - G2 deterministic controller, local recovery and price boundary (v1)
++- **Status / authority:** Implementation interpretation under sponsor-dispatched ORANGE-CTO-20261101-P1-G2-001; CTO gate acceptance pending. Frozen canonical/PDF, eight provider signatures and ADR-004/005/006 remain unchanged.
++- **Authority model:** Trusted server/test RequestContext supplies user identity; no client/model user override. ScriptedModel proposes validated draft fields only. Explicit confirm identifies the immutable pending approval. All book/cancel/reschedule calls share the persisted operation authorization gate. ProviderMock remains directly callable test infrastructure, not an approval authority.
++- **State refinement (canonical D1):** COLLECTING, CHOOSING, AWAITING_APPROVAL, EXECUTING, VERIFYING, BOOKED, NEEDS_REAPPROVAL, OUTCOME_UNKNOWN, CONFLICT, CANCELLED, RESCHEDULED. Search/hold are synchronous proposal steps; they do not need separate persisted states. Explicit transition guards include VERIFYING -> EXECUTING only for a bounded same-key retry after authoritative read-back. No model sets state.
++- **Durability / deduplication:** Unique (user, logical_request_id), one live/committed book operation per workflow, immutable approval/operation payloads and keys, pending change uniqueness by booking, monotonic workflow revision and a durable booking binding. Corrections/requotes invalidate pending approval including ABA. Unresolved or booked logical requests cannot create a second booking on another slot. A new logical request represents a distinct explicit customer intent, never automatic timeout recovery.
++- **Concurrency / restart:** Short SQLite transactions persist permission/key before provider calls. A local kernel file lock serializes execution/reconciliation across independent processes/connections; the OS releases it on crash. The embedding server must invoke recover() before startup mutation dispatch. Pending work reconciles first even if its hold/approval later expired. No transaction waits on a provider/model. This is local coordination, not distributed exactly-once execution.
++- **Retry policy:** At most three persisted mutation attempts per operation, including two same-key transient retries; restarts never replenish the count. After persistent timeout-without-booking, report OUTCOME_UNKNOWN/unverified and lock the logical request; do not fabricate success/failure or escape using a fresh key. Unknown errors and unavailable status remain unverified.
++- **Price ambiguity (canonical C1.3):** Book binds actual hold quote. Cancel/reschedule show verified stored original booking price explicitly as original, or price_unavailable_from_provider_contract. New price is unavailable; the local fixed mock charges no new fees. Only a no-fee/non-price-changing mock reschedule is supported under that disclosed snapshot. Price-changing requests fail closed (price_unknown), even when original amount is known. No fabricated fresh quote/fee or added provider API.
++- **Evidence / boundary:** docs/g2_acceptance_matrix.md maps executable tests to invariants; scripts/g2_evidence.py emits source-bound raw results, per-case DB backups, SQL inspection and a real timeout controller probe. This instrumentation is not the G3 tracing subsystem or G4 scripted-user evals. No Groq, memory, browser, general run budget or onward gate is implemented. Exact commits, counts and hashes live in generated receipts; actual red/fix/green history is in docs/g2_handoff.md.
+diff --git a/README.md b/README.md
+index 0a5b660..7857523 100644
+--- a/README.md
++++ b/README.md
+@@ -1,9 +1,11 @@
+-# Orange Invest - local provider foundation (G0/G1)
+-
+-Implemented: eight fixed mock provider tools, durable SQLite provider state,
+-seeded and forced faults, and direct contract tests. This is the provider layer;
+-chat, approval enforcement, workflow recovery, memory, browser UI and end-to-end
+-agent evals are **not implemented**. Do not use it as a completed booking agent.
++# Orange Invest - local deterministic booking foundation (G0-G2)
++
++Implemented: eight fixed mock provider tools, durable SQLite provider state,
++seeded faults, and a deterministic workflow controller with explicit approval,
++stable logical requests, booking/cancel/reschedule and status reconciliation.
++G2 offers a typed Python API and small scripted language adapter. Memory, full
++execution budgets/tracing, browser UI and G4 agent evaluations are not implemented.
++The complete employer assignment is not ready for submission.
+ No external providers, API services, credentials or payments are used.
+ 
+ Python 3.11+ is sufficient for the current runtime and tests. From this directory,
+@@ -40,7 +42,7 @@ and trusted `user_id`; fixed tool signatures remain unchanged. Date ranges use
+ end; slots are normalized to IST. See [decisions](DECISIONS.md) for precise fixture,
+ idempotency, timeout, identity and status interpretations. Constructor-only
+ `ScenarioConfig` is for controlled tests, never user chat. Provider methods do
+-not implement approvals; the later deterministic controller must guard writes.
++not implement approvals; `WorkflowController` guards application write paths.
+ 
+ To generate a new receipt with exact output, exit code, source hashes and source
+ snapshot, run `python scripts/run_checks.py --label my_g1_check` (a new label is
+diff --git a/app/agent/__init__.py b/app/agent/__init__.py
+new file mode 100644
+index 0000000..6a27f22
+--- /dev/null
++++ b/app/agent/__init__.py
+@@ -0,0 +1 @@
++"""Proposal-only offline interpretation. No authority or provider dependencies."""
+diff --git a/app/agent/scripted.py b/app/agent/scripted.py
+new file mode 100644
+index 0000000..c22fcee
+--- /dev/null
++++ b/app/agent/scripted.py
+@@ -0,0 +1,39 @@
++"""Small deterministic language adapter for G2. General language evaluation is G4."""
++from datetime import datetime, timedelta
++import re
++
++class ScriptedModel:
++    def interpret(self, text, now):
++        lower = text.lower()
++        patch = {}
++        for service in ('plumber', 'electrician', 'ac servicing'):
++            if service in lower:
++                patch['service'] = service
++        for area in ('Indiranagar', 'Koramangala'):
++            if area.lower() in lower:
++                patch['area'] = area
++        budget = re.search(r'(?:under|budget|up to)\s*(?:₹|rs\.?\s*)?([\d,]+)', lower)
++        if budget:
++            patch['budget_inr'] = int(budget[1].replace(',', ''))
++        start = now.replace(hour=0, minute=0, second=0, microsecond=0)
++        if 'this week' in lower:
++            end = start + timedelta(days=7-start.weekday())
++            patch['date_window'] = {'start': start.isoformat(), 'end': end.isoformat()}
++        elif 'saturday' in lower:
++            start += timedelta(days=(5-start.weekday()) % 7)
++            patch['date_window'] = {'start': start.isoformat(), 'end': (start+timedelta(days=1)).isoformat()}
++        elif 'tomorrow' in lower:
++            start += timedelta(days=1)
++            patch['date_window'] = {'start': start.isoformat(), 'end': (start+timedelta(days=1)).isoformat()}
++        prefs = {}
++        if 'mornings' in lower:
++            prefs['latest_hour'] = 12
++        earliest = re.search(r'(?:not before|after)\s*(\d{1,2})\s*(a\.?m\.?|p\.?m\.?)?', lower)
++        if earliest:
++            hour = int(earliest[1])
++            if earliest[2] and earliest[2].startswith('p') and hour < 12:
++                hour += 12
++            prefs['earliest_hour'] = hour
++        if prefs:
++            patch['preferences'] = prefs
++        return patch
+diff --git a/app/workflow.py b/app/workflow.py
+new file mode 100644
+index 0000000..ab7d0f0
+--- /dev/null
++++ b/app/workflow.py
+@@ -0,0 +1,558 @@
++"""Deterministic G2 authority. Provider records, never model text, establish truth.
++
++The embedding server constructs this controller from trusted session identity.
++approve/confirm is a separate explicit customer action; chat/proposals cannot call it.
++SQLite transactions protect approval/intent records; an OS-released local DB lock
++serializes provider reconciliation/execution across processes without a long DB tx.
++"""
++from contextlib import contextmanager
++from dataclasses import dataclass
++from datetime import datetime, timedelta
++import hashlib
++import json
++from pathlib import Path
++import uuid
++
++from app.agent.scripted import ScriptedModel
++from app.provider_mock import ProviderMock, ProviderError
++from app.provider_mock.fixtures import IST
++
++
++class SafetyError(Exception):
++    def __init__(self, code):
++        self.code = code
++        super().__init__(code)
++
++
++@dataclass(frozen=True)
++class RequestContext:
++    user_id: str
++
++
++def encode(value):
++    return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True)
++
++
++def fingerprint(snapshot):
++    return hashlib.sha256(encode(snapshot).encode()).hexdigest()
++
++
++def timestamp(value):
++    try:
++        dt = datetime.fromisoformat(value)
++        if dt.utcoffset() is None:
++            raise ValueError('aware timestamp required')
++        return dt.astimezone(IST)
++    except (ValueError, TypeError):
++        raise SafetyError('invalid_timestamp') from None
++
++
++SCHEMA = """
++CREATE TABLE IF NOT EXISTS workflows (
++ workflow_id TEXT PRIMARY KEY, user_id TEXT NOT NULL, logical_request_id TEXT NOT NULL,
++ initial_draft_json TEXT NOT NULL, draft_json TEXT NOT NULL, revision INTEGER NOT NULL,
++ status TEXT NOT NULL, booking_id TEXT, current_approval_id TEXT, created_at TEXT NOT NULL,
++ UNIQUE(user_id,logical_request_id)
++);
++CREATE TABLE IF NOT EXISTS workflow_holds (
++ hold_id TEXT PRIMARY KEY, workflow_id TEXT NOT NULL REFERENCES workflows(workflow_id),
++ revision INTEGER NOT NULL, provider_id TEXT NOT NULL, slot TEXT NOT NULL,
++ quoted_price INTEGER NOT NULL, expires_at TEXT NOT NULL
++);
++CREATE TABLE IF NOT EXISTS approval_snapshots (
++ approval_id TEXT PRIMARY KEY, workflow_id TEXT NOT NULL REFERENCES workflows(workflow_id),
++ user_id TEXT NOT NULL, snapshot_json TEXT NOT NULL, payload_fingerprint TEXT NOT NULL,
++ revision INTEGER NOT NULL, expires_at TEXT NOT NULL,
++ status TEXT NOT NULL CHECK(status IN ('PENDING','GRANTED','VOID')), approved_at TEXT
++);
++CREATE TABLE IF NOT EXISTS operations (
++ operation_id TEXT PRIMARY KEY, workflow_id TEXT NOT NULL REFERENCES workflows(workflow_id),
++ user_id TEXT NOT NULL, action TEXT NOT NULL CHECK(action IN ('book','cancel','reschedule')),
++ booking_id TEXT, idempotency_key TEXT NOT NULL UNIQUE,
++ approval_id TEXT NOT NULL UNIQUE REFERENCES approval_snapshots(approval_id),
++ snapshot_json TEXT NOT NULL, payload_fingerprint TEXT NOT NULL,
++ status TEXT NOT NULL CHECK(status IN ('PREPARED','EXECUTING','OUTCOME_UNKNOWN','COMMITTED','FAILED')),
++ attempts INTEGER NOT NULL DEFAULT 0 CHECK(attempts BETWEEN 0 AND 3),
++ last_error TEXT, result_json TEXT, verified_at TEXT
++);
++CREATE UNIQUE INDEX IF NOT EXISTS one_live_book_intent ON operations(workflow_id)
++ WHERE action='book' AND status!='FAILED';
++CREATE UNIQUE INDEX IF NOT EXISTS one_pending_booking_change ON operations(booking_id)
++ WHERE booking_id IS NOT NULL AND status IN ('PREPARED','EXECUTING','OUTCOME_UNKNOWN');
++CREATE TRIGGER IF NOT EXISTS immutable_approval BEFORE UPDATE ON approval_snapshots
++ WHEN NEW.approval_id IS NOT OLD.approval_id OR NEW.workflow_id IS NOT OLD.workflow_id
++ OR NEW.user_id IS NOT OLD.user_id OR NEW.snapshot_json IS NOT OLD.snapshot_json
++ OR NEW.payload_fingerprint IS NOT OLD.payload_fingerprint OR NEW.revision IS NOT OLD.revision
++ OR NEW.expires_at IS NOT OLD.expires_at
++ BEGIN SELECT RAISE(ABORT,'immutable approval'); END;
++CREATE TRIGGER IF NOT EXISTS immutable_operation BEFORE UPDATE ON operations
++ WHEN NEW.operation_id IS NOT OLD.operation_id OR NEW.workflow_id IS NOT OLD.workflow_id
++ OR NEW.user_id IS NOT OLD.user_id OR NEW.action IS NOT OLD.action
++ OR NEW.booking_id IS NOT OLD.booking_id OR NEW.idempotency_key IS NOT OLD.idempotency_key
++ OR NEW.approval_id IS NOT OLD.approval_id OR NEW.snapshot_json IS NOT OLD.snapshot_json
++ OR NEW.payload_fingerprint IS NOT OLD.payload_fingerprint
++ BEGIN SELECT RAISE(ABORT,'immutable operation'); END;
++"""
++
++# Reduced G2 state graph, recorded in ADR-007. State changes use this guard.
++EDITABLE = {'COLLECTING','CHOOSING','AWAITING_APPROVAL','NEEDS_REAPPROVAL','CONFLICT'}
++ALLOWED = {
++    'COLLECTING': {'CHOOSING','AWAITING_APPROVAL'},
++    'CHOOSING': {'COLLECTING','AWAITING_APPROVAL'},
++    'AWAITING_APPROVAL': {'COLLECTING','CHOOSING','EXECUTING','NEEDS_REAPPROVAL'},
++    'EXECUTING': {'VERIFYING','BOOKED','CANCELLED','RESCHEDULED','OUTCOME_UNKNOWN','NEEDS_REAPPROVAL','CONFLICT'},
++    'VERIFYING': {'EXECUTING','BOOKED','CANCELLED','RESCHEDULED','OUTCOME_UNKNOWN','NEEDS_REAPPROVAL','CONFLICT'},
++    'OUTCOME_UNKNOWN': {'EXECUTING','VERIFYING','BOOKED','CANCELLED','RESCHEDULED','NEEDS_REAPPROVAL','CONFLICT'},
++    'NEEDS_REAPPROVAL': {'COLLECTING','CHOOSING','AWAITING_APPROVAL'},
++    'CONFLICT': {'COLLECTING','CHOOSING','AWAITING_APPROVAL'},
++    'BOOKED': {'AWAITING_APPROVAL'},
++    'RESCHEDULED': {'AWAITING_APPROVAL'},
++    'CANCELLED': set(),
++}
++
++
++@contextmanager
++def execution_lock(path):
++    """Local coordination only. A killed process releases the kernel lock."""
++    lock_path = Path(str(path)+'.controller.lock')
++    with lock_path.open('a+b') as handle:
++        if handle.tell() == 0:
++            handle.write(b'0')
++            handle.flush()
++        handle.seek(0)
++        import os
++        if os.name == 'nt':
++            import msvcrt
++            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
++        else:
++            import fcntl
++            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
++        try:
++            yield
++        finally:
++            handle.seek(0)
++            if os.name == 'nt':
++                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
++            else:
++                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
++
++
++class WorkflowController:
++    MAX_ATTEMPTS = 3  # one delivery + two same-key retries; durable across restart
++
++    def __init__(self, db_path, *, user_id, clock=None, provider=None):
++        if not isinstance(user_id,str) or not user_id.strip():
++            raise SafetyError('forbidden')
++        self.context = RequestContext(user_id)
++        self.clock = clock or (lambda:datetime.now(IST))
++        self.path = Path(db_path).resolve()
++        self.provider = provider or ProviderMock(self.path,user_id=user_id,clock=self.clock)
++        self._check_context()
++        self.store = self.provider.store
++        db = self.store._open()
++        try:
++            db.executescript(SCHEMA)
++        finally:
++            db.close()
++
++    def _check_context(self):
++        if (self.provider.user_id != self.context.user_id
++                or Path(self.provider.store.path).resolve() != self.path):
++            raise SafetyError('forbidden')
++
++    def _now(self):
++        now = self.clock()
++        if now.utcoffset() is None:
++            raise SafetyError('invalid_timestamp')
++        return now.astimezone(IST)
++
++    def _owned(self, db, wid):
++        row = db.execute('SELECT * FROM workflows WHERE workflow_id=?',(wid,)).fetchone()
++        if row is None or row['user_id'] != self.context.user_id:
++            raise SafetyError('forbidden')
++        return row
++
++    def _state(self, db, wid, state):
++        row = self._owned(db,wid)
++        if state != row['status'] and state not in ALLOWED[row['status']]:
++            raise SafetyError('illegal_transition')
++        db.execute('UPDATE workflows SET status=? WHERE workflow_id=?',(state,wid))
++
++    def _editable(self, db, w, *, booking=False):
++        pending = db.execute("SELECT 1 FROM operations WHERE workflow_id=? AND status IN "
++                             "('PREPARED','EXECUTING','OUTCOME_UNKNOWN')",(w['workflow_id'],)).fetchone()
++        if pending or (booking and (w['booking_id'] or w['status'] not in EDITABLE)):
++            raise SafetyError('request_locked')
++
++    def _patch(self, fields):
++        allowed = {'service','area','date_window','budget_inr','preferences','provider_id','slot'}
++        if not isinstance(fields,dict) or set(fields)-allowed:
++            raise SafetyError('untrusted_fields')
++        fields = json.loads(encode(fields))  # detach input; only JSON values
++        for key in ['service','area','provider_id']:
++            if key in fields and (not isinstance(fields[key],str) or not fields[key].strip()):
++                raise SafetyError('invalid_draft')
++        if 'budget_inr' in fields and fields['budget_inr'] is not None:
++            b=fields['budget_inr']
++            if type(b) is not int or b<0:
++                raise SafetyError('invalid_draft')
++        if 'date_window' in fields:
++            window=fields['date_window']
++            if not isinstance(window,dict) or set(window)!={'start','end'}:
++                raise SafetyError('invalid_draft')
++            start,end=timestamp(window['start']),timestamp(window['end'])
++            if end<=start: raise SafetyError('invalid_draft')
++            fields['date_window']={'start':start.isoformat(),'end':end.isoformat()}
++        if 'slot' in fields:
++            fields['slot']=timestamp(fields['slot']).isoformat()
++        if 'preferences' in fields:
++            prefs=fields['preferences']
++            if not isinstance(prefs,dict) or set(prefs)-{'earliest_hour','latest_hour','technician'}:
++                raise SafetyError('invalid_draft')
++            for k in ['earliest_hour','latest_hour']:
++                if k in prefs and (type(prefs[k]) is not int or not 0<=prefs[k]<=24):
++                    raise SafetyError('invalid_draft')
++            if 'technician' in prefs and not isinstance(prefs['technician'],str):
++                raise SafetyError('invalid_draft')
++        return fields
++
++    def create_request(self, logical_request_id, **fields):
++        if not isinstance(logical_request_id,str) or not logical_request_id.strip():
++            raise SafetyError('invalid_draft')
++        fields=self._patch(fields)
++        with self.store.connect(write=True) as db:
++            old=db.execute('SELECT * FROM workflows WHERE user_id=? AND logical_request_id=?',
++                           (self.context.user_id,logical_request_id)).fetchone()
++            if old:
++                if encode(fields)!=old['initial_draft_json']:
++                    raise SafetyError('logical_request_mismatch')
++                wid=old['workflow_id']
++            else:
++                wid=uuid.uuid4().hex
++                db.execute('INSERT INTO workflows VALUES (?,?,?,?,?,?,?,NULL,NULL,?)',
++                           (wid,self.context.user_id,logical_request_id,encode(fields),encode(fields),
++                            0,'COLLECTING',self._now().isoformat()))
++        return self.view(wid)
++
++    def view(self, workflow_id):
++        with self.store.connect() as db:
++            w=self._owned(db,workflow_id)
++            return {'workflow_id':w['workflow_id'],'logical_request_id':w['logical_request_id'],
++                    'draft':json.loads(w['draft_json']),'revision':w['revision'],
++                    'status':w['status'],'booking_id':w['booking_id']}
++
++    def next_question(self, workflow_id):
++        draft=self.view(workflow_id)['draft']
++        for field in ['service','area','date_window']:
++            if not draft.get(field):
++                return {'field':field,'message':f'Please provide {field.replace("_"," ")}.'}
++        return None  # budget/preferences are optional; never invent them
++
++    def correct(self, workflow_id, **fields):
++        fields=self._patch(fields)
++        with self.store.connect(write=True) as db:
++            w=self._owned(db,workflow_id)
++            self._editable(db,w,booking=True)
++            draft=json.loads(w['draft_json'])
++            if 'preferences' in fields:
++                fields['preferences']={**draft.get('preferences',{}),**fields['preferences']}
++            draft.update(fields)
++            db.execute("UPDATE approval_snapshots SET status='VOID' WHERE workflow_id=? AND status='PENDING'",(workflow_id,))
++            db.execute('UPDATE workflows SET draft_json=?,revision=revision+1,current_approval_id=NULL WHERE workflow_id=?',
++                       (encode(draft),workflow_id))
++            self._state(db,workflow_id,'COLLECTING' if any(not draft.get(k) for k in ['service','area','date_window']) else 'CHOOSING')
++        return self.view(workflow_id)
++
++    def propose(self, workflow_id, proposal):
++        return self.correct(workflow_id,**self._patch(proposal))
++
++    def chat(self, workflow_id, text):
++        if text.strip().lower() in {'yes','y','confirm','approved','approve','ok','okay'}:
++            raise SafetyError('approval_required')
++        patch=ScriptedModel().interpret(text,self._now())
++        if patch: self.propose(workflow_id,patch)
++        return {'workflow':self.view(workflow_id),'question':self.next_question(workflow_id),
++                'message':'Constraints recorded. Consequential actions require an exact approval card.'}
++
++    def details(self, provider_id):
++        self._check_context()
++        detail=self.provider.get_provider(provider_id)
++        return {**detail,'reviews':[{'source':'provider_review','trust':'untrusted','text':r}
++                                   for r in detail['reviews']]}
++
++    def _matches(self, draft, detail, slot=None):
++        if detail['service']!=draft.get('service') or detail['area']!=draft.get('area'):
++            return False
++        prefs=draft.get('preferences',{})
++        if prefs.get('technician') and detail['attributes'].get('technician')!=prefs['technician']:
++            return False
++        if draft.get('provider_id') and detail['id']!=draft['provider_id']:
++            return False
++        if slot:
++            dt=timestamp(slot)
++            if not timestamp(draft['date_window']['start'])<=dt<timestamp(draft['date_window']['end']): return False
++            if not prefs.get('earliest_hour',0)<=dt.hour<prefs.get('latest_hour',24): return False
++        return True
++
++    def search(self, workflow_id):
++        self._check_context()
++        w=self.view(workflow_id)
++        if self.next_question(workflow_id): raise SafetyError('missing_fields')
++        d=w['draft']
++        rows=self.provider.search_providers(d['service'],d['area'],d['date_window'])
++        results=[]
++        for p in rows:
++            detail={'id':p['id'],'service':p['attributes']['service'],'area':p['attributes']['area'],'attributes':p['attributes']}
++            if not self._matches(d,detail): continue
++            if d.get('budget_inr') is not None and p['price']>d['budget_inr']: continue
++            results.append({**p,'free_slots':[s for s in p['free_slots'] if self._matches(d,detail,s)]})
++        with self.store.connect(write=True) as db:
++            current=self._owned(db,workflow_id)
++            if current['status'] in {'COLLECTING','NEEDS_REAPPROVAL','CONFLICT'}:
++                self._state(db,workflow_id,'CHOOSING')
++        return results
++
++    def _approval(self, db, w, snapshot):
++        aid=uuid.uuid4().hex
++        db.execute("UPDATE approval_snapshots SET status='VOID' WHERE workflow_id=? AND status='PENDING'",(w['workflow_id'],))
++        db.execute('UPDATE workflows SET revision=?,current_approval_id=? WHERE workflow_id=?',
++                   (snapshot['revision'],aid,w['workflow_id']))
++        self._state(db,w['workflow_id'],'AWAITING_APPROVAL')
++        db.execute('INSERT INTO approval_snapshots VALUES (?,?,?,?,?,?,?,?,NULL)',
++                   (aid,w['workflow_id'],self.context.user_id,encode(snapshot),fingerprint(snapshot),
++                    snapshot['revision'],snapshot['expires_at'],'PENDING'))
++        return {'approval_id':aid,'snapshot':snapshot,'fingerprint':fingerprint(snapshot),'status':'PENDING'}
++
++    def prepare_booking(self, workflow_id, provider_id, slot):
++        self._check_context()
++        slot=timestamp(slot).isoformat()
++        with self.store.connect() as db:
++            w=self._owned(db,workflow_id)
++            self._editable(db,w,booking=True)
++            revision=w['revision']
++            draft=json.loads(w['draft_json'])
++        if self.next_question(workflow_id): raise SafetyError('missing_fields')
++        detail=self.provider.get_provider(provider_id)
++        if not self._matches(draft,detail,slot): raise SafetyError('constraint_violation')
++        hold=self.provider.hold_slot(provider_id,slot)
++        if draft.get('budget_inr') is not None and hold['quoted_price']>draft['budget_inr']:
++            raise SafetyError('budget_exceeded')
++        with self.store.connect(write=True) as db:
++            w=self._owned(db,workflow_id)
++            self._editable(db,w,booking=True)
++            if w['revision']!=revision: raise SafetyError('approval_invalid')
++            revision+=1
++            snapshot={'user_id':self.context.user_id,'workflow_id':workflow_id,'action':'book',
++                      'booking_id':None,'provider_id':provider_id,'old_slot':None,'new_slot':slot,
++                      'price_amount':hold['quoted_price'],'price_status':'hold_quote','original_price':None,
++                      'new_price_status':'hold_quote','hold_id':hold['hold_id'],
++                      'revision':revision,'expires_at':hold['expires_at']}
++            db.execute('INSERT INTO workflow_holds VALUES (?,?,?,?,?,?,?)',
++                       (hold['hold_id'],workflow_id,revision,provider_id,slot,hold['quoted_price'],hold['expires_at']))
++            return self._approval(db,w,snapshot)
++
++    def prepare_change(self, workflow_id, action, booking_id, *, new_slot=None, price_change_requested=False):
++        self._check_context()
++        if action not in {'cancel','reschedule'}: raise SafetyError('invalid_action')
++        if price_change_requested: raise SafetyError('price_unknown')
++        if action=='reschedule': new_slot=timestamp(new_slot).isoformat()
++        rows=self.provider.list_bookings(self.context.user_id)
++        booking=next((b for b in rows if b['id']==booking_id),None)
++        if not booking: raise SafetyError('forbidden')
++        if booking['status']!='booked': raise SafetyError('booking_not_active')
++        with self.store.connect(write=True) as db:
++            w=self._owned(db,workflow_id)
++            self._editable(db,w)
++            if w['booking_id'] and w['booking_id']!=booking_id: raise SafetyError('request_locked')
++            original=None
++            for op in db.execute("SELECT * FROM operations WHERE user_id=? AND action='book' AND status='COMMITTED'",
++                                 (self.context.user_id,)):
++                result=json.loads(op['result_json'])
++                if result.get('booking_id')==booking_id:
++                    original=json.loads(op['snapshot_json'])['price_amount']
++            snapshot={'user_id':self.context.user_id,'workflow_id':workflow_id,'action':action,
++                      'booking_id':booking_id,'provider_id':booking['provider'],'old_slot':booking['slot'],
++                      'new_slot':new_slot if action=='reschedule' else None,'price_amount':original,
++                      'price_status':'original_booking_price' if original is not None else 'price_unavailable_from_provider_contract',
++                      'original_price':original,'new_price_status':'unavailable_no_fee_mock',
++                      'hold_id':None,'revision':w['revision']+1,'expires_at':(self._now()+timedelta(minutes=10)).isoformat()}
++            return self._approval(db,w,snapshot)
++
++    def _valid_snapshot(self, db, w, a):
++        s=json.loads(a['snapshot_json'])
++        if (a['user_id']!=self.context.user_id or s['user_id']!=self.context.user_id
++                or s['workflow_id']!=w['workflow_id'] or a['payload_fingerprint']!=fingerprint(s)
++                or w['current_approval_id']!=a['approval_id'] or w['revision']!=s['revision']):
++            raise SafetyError('approval_invalid')
++        if self._now()>=timestamp(s['expires_at']): raise SafetyError('approval_expired')
++        if s['action']=='book':
++            h=db.execute('SELECT * FROM workflow_holds WHERE hold_id=?',(s['hold_id'],)).fetchone()
++            expected=(w['workflow_id'],s['revision'],s['provider_id'],s['new_slot'],s['price_amount'],s['expires_at'])
++            if not h or tuple(h[k] for k in ['workflow_id','revision','provider_id','slot','quoted_price','expires_at'])!=expected:
++                raise SafetyError('approval_invalid')
++            d=json.loads(w['draft_json'])
++            if d.get('budget_inr') is not None and s['price_amount']>d['budget_inr']: raise SafetyError('budget_exceeded')
++        return s
++
++    def grant_approval(self, workflow_id, approval_id):
++        """Explicit trusted customer confirmation of the currently displayed card."""
++        if not approval_id: raise SafetyError('approval_required')
++        self._check_context()
++        with self.store.connect(write=True) as db:
++            w=self._owned(db,workflow_id)
++            a=db.execute('SELECT * FROM approval_snapshots WHERE approval_id=?',(approval_id,)).fetchone()
++            if not a or a['workflow_id']!=workflow_id or a['status']=='VOID': raise SafetyError('approval_invalid')
++            if a['user_id']!=self.context.user_id: raise SafetyError('approval_invalid')
++            if w['revision']!=a['revision'] or w['current_approval_id']!=approval_id: raise SafetyError('approval_invalid')
++            old=db.execute('SELECT * FROM operations WHERE approval_id=?',(approval_id,)).fetchone()
++            if old: return old['operation_id']
++            if a['status']!='PENDING': raise SafetyError('approval_invalid')
++            s=self._valid_snapshot(db,w,a)
++            self._editable(db,w,booking=s['action']=='book')
++            if s['booking_id'] and db.execute("SELECT 1 FROM operations WHERE booking_id=? AND status IN "
++                    "('PREPARED','EXECUTING','OUTCOME_UNKNOWN')",(s['booking_id'],)).fetchone():
++                raise SafetyError('request_locked')
++            oid=uuid.uuid4().hex
++            key='operation-'+oid
++            db.execute('INSERT INTO operations (operation_id,workflow_id,user_id,action,booking_id,'
++                       'idempotency_key,approval_id,snapshot_json,payload_fingerprint,status) '
++                       'VALUES (?,?,?,?,?,?,?,?,?,?)',
++                       (oid,workflow_id,self.context.user_id,s['action'],s['booking_id'],key,approval_id,
++                        a['snapshot_json'],a['payload_fingerprint'],'PREPARED'))
++            db.execute("UPDATE approval_snapshots SET status='GRANTED',approved_at=? WHERE approval_id=?",
++                       (self._now().isoformat(),approval_id))
++            self._state(db,workflow_id,'EXECUTING')
++            return oid
++
++    def confirm(self, workflow_id, approval_id):
++        return self.execute(self.grant_approval(workflow_id,approval_id))
++
++    def _operation(self, db, operation_id):
++        op=db.execute('SELECT * FROM operations WHERE operation_id=?',(operation_id,)).fetchone()
++        if not op or op['user_id']!=self.context.user_id: raise SafetyError('forbidden')
++        a=db.execute('SELECT * FROM approval_snapshots WHERE approval_id=?',(op['approval_id'],)).fetchone()
++        s=json.loads(op['snapshot_json'])
++        w=self._owned(db,op['workflow_id'])
++        if (not a or a['status']!='GRANTED' or a['user_id']!=op['user_id']
++                or a['workflow_id']!=op['workflow_id'] or a['snapshot_json']!=op['snapshot_json']
++                or fingerprint(s)!=op['payload_fingerprint'] or a['payload_fingerprint']!=op['payload_fingerprint']
++                or s['action']!=op['action'] or s['user_id']!=self.context.user_id):
++            raise SafetyError('approval_invalid')
++        return dict(op),s,dict(w)
++
++    def _finish(self, op, state, *, booking=None, reason=None):
++        messages={
++            'BOOKED':'Booking verified with the provider.',
++            'CANCELLED':'Cancellation verified with the provider.',
++            'RESCHEDULED':'New appointment slot verified with the provider.',
++            'CONFLICT':'Provider reports a conflict. Choose again and approve a new action.',
++            'NEEDS_REAPPROVAL':'Action was not completed. Obtain a new quote and approve again.',
++            'OUTCOME_UNKNOWN':'Status unverified; no success is claimed. No new booking key will be created.',
++            'NOT_ACTIVE':'Provider records show this booking is no longer active.'}
++        result={'status':state,'operation_id':op['operation_id'],
++                'booking_id':booking['id'] if booking else None,'booking':booking,
++                'message':messages[state],'reason':reason}
++        with self.store.connect(write=True) as db:
++            current,s,w=self._operation(db,op['operation_id'])
++            # A completed operation is historical fact; its current read-back may differ.
++            if current['status'] not in {'COMMITTED','FAILED'}:
++                status='COMMITTED' if state in {'BOOKED','CANCELLED','RESCHEDULED'} else (
++                    'OUTCOME_UNKNOWN' if state=='OUTCOME_UNKNOWN' else 'FAILED')
++                db.execute('UPDATE operations SET status=?,result_json=?,last_error=?,verified_at=? WHERE operation_id=?',
++                           (status,encode(result),reason,self._now().isoformat() if status=='COMMITTED' else None,op['operation_id']))
++                if w['revision']==s['revision']:
++                    self._state(db,w['workflow_id'],state if state!='NOT_ACTIVE' else 'NEEDS_REAPPROVAL')
++                if state=='BOOKED':
++                    db.execute('UPDATE workflows SET booking_id=? WHERE workflow_id=?',(booking['id'],w['workflow_id']))
++        return result
++
++    def _booking_readback(self, op, s):
++        if s['action']=='book':
++            status=self.provider.get_booking_status(op['idempotency_key'])
++            if status['status']=='booked':
++                rows=self.provider.list_bookings(self.context.user_id)
++                booking=next((b for b in rows if b['id']==status.get('booking_id')),None)
++                if (not booking or booking['status']!='booked' or booking['provider']!=s['provider_id']
++                        or booking['slot']!=s['new_slot']):
++                    return 'unknown',None
++                return 'done',booking
++            return status['status'],None
++        rows=self.provider.list_bookings(self.context.user_id)
++        booking=next((b for b in rows if b['id']==s['booking_id']),None)
++        if not booking: return 'unknown',None
++        if booking['provider']!=s['provider_id']: return 'unknown',None
++        if s['action']=='cancel' and booking['status']=='cancelled': return 'done',booking
++        if s['action']=='reschedule' and booking['status']=='booked' and booking['slot']==s['new_slot']: return 'done',booking
++        if booking['status']!='booked' or booking['slot']!=s['old_slot']: return 'conflict',booking
++        return 'not_found',booking
++
++    def execute(self, operation_id):
++        """Single mutation gate; only persisted, granted immutable operations execute."""
++        self._check_context()
++        with execution_lock(self.path):
++            with self.store.connect() as db:
++                op,s,w=self._operation(db,operation_id)
++            completed={'book':'BOOKED','cancel':'CANCELLED','reschedule':'RESCHEDULED'}[s['action']]
++            # Reconcile FIRST on fresh delivery, retries and process restart alike.
++            try:
++                observed,booking=self._booking_readback(op,s)
++            except Exception:
++                return self._finish(op,'OUTCOME_UNKNOWN',reason='status_read_unavailable')
++            if observed=='done': return self._finish(op,completed,booking=booking)
++            if observed=='conflict': return self._finish(op,'CONFLICT',reason='booking_state_changed')
++            if op['status']=='COMMITTED':
++                return self._finish(op,'NOT_ACTIVE' if observed=='failed' else 'OUTCOME_UNKNOWN',reason='current_state_differs')
++            if op['status']=='FAILED':
++                return json.loads(op['result_json'])
++            if observed=='failed': return self._finish(op,'NEEDS_REAPPROVAL',reason='provider_failed')
++            if observed=='unknown': return self._finish(op,'OUTCOME_UNKNOWN',reason='readback_mismatch')
++            if op['attempts']>=self.MAX_ATTEMPTS:
++                return self._finish(op,'OUTCOME_UNKNOWN',reason='retry_cap_exhausted')
++            if self._now()>=timestamp(s['expires_at']):
++                # An operation already attempted may still be ambiguous, even after expiry.
++                return self._finish(op,'OUTCOME_UNKNOWN' if op['attempts'] else 'NEEDS_REAPPROVAL',reason='approval_expired')
++            for _ in range(self.MAX_ATTEMPTS-op['attempts']):
++                with self.store.connect(write=True) as db:
++                    op,s,w=self._operation(db,operation_id)
++                    if w['revision']!=s['revision'] or w['current_approval_id']!=op['approval_id']:
++                        raise SafetyError('approval_invalid')
++                    # Recheck actual stored hold binding on every delivery, not just grant.
++                    a=db.execute('SELECT * FROM approval_snapshots WHERE approval_id=?',(op['approval_id'],)).fetchone()
++                    self._valid_snapshot(db,w,a)
++                    if op['attempts']>=self.MAX_ATTEMPTS: break
++                    db.execute("UPDATE operations SET status='EXECUTING',attempts=attempts+1 WHERE operation_id=?",(operation_id,))
++                    self._state(db,w['workflow_id'],'EXECUTING')
++                response=None
++                error=None
++                try:
++                    if s['action']=='book': response=self.provider.book(s['hold_id'],op['idempotency_key'])
++                    elif s['action']=='cancel': response=self.provider.cancel(s['booking_id'],op['idempotency_key'])
++                    else: response=self.provider.reschedule(s['booking_id'],s['new_slot'],op['idempotency_key'])
++                except Exception as exc:
++                    error=exc
++                with self.store.connect(write=True) as db:
++                    self._state(db,op['workflow_id'],'VERIFYING')
++                try:
++                    observed,booking=self._booking_readback(op,s)
++                except Exception:
++                    return self._finish(op,'OUTCOME_UNKNOWN',reason='status_read_unavailable')
++                if observed=='done':
++                    if response and s['action']=='book' and response.get('booking_id')!=booking['id']:
++                        return self._finish(op,'OUTCOME_UNKNOWN',reason='response_status_mismatch')
++                    return self._finish(op,completed,booking=booking)
++                if isinstance(error,ProviderError) and error.code in {'slot_taken','hold_expired','slot_conflict'}:
++                    return self._finish(op,'CONFLICT' if error.code=='slot_conflict' else 'NEEDS_REAPPROVAL',reason=error.code)
++                if observed=='failed': return self._finish(op,'NEEDS_REAPPROVAL',reason='provider_failed')
++                if observed in {'conflict','unknown'}: return self._finish(op,'OUTCOME_UNKNOWN',reason='readback_mismatch')
++                retryable=isinstance(error,TimeoutError) or (isinstance(error,ProviderError) and error.code=='transient_503')
++                if not retryable or self._now()>=timestamp(s['expires_at']):
++                    return self._finish(op,'OUTCOME_UNKNOWN',reason='unexpected_error_or_unverified_result')
++                # The read above precedes the next iteration; SAME key, durable cap.
++            return self._finish(op,'OUTCOME_UNKNOWN',reason='retry_cap_exhausted')
++
++    def recover(self):
++        """Embedding startup calls this before accepting new mutations."""
++        with self.store.connect() as db:
++            ids=[r[0] for r in db.execute("SELECT operation_id FROM operations WHERE user_id=? AND status IN "
++                  "('PREPARED','EXECUTING','OUTCOME_UNKNOWN') ORDER BY rowid",(self.context.user_id,))]
++        return [self.execute(oid) for oid in ids]
+diff --git a/docs/actual_progress.md b/docs/actual_progress.md
+index b593086..1afce39 100644
+--- a/docs/actual_progress.md
++++ b/docs/actual_progress.md
+@@ -120,3 +120,21 @@ accepted. Provider-level correctness cannot prove those later invariants. No
+ model-proposed actions exist; the future controller must check persisted approval
+ and reconcile status before reporting any write outcome. No screenshots or demo
+ link exist in this pass. The plan maps all remaining must-haves and deliverables.
++
++
++## 2026-11-02 sponsor-dispatched P1 -> G2 update
++
++The earlier sections are historical G1 observations, not current completion claims.
++G1 source/governance commit: 32e707cdb0c4fb509455e0d2525f196e756d49ac;
++fresh receipt-only commit: 4685c4abc1481a58daec61ea40e467b0f6408788.
++Post-commit G0 4/4 and G1 28/28 passed, skipped 0, commands exit 0, source bytes
++match Git and historical receipts are unchanged. Receipt:
++artifacts/receipts/p1_postcommit_20261101/receipt.json.
++
++G2 now has a real persisted controller and scripted proposal adapter. The expanded
++candidate passed 65/65 tests (28 provider + 37 controller), zero skipped, and 38/38
++independent SQL evidence-DB inspections. Final committed-source G2 counts and SHA
++are established only by artifacts/receipts/g2_postcommit_20261102/receipt.json
++once generated; see docs/g2_handoff.md and ADR-007 for scope, bugs and limitations.
++The canonical remains pinned to 2f057c7a626174dde3cc35c04a6c4082f2b55e8f49e2b92d2bda43703895b5e2.
++G3-G5/Groq NOT_STARTED. Employer submission remains NO-GO; stop after G2 for CTO review.
+diff --git a/docs/g2_acceptance_matrix.md b/docs/g2_acceptance_matrix.md
+new file mode 100644
+index 0000000..e6155b5
+--- /dev/null
++++ b/docs/g2_acceptance_matrix.md
+@@ -0,0 +1,38 @@
++# G2 test-first acceptance matrix
++
++Order ORANGE-CTO-20261101-P1-G2-001. Tests use actual controller calls and SQLite
++provider state; G1 provider tests and G2 acceptance tests are not G4 E01-E28 evals.
++Initial red run precedes app/workflow.py. Controlled clock 2026-11-01 09:00 IST,
++seed 20261101, constructor-controlled faults, fresh isolated DB per test.
++
++| Invariant / order B3 | Tests in tests/test_g2_safety.py (test_ prefix omitted) |
++|---|---|
++| 1 Known constraints retained; missing-only questions; relative clock | missing_fields_and_correction_preserve_constraints; scripted_chat_extracts_and_preserves_without_granting; relative_saturday_uses_injected_clock; constraints_earliest_hour_and_time_window_enforced |
++| 2 No approval, model says yes | absent_model_approval_and_unbound_yes_deny_all_writes |
++| 3 Exact immutable approval + durable operation | exact_immutable_approval_and_operation_bindings |
++| 4 Hold quote, budget, exact TTL | budget_exceeded_has_no_approvable_quote; hold_ttl_boundary_599_and_600_seconds; expired_granted_hold_does_not_execute; stale_hold_quote_tampering_denied |
++| 5 Provider/slot/price/revision invalidation, ABA | changed_provider_slot_budget_and_aba_void_old_approval; stale_hold_quote_tampering_denied |
++| 6 Durable logical request, repeat, concurrent confirmation | verified_booking_duplicate_confirmation_and_transport_retry; logical_request_cannot_book_second_slot_or_replace_unknown; booked_logical_request_cannot_create_fresh_booking; two_connections_concurrent_confirmations_one_booking |
++| 7 Restart before/after provider side effect | restart_pending_operation_before_first_provider_write; real_process_crash_after_provider_side_effect_reconciles_first |
++| 8 Timeout-after-success status-first, truthful response | timeout_after_success_status_before_any_retry_and_verified_message |
++| 9 Persistent retry cap and stable key after not_found | timeout_without_booking_is_bounded_across_restarts |
++| 10 Slot taken/hold expiry cannot reuse approval | slot_taken_and_provider_hold_expired_require_new_approval; hold_ttl_boundary_599_and_600_seconds |
++| 11 Cancel 503 stable key, restart, read-back | cancel_503_same_key_verified_and_duplicate_safe; cancel_restart_after_503_reuses_key_and_verifies |
++| 12 Reschedule conflict and verified success | reschedule_conflict_preserves_original_and_fresh_success_verified |
++| 13 Identity, approval/operation ownership | cross_user_workflow_approval_and_operation_denied; provider_context_mismatch_and_client_identity_rejected; second_user_cannot_change_booking_even_with_known_id |
++| 14 Untrusted reviews cannot authorize | review_injection_quarantined_no_permission_or_intent_change; absent_model_approval_and_unbound_yes_deny_all_writes |
++| 15 Price unknown disclosed; price-changing action blocked | unknown_historical_price_disclosed_and_price_change_blocked; price_changing_reschedule_blocked_even_with_original_quote |
++| 16 Responses agree with authoritative state under errors | timeout_after_success_status_before_any_retry_and_verified_message; unexpected_provider_error_never_fabricates_success; status_read_failure_after_commit_reports_unverified_then_recovers; cancellation/reschedule tests |
++
++Every test optionally emits a self-contained SQLite backup, complete synthetic
++DB snapshot and actual provider-call sequence when G2_EVIDENCE_DIR is set. A later
++receipt runner produces machine-generated outcomes; no pass rows are handwritten.
++G3 budgets/memory/full traces, G4 browser/evals, G5 submission and Groq are excluded.
++
++Expanded adversarial cases after the first green run: fresh selection with changed
++hold quote voids previous card; two users race through the real controller for
++one slot; cancellation requires its own card; a fabricated success response with
++no DB effect remains unknown; actual provider slot mismatch remains unknown;
++expiry during status reconciliation stops without another write. The cancellation
++503 restart test now kills a real child process inside the controller/provider
++call, rather than relying on a direct-provider setup for that crash window.
+diff --git a/docs/g2_handoff.md b/docs/g2_handoff.md
+new file mode 100644
+index 0000000..3d47ecf
+--- /dev/null
++++ b/docs/g2_handoff.md
+@@ -0,0 +1,117 @@
++# G2 engineering handoff - 2 November 2026 IST
++
++Order ORANGE-CTO-20261101-P1-G2-001, manually dispatched by sponsor. The frozen
++canonical and employer contract are unchanged. Stop at G2; CTO adjudication is
++pending. The complete employer submission remains NO-GO.
++
++## Attributable G1 closeout
++
++- Implementation + P0 governance: `32e707cdb0c4fb509455e0d2525f196e756d49ac`.
++- Receipt-only commit: `4685c4abc1481a58daec61ea40e467b0f6408788`.
++- `scripts/close_g1.py`: G0 4/4, provider tests 28/28, skipped 0, all exit 0;
++  every source byte matches its committed Git blob. Fresh persisted timeout,
++  authoritative booked status and same-key/restarted replay produced one ID.
++- Receipt: `artifacts/receipts/p1_postcommit_20261101/receipt.json`; exact commands,
++  Python/SQLite/platform, seed, clock, raw outputs and hashes are included.
++- Historical G0/G1/P0 evidence is unchanged, including all three authentic G1
++  failure categories and their original ZIPs. No push/publication occurred.
++
++## Implemented G2 behavior
++
++`app/workflow.py` owns draft revisions, immutable approval snapshots, operation
++records, stable keys, logical-request uniqueness and mutation/recovery. It reuses
++all eight unchanged provider signatures. `app/agent/scripted.py` only proposes
++validated constraints. Review text is wrapped as untrusted data and never sent
++through a customer-input action path. No model has mutation/approval authority.
++
++The trusted embedding server/test context supplies user identity. `chat` and
++`propose` cannot grant approval. Customer confirmation must separately identify
++the current pending approval. Every mutation executes from a persisted granted
++snapshot; all relevant revision/payload/hold/price/identity checks are repeated.
++An operation key is generated once by the controller; transport clients cannot
++replace it. One logical request cannot become a second booking on another slot,
++including after an unresolved timeout. A distinct new intent is explicit via a
++new logical request ID, not an automatic recovery mechanism.
++
++SQLite write transactions are short. A kernel file lock serializes local
++provider execution/read-back across connections/processes and is released by
++process death. The operation remains in SQLite across that death. Recovery reads
++authoritative status before any replay. Each operation has a durable maximum of
++three mutation attempts (first attempt + two retries); repeated restarts do not
++reset it. Timeout-without-booking ends OUTCOME_UNKNOWN, never fabricated success
++or a fresh key. The lock is local, not a distributed workflow or general G3 run
++budget. A later server must call `recover()` on startup before dispatching writes.
++
++Successful book checks status, provider ID, booking ID and exact approved slot.
++Cancel checks list_bookings after the same-key 503 retry. Reschedule conflicts
++retain the original slot; success reads back the exact new slot. Original booking
++price is labelled as original; unknown prices are disclosed. The fixed mock
++charges no new fees. Requests involving a price-changing action are blocked
++because the contract provides no authoritative fresh total (ADR-007).
++
++## Executed evidence and acceptance boundaries
++
++The first expanded candidate passed 65/65 tests: 28 G1 provider tests plus 37 G2
++controller tests, zero skipped. Separate read-only SQL inspection checked 38
++preserved evidence DBs: integrity/FKs, provider-slot uniqueness, logical-request
++uniqueness, matching granted approval/payload for controller-created bookings,
++and durable retry limits. No violations were found. These are actual G2 tests,
++not the employer's G4 scripted-agent evaluation count.
++
++The final committed-source receipt is generated separately with:
++
++```
++python -X utf8 scripts/g2_evidence.py --label g2_postcommit_20261102 --require-committed
++```
++
++That receipt is authoritative for final counts/commands/exit codes/source commit
++and source/test/evidence hashes. Its `cases/` contains actual per-test SQLite
++backups, JSON state and call logs. Its `timeout_probe/` contains the exact approval,
++granted operation, provider timeout, read-back, final customer message, restart
++and duplicate confirmation, plus one provider booking. This probe is evidence
++instrumentation, not a claimed implementation of G3's application trace system.
++The final receipt and manifest name the exact G2 implementation SHA; subsequent
++receipt-only commits do not change that source attribution.
++
++## Actual G2 failures, fixes and regressions
++
++| Defect | Real red receipt and source snapshot | Fix and executed regression |
++|---|---|---|
++| Operation INSERT had 15 values for 14 columns | `g2_first_implementation_20261102.txt` + `_source.zip` | Explicit 10 immutable/core column names, remaining columns use defaults; exact-approval, normal book and all lifecycle tests pass |
++| VERIFYING had no legal edge back to EXECUTING for a checked same-key retry | `g2_after_sql_connection_fix_20261102.txt` + `_source.zip`: four errors | Add only the explicit retry transition; cancel 503, unknown timeout and historical cancellation tests pass |
++| Booked ID/provider check missed a changed provider-side slot | `g2_adversarial_readback_red_20261102.txt` + `_source.zip`: 1/65 failed | Compare exact approved slot during authoritative read-back; `test_provider_booked_different_slot_is_not_approved_success` now passes with OUTCOME_UNKNOWN and one actual booking |
++
++Initial `g2_red_initial_20261102` is an expected missing-controller test-first red,
++not an application defect. A Windows test-fixture connection leak was also fixed:
++SQLite's connection context commits/rolls back but does not close the handle;
++`contextlib.closing` now closes inspection connections. All original logs/snapshots
++remain untouched. The final commit diff is inspectable against G1 receipt commit.
++
++## Adversarial assessment
++
++| Challenge | Evidence-based answer |
++|---|---|
++| What was assumed? | Provider uniqueness was insufficient. Logical workflow identity and persisted operation/approval checks now independently constrain business intent. A model string/raw yes cannot authorize. |
++| What was missed? | Negative tests cover a second slot under the same logical request, revision ABA, forged user/approval/operation identity, crash after provider success, and unknown reschedule price. The expanded wrong-slot test found a real false-green response and drove a fix. |
++| What looks right but isn't? | A successful tool response can coexist with zero bookings, an inaccessible status API, or a different actual slot. Each produces an unresolved response. A historical BOOKED receipt is not current truth after cancellation; repeating an old operation reads provider state again. |
++| What would we defend? | The immutable approved snapshot matches the durable operation and actual provider record; timeout/restart evidence shows one key/booking. SQL inspection and per-case artifacts are independent of reassuring response prose. |
++
++## Limits and stop
++
++No production authentication or HTTP/browser path is claimed. The minimal parser
++supports only documented fixture vocabulary/date expressions; general language
++quality waits for G4. Unused/over-budget/stale holds expire at provider TTL because
++the fixed contract has no release-hold tool. Unknown outcomes remain locked until
++authoritative reconciliation; they cannot be escaped by re-keying. SQLite/OS-lock
++coordination assumes the same local DB and filesystem. A hung tool and complete
++model/tool/wall-time budgets are deferred G3 work, not proven here. Price-changing
++reschedules are intentionally unavailable under the fixed provider contract.
++
++G3 memory/limits/full trace, G4 browser/Groq/evaluations and G5 deliverables/video
++remain NOT_STARTED. No optional feature, cloud infrastructure or live provider
++was implemented. Formal GO/NO-GO belongs to the CTO after this receipt review.
++
++Methodology references actually consulted (not endorsements):
++[Anthropic workflows](https://www.anthropic.com/research/building-effective-agents),
++[AWS tool authorization](https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02-bp01.html),
++[AWS idempotency](https://docs.aws.amazon.com/durable-execution/patterns/best-practices/idempotency/).
+diff --git a/scripts/controller_probe.py b/scripts/controller_probe.py
+new file mode 100644
+index 0000000..261d65d
+--- /dev/null
++++ b/scripts/controller_probe.py
+@@ -0,0 +1,70 @@
++"""Replayable G2 evidence probe, not the deferred G3 application tracing subsystem."""
++from datetime import datetime
++import json
++from pathlib import Path
++import sqlite3
++import sys
++
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT))
++from app.provider_mock import ProviderMock,ScenarioConfig
++from app.workflow import WorkflowController
++
++def main(target):
++    out=Path(target)
++    out.mkdir(exist_ok=False,parents=True)
++    path=out/'controller_timeout.sqlite3'
++    clock=lambda:datetime.fromisoformat('2026-11-01T09:00:00+05:30')
++    events=[]
++    def event(kind,**values):
++        events.append({'sequence':len(events)+1,'evidence_kind':'G2_local_synthetic_probe','event':kind,**values})
++    class ObservedProvider:
++        def __init__(self,inner): self.inner=inner
++        def __getattr__(self,name):
++            method=getattr(self.inner,name)
++            if not callable(method) or name.startswith('_'): return method
++            def call(*args):
++                event('tool_call',tool=name,args=args)
++                try:
++                    result=method(*args)
++                    event('tool_result',tool=name,result=result)
++                    return result
++                except Exception as exc:
++                    event('tool_error',tool=name,error=type(exc).__name__)
++                    raise
++            return call
++    provider=ObservedProvider(ProviderMock(path,user_id='g2-synthetic',clock=clock,
++                  config=ScenarioConfig(book_branch='timeout_after_success',quote_delta=200)))
++    c=WorkflowController(path,user_id='g2-synthetic',clock=clock,provider=provider)
++    w=c.create_request('one-logical-request',service='plumber',area='Indiranagar',budget_inr=1500,
++                       date_window={'start':clock().isoformat(),'end':'2026-11-09T00:00:00+05:30'})
++    wid=w['workflow_id']
++    choice=c.search(wid)[0]
++    approval=c.prepare_booking(wid,choice['id'],choice['free_slots'][0])
++    event('approval_shown',approval=approval)
++    op=c.grant_approval(wid,approval['approval_id'])
++    event('approval_granted_operation_persisted',operation_id=op)
++    result=c.execute(op)
++    event('customer_result',result=result)
++    assert result['status']=='BOOKED'
++    restarted=WorkflowController(path,user_id='g2-synthetic',clock=clock)
++    replay=restarted.confirm(wid,approval['approval_id'])
++    event('controller_restart_duplicate_confirmation',result=replay)
++    assert replay['booking_id']==result['booking_id']
++    with provider.store.connect() as db:
++        tables=['workflows','approval_snapshots','operations','workflow_holds','provider_holds',
++                'provider_bookings','provider_operation_outcomes']
++        snapshot={name:[dict(r) for r in db.execute('SELECT * FROM '+name)] for name in tables}
++        assert len(snapshot['provider_bookings'])==1
++        assert len(snapshot['operations'])==1
++        assert snapshot['operations'][0]['payload_fingerprint']==approval['fingerprint']
++        assert snapshot['provider_operation_outcomes'][0]['error_code']=='timeout_after_success'
++        integrity=db.execute('PRAGMA integrity_check').fetchone()[0]
++    event('independent_database_observation',snapshot=snapshot,integrity_check=integrity)
++    (out/'events.jsonl').write_text(''.join(json.dumps(e,sort_keys=True)+'\n' for e in events),encoding='utf-8')
++    (out/'database.json').write_text(json.dumps(snapshot,indent=2)+'\n',encoding='utf-8')
++    (out/'customer_result.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
++    print(json.dumps({'verified_result':result,'booking_count':1,'integrity_check':integrity},indent=2))
++
++if __name__=='__main__':
++    main(sys.argv[1])
+diff --git a/scripts/g2_evidence.py b/scripts/g2_evidence.py
+new file mode 100644
+index 0000000..649ea51
+--- /dev/null
++++ b/scripts/g2_evidence.py
+@@ -0,0 +1,81 @@
++"""Bound G2 tests, synthetic state observations and immutable source to a receipt."""
++import argparse
++from datetime import datetime, timezone
++import hashlib
++import json
++import os
++from pathlib import Path
++import platform
++import re
++import sqlite3
++import subprocess
++import sys
++import zipfile
++
++ROOT=Path(__file__).resolve().parents[1]
++def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
++def write(path,value): path.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
++def git(*args): return subprocess.check_output(['git',*args],cwd=ROOT)
++
++def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--label',required=True)
++    parser.add_argument('--require-committed',action='store_true')
++    args=parser.parse_args()
++    if not re.fullmatch('[a-z0-9_]+',args.label): parser.error('Invalid label')
++    out=ROOT/'artifacts/receipts'/args.label
++    out.mkdir(exist_ok=False)
++    files=sorted([*ROOT.glob('app/**/*.py'),*ROOT.glob('tests/**/*.py'),*ROOT.glob('scripts/*.py'),
++                  ROOT/'CANONICAL.md',ROOT/'AGENTS.md',ROOT/'DECISIONS.md',ROOT/'requirements.txt'])
++    source={p.relative_to(ROOT).as_posix():sha(p) for p in files}
++    head=git('rev-parse','HEAD').decode().strip()
++    mismatch=[]
++    for rel in source:
++        run=subprocess.run(['git','show',f'{head}:{rel}'],cwd=ROOT,capture_output=True)
++        if run.returncode or hashlib.sha256(run.stdout).hexdigest()!=source[rel]: mismatch.append(rel)
++    if args.require_committed and mismatch: raise SystemExit(f'Uncommitted source: {mismatch}')
++    with zipfile.ZipFile(out/'source.zip','x',zipfile.ZIP_DEFLATED) as archive:
++        for p in files: archive.write(p,p.relative_to(ROOT))
++    pre=json.loads((ROOT/'artifacts/receipts/p1_preflight_20261101.json').read_text())
++    historical={**pre['historical_evidence_sha256'],
++                **json.loads((ROOT/'artifacts/receipts/p1_postcommit_20261101/sha256.json').read_text())}
++    assert all(sha(ROOT/p)==h for p,h in historical.items()),'Historical evidence changed'
++    commands=[]
++    def run(label,arguments,env=None):
++        command=[sys.executable,'-X','utf8',*arguments]
++        process=subprocess.run(command,cwd=ROOT,capture_output=True,env=env)
++        (out/f'{label}_stdout.txt').write_bytes(process.stdout)
++        (out/f'{label}_stderr.txt').write_bytes(process.stderr)
++        commands.append({'command':command,'exit_code':process.returncode})
++        return process
++    contract=run('g0',['scripts/check_contract.py'])
++    env={**os.environ,'G2_EVIDENCE_DIR':str(out/'cases')}
++    tests=run('tests',['scripts/test_results.py',str(out)],env)
++    probe=run('probe',['scripts/controller_probe.py',str(out/'timeout_probe')]) if tests.returncode==0 else None
++    inspection=run('independent_db_checks',['scripts/inspect_g2.py',str(out)]) if probe and probe.returncode==0 else None
++    diff=subprocess.run(['git','diff','--check'],cwd=ROOT,capture_output=True)
++    (out/'diff_check.txt').write_bytes(diff.stdout+diff.stderr)
++    (out/'git_status.txt').write_bytes(git('status','--short'))
++    assert all(sha(ROOT/p)==h for p,h in source.items()),'Sources changed during test run'
++    assert all(sha(ROOT/p)==h for p,h in historical.items()),'Historical evidence changed during tests'
++    report=json.loads((out/'test_results.json').read_text())
++    failed=bool(contract.returncode or tests.returncode or not probe or probe.returncode or
++                not inspection or inspection.returncode or diff.returncode)
++    receipt=dict(gate='G2',objective_status='FAIL' if failed else 'PASS',acceptance='CTO review pending',
++        source_commit=head,source_matches_commit=not mismatch,uncommitted_source=mismatch,commands=commands,
++        tests_run=report['tests_run'],passed=report['passed'],failures=report['failures'],errors=report['errors'],skipped=report['skipped'],
++        g1_provider_tests=sum('test_provider_contract' in r['scenario'] for r in report['rows']),
++        g2_controller_tests=sum('test_g2_safety' in r['scenario'] for r in report['rows']),
++        source_sha256=source,historical_evidence_unchanged=True,
++        timestamp_utc=datetime.now(timezone.utc).isoformat(),python=sys.version,sqlite=sqlite3.sqlite_version,platform=platform.platform(),
++        seed=20261101,controlled_clock='2026-11-01T09:00:00+05:30',diff_check_exit_code=diff.returncode,
++        unresolved_failures=[r['scenario'] for r in report['rows'] if r['pass_fail']!='PASS'],
++        later_gates={'G3':'NOT_STARTED','G4':'NOT_STARTED','G5':'NOT_STARTED','Groq':'NOT_IMPLEMENTED'},
++        claims_boundary='G2 acceptance tests; not the employer G4 scripted-agent evaluation count')
++    write(out/'receipt.json',receipt)
++    write(out/'sha256.json',{p.relative_to(ROOT).as_posix():sha(p) for p in out.rglob('*')
++                          if p.is_file() and not p.name.endswith('.controller.lock')})
++    print(json.dumps({k:v for k,v in receipt.items() if k!='source_sha256'},indent=2))
++    raise SystemExit(int(failed))
++
++if __name__=='__main__': main()
+diff --git a/scripts/inspect_g2.py b/scripts/inspect_g2.py
+new file mode 100644
+index 0000000..f6e648c
+--- /dev/null
++++ b/scripts/inspect_g2.py
+@@ -0,0 +1,48 @@
++"""Independent, read-only SQL inspection of preserved synthetic G2 evidence DBs."""
++from contextlib import closing
++import hashlib
++import json
++from pathlib import Path
++import sqlite3
++import sys
++
++def main(directory):
++    root=Path(directory).resolve()
++    results=[]
++    for path in sorted(root.rglob('*.sqlite3')):
++        with closing(sqlite3.connect(path.as_uri()+'?mode=ro',uri=True)) as db:
++            db.row_factory=sqlite3.Row
++            integrity=db.execute('PRAGMA integrity_check').fetchone()[0]
++            foreign_keys=[list(r) for r in db.execute('PRAGMA foreign_key_check')]
++            duplicate_slots=[dict(r) for r in db.execute("SELECT provider_id,slot,count(*) n FROM provider_bookings "
++                            "WHERE status='booked' GROUP BY provider_id,slot HAVING count(*)>1")]
++            duplicate_logical=[dict(r) for r in db.execute('SELECT h.workflow_id,count(DISTINCT b.id) n '
++                'FROM workflow_holds h JOIN provider_bookings b ON h.hold_id=b.hold_id '
++                'GROUP BY h.workflow_id HAVING count(DISTINCT b.id)>1')]
++            missing_approval=[]
++            for b in db.execute('SELECT b.* FROM provider_bookings b JOIN workflow_holds h ON h.hold_id=b.hold_id'):
++                matches=[]
++                for op in db.execute("SELECT o.*,a.status approval_status,a.snapshot_json approval_json FROM operations o "
++                       "JOIN approval_snapshots a USING(approval_id) WHERE o.action='book'"):
++                    s=json.loads(op['snapshot_json'])
++                    if s['hold_id']==b['hold_id']:
++                        valid=(op['approval_status']=='GRANTED' and op['user_id']==b['user_id']
++                               and s['user_id']==b['user_id'] and s['provider_id']==b['provider_id']
++                               and s['price_amount']==b['quoted_price'] and op['snapshot_json']==op['approval_json']
++                               and hashlib.sha256(json.dumps(s,sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()==op['payload_fingerprint'])
++                        matches.append(valid)
++                if matches!=[True]: missing_approval.append(b['id'])
++            retry_violations=[dict(r) for r in db.execute('SELECT operation_id,attempts FROM operations WHERE attempts>3')]
++            results.append(dict(database=str(path.relative_to(root)),integrity=integrity,foreign_key_violations=foreign_keys,
++                duplicate_provider_slots=duplicate_slots,duplicate_logical_bookings=duplicate_logical,
++                missing_matching_granted_approval=missing_approval,retry_cap_violations=retry_violations,
++                provider_bookings=db.execute('SELECT count(*) FROM provider_bookings').fetchone()[0],
++                operations=db.execute('SELECT count(*) FROM operations').fetchone()[0],
++                passed=integrity=='ok' and not any([foreign_keys,duplicate_slots,duplicate_logical,missing_approval,retry_violations])))
++    report={'kind':'read_only_SQL_evidence_inspection','databases':results,
++            'checked':len(results),'passed':sum(r['passed'] for r in results)}
++    (root/'independent_db_checks.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
++    print(json.dumps(report,indent=2))
++    raise SystemExit(0 if results and all(r['passed'] for r in results) else 1)
++
++if __name__=='__main__': main(sys.argv[1])
+diff --git a/scripts/test_results.py b/scripts/test_results.py
+new file mode 100644
+index 0000000..a1ef83e
+--- /dev/null
++++ b/scripts/test_results.py
+@@ -0,0 +1,56 @@
++"""Execute real unittest tests and emit per-test outcomes, not G4 agent evaluations."""
++import csv
++import json
++from pathlib import Path
++import sys
++import unittest
++
++ROOT=Path(__file__).resolve().parents[1]
++sys.path.insert(0,str(ROOT))
++
++class Results(unittest.TextTestResult):
++    def __init__(self,*args,**kwargs):
++        super().__init__(*args,**kwargs)
++        self.rows=[]
++        self.outcomes={}
++
++    def addSuccess(self,test):
++        super().addSuccess(test)
++        self.outcomes.setdefault(test.id(),'PASS')
++
++    def addFailure(self,test,err):
++        super().addFailure(test,err)
++        self.outcomes[test.id()]='FAIL'
++
++    def addError(self,test,err):
++        super().addError(test,err)
++        self.outcomes[test.id()]='ERROR'
++
++    def addSkip(self,test,reason):
++        super().addSkip(test,reason)
++        self.outcomes[test.id()]='SKIP'
++
++    def addSubTest(self,test,subtest,err):
++        super().addSubTest(test,subtest,err)
++        if err: self.outcomes[test.id()]='FAIL'
++
++    def stopTest(self,test):
++        actual=self.outcomes.get(test.id(),'ERROR')
++        self.rows.append(dict(scenario=test.id(),expected='All executable assertions and state invariants hold',
++                              actual=actual,pass_fail=actual,
++                              notes='G2 acceptance test' if 'test_g2_' in test.id() else 'G1 provider regression'))
++        super().stopTest(test)
++
++if __name__=='__main__':
++    out=Path(sys.argv[1])
++    suite=unittest.defaultTestLoader.discover(str(ROOT/'tests'))
++    result=unittest.TextTestRunner(verbosity=2,resultclass=Results).run(suite)
++    report=dict(tests_run=result.testsRun,passed=sum(r['pass_fail']=='PASS' for r in result.rows),
++                failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),
++                rows=result.rows)
++    (out/'test_results.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
++    with (out/'test_results.csv').open('w',encoding='utf-8',newline='') as handle:
++        writer=csv.DictWriter(handle,fieldnames=['scenario','expected','actual','pass_fail','notes'])
++        writer.writeheader()
++        writer.writerows(result.rows)
++    raise SystemExit(0 if result.wasSuccessful() else 1)
+diff --git a/tests/test_g2_safety.py b/tests/test_g2_safety.py
+new file mode 100644
+index 0000000..90d7792
+--- /dev/null
++++ b/tests/test_g2_safety.py
+@@ -0,0 +1,580 @@
++"""G2 controller/provider acceptance. These are not the G4 scripted-user evals."""
++from concurrent.futures import ThreadPoolExecutor
++from contextlib import closing
++from datetime import datetime, timedelta
++import json
++import os
++from pathlib import Path
++import sqlite3
++import subprocess
++import sys
++import tempfile
++from threading import Barrier
++import unittest
++
++from app.provider_mock import ProviderMock, ProviderError, ScenarioConfig
++from app.workflow import WorkflowController, SafetyError
++
++NOW = datetime.fromisoformat('2026-11-01T09:00:00+05:30')
++WINDOW = {'start': NOW.isoformat(), 'end': (NOW + timedelta(days=8)).isoformat()}
++
++class Clock:
++    value = NOW
++    def __call__(self):
++        return self.value
++
++class AuditProvider:
++    def __init__(self, provider):
++        self.inner = provider
++        self.calls = []
++        self.fault = None
++
++    def __getattr__(self, name):
++        value = getattr(self.inner, name)
++        if not callable(value) or name.startswith('_'):
++            return value
++        def call(*args):
++            event = {'tool': name, 'args': args}
++            self.calls.append(event)
++            try:
++                if self.fault:
++                    self.fault(name, args)
++                result = value(*args)
++                event['result'] = result
++                return result
++            except Exception as exc:
++                event['error'] = type(exc).__name__
++                raise
++        return call
++
++class G2SafetyTests(unittest.TestCase):
++    def setUp(self):
++        self.tmp = tempfile.TemporaryDirectory()
++        self.addCleanup(self.tmp.cleanup)
++        self.path = Path(self.tmp.name) / 'state.sqlite3'
++        self.clock = Clock()
++        self.p = None
++        self.c = None
++
++    def setup_controller(self, branch='book_success', *, delta=0, conflicts=()):
++        p = ProviderMock(self.path, user_id='alice', clock=self.clock,
++                         config=ScenarioConfig(book_branch=branch, quote_delta=delta,
++                                               reschedule_conflicts=conflicts))
++        self.p = AuditProvider(p)
++        self.c = WorkflowController(self.path, user_id='alice', clock=self.clock, provider=self.p)
++        return self.c
++
++    def request(self, key='request-1', **changes):
++        fields = dict(service='plumber', area='Indiranagar', date_window=WINDOW, budget_inr=1500)
++        fields.update(changes)
++        return self.c.create_request(key, **fields)['workflow_id']
++
++    def approval(self, key='request-1', index=0):
++        wid = self.request(key)
++        option = self.c.search(wid)[0]
++        return wid, self.c.prepare_booking(wid, option['id'], option['free_slots'][index])
++
++    def booked(self):
++        wid, a = self.approval()
++        result = self.c.confirm(wid, a['approval_id'])
++        self.assertEqual(result['status'], 'BOOKED')
++        return wid, result
++
++    def deny(self, code, function):
++        with self.assertRaises(SafetyError) as exc:
++            function()
++        self.assertEqual(exc.exception.code, code)
++
++    def rows(self, table):
++        with closing(sqlite3.connect(self.path)) as db:
++            db.row_factory = sqlite3.Row
++            return [dict(r) for r in db.execute('SELECT * FROM '+table)]
++
++    def tearDown(self):
++        target = os.environ.get('G2_EVIDENCE_DIR')
++        if target and self.path.exists():
++            out = Path(target)/self._testMethodName
++            out.mkdir(parents=True, exist_ok=False)
++            # SQLite backup yields a self-contained DB independent of WAL lifecycle.
++            with closing(sqlite3.connect(self.path)) as src, closing(sqlite3.connect(out/'state.sqlite3')) as dest:
++                src.backup(dest)
++                names = [r[0] for r in src.execute("SELECT name FROM sqlite_master WHERE type='table'")]
++            snapshot = {name: self.rows(name) for name in names}
++            (out/'database.json').write_text(json.dumps(snapshot,indent=2)+'\n',encoding='utf-8')
++            (out/'provider_calls.json').write_text(json.dumps(self.p.calls if self.p else [],indent=2)+'\n',encoding='utf-8')
++
++    def test_missing_fields_and_correction_preserve_constraints(self):
++        c = self.setup_controller()
++        w = c.create_request('draft', service='plumber')
++        self.assertEqual(c.next_question(w['workflow_id'])['field'], 'area')
++        c.correct(w['workflow_id'], area='Indiranagar', date_window=WINDOW, budget_inr=1500,
++                  preferences={'earliest_hour':10})
++        old = c.view(w['workflow_id'])
++        new = c.correct(w['workflow_id'], area='Koramangala')
++        self.assertGreater(new['revision'], old['revision'])
++        self.assertEqual(new['draft']['budget_inr'],1500)
++        self.assertEqual(new['draft']['service'],'plumber')
++        self.assertEqual(new['draft']['preferences'],{'earliest_hour':10})
++        self.assertIsNone(c.next_question(w['workflow_id']))
++
++    def test_scripted_chat_extracts_and_preserves_without_granting(self):
++        c = self.setup_controller()
++        wid = c.create_request('chat')['workflow_id']
++        c.chat(wid, 'Find a plumber in Indiranagar this week, mornings only, under 1500')
++        v = c.view(wid)
++        self.assertEqual(v['draft']['service'],'plumber')
++        self.assertEqual(v['draft']['budget_inr'],1500)
++        self.assertEqual(v['draft']['date_window']['end'],'2026-11-02T00:00:00+05:30')
++        c.chat(wid,'Actually Koramangala')
++        self.assertEqual(c.view(wid)['draft']['service'],'plumber')
++        self.assertEqual(c.view(wid)['draft']['area'],'Koramangala')
++        self.deny('approval_required',lambda:c.chat(wid,'yes'))
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_relative_saturday_uses_injected_clock(self):
++        c=self.setup_controller()
++        wid=c.create_request('saturday')['workflow_id']
++        c.chat(wid,'plumber Indiranagar Saturday')
++        window=c.view(wid)['draft']['date_window']
++        self.assertEqual(window['start'],'2026-11-07T00:00:00+05:30')
++        self.assertEqual(window['end'],'2026-11-08T00:00:00+05:30')
++
++    def test_absent_model_approval_and_unbound_yes_deny_all_writes(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        self.deny('approval_required',lambda:c.confirm(wid,None))
++        self.deny('untrusted_fields',lambda:c.propose(wid,{'approved':True,'tool':'book'}))
++        self.deny('approval_required',lambda:c.chat(wid,'yes'))
++        self.deny('forbidden',lambda:c.execute('invented-operation'))
++        self.assertFalse(self.rows('provider_bookings'))
++        self.assertFalse(self.rows('operations'))
++
++    def test_exact_immutable_approval_and_operation_bindings(self):
++        c=self.setup_controller(delta=250)
++        wid,a=self.approval()
++        s=a['snapshot']
++        self.assertEqual(s['price_amount'],1150)
++        self.assertEqual(s['price_status'],'hold_quote')
++        for key in ['user_id','workflow_id','action','booking_id','provider_id','old_slot','new_slot',
++                    'hold_id','revision','expires_at','original_price','new_price_status']:
++            self.assertIn(key,s)
++        op=c.grant_approval(wid,a['approval_id'])
++        row=self.rows('operations')[0]
++        self.assertEqual(row['operation_id'],op)
++        self.assertEqual(row['payload_fingerprint'],a['fingerprint'])
++        self.assertEqual(json.loads(row['snapshot_json']),s)
++        with self.assertRaises(sqlite3.IntegrityError):
++            with closing(sqlite3.connect(self.path)) as db:
++                db.execute("UPDATE approval_snapshots SET snapshot_json='{}'")
++        with self.assertRaises(sqlite3.IntegrityError):
++            with closing(sqlite3.connect(self.path)) as db:
++                db.execute("UPDATE operations SET idempotency_key='replacement'")
++        self.assertEqual(c.execute(op)['status'],'BOOKED')
++
++    def test_budget_exceeded_has_no_approvable_quote(self):
++        c=self.setup_controller(delta=700)
++        wid=self.request()
++        p=c.search(wid)[0]
++        self.deny('budget_exceeded',lambda:c.prepare_booking(wid,p['id'],p['free_slots'][0]))
++        self.assertFalse(self.rows('approval_snapshots'))
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_changed_provider_slot_budget_and_aba_void_old_approval(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        original=c.view(wid)['draft']['area']
++        c.correct(wid,area='Koramangala')
++        c.correct(wid,area=original)
++        self.deny('approval_invalid',lambda:c.confirm(wid,a['approval_id']))
++        self.assertFalse(self.rows('provider_bookings'))
++        for index,(field,value) in enumerate([('provider_id','plumber-0-1'),('slot','2026-11-03T09:00:00+05:30'),('budget_inr',1200)],1):
++            with self.subTest(field=field):
++                wid,a=self.approval(field,index=index)
++                c.correct(wid,**{field:value})
++                self.deny('approval_invalid',lambda:c.confirm(wid,a['approval_id']))
++
++    def test_stale_hold_quote_tampering_denied(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        with closing(sqlite3.connect(self.path)) as db:
++            db.execute('UPDATE workflow_holds SET quoted_price=quoted_price+1')
++            db.commit()
++        self.deny('approval_invalid',lambda:c.confirm(wid,a['approval_id']))
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_fresh_selection_with_changed_quote_voids_previous_card(self):
++        c=self.setup_controller(delta=100)
++        wid,a=self.approval()
++        b=c.prepare_booking(wid,'plumber-0-1','2026-11-02T11:00:00+05:30')
++        self.assertEqual(a['snapshot']['price_amount'],1000)
++        self.assertEqual(b['snapshot']['price_amount'],1300)
++        self.assertGreater(b['snapshot']['revision'],a['snapshot']['revision'])
++        self.deny('approval_invalid',lambda:c.confirm(wid,a['approval_id']))
++        result=c.confirm(wid,b['approval_id'])
++        self.assertEqual(result['booking']['provider'],'plumber-0-1')
++        self.assertEqual(self.rows('provider_bookings')[0]['quoted_price'],1300)
++
++    def test_hold_ttl_boundary_599_and_600_seconds(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        self.assertEqual(datetime.fromisoformat(a['snapshot']['expires_at'])-NOW,timedelta(minutes=10))
++        self.clock.value=NOW+timedelta(seconds=600)
++        self.deny('approval_expired',lambda:c.confirm(wid,a['approval_id']))
++        fresh=c.prepare_booking(wid,a['snapshot']['provider_id'],a['snapshot']['new_slot'])
++        self.assertNotEqual(fresh['approval_id'],a['approval_id'])
++        self.clock.value+=timedelta(seconds=599)
++        self.assertEqual(c.confirm(wid,fresh['approval_id'])['status'],'BOOKED')
++
++    def test_expired_granted_hold_does_not_execute(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        op=c.grant_approval(wid,a['approval_id'])
++        self.clock.value+=timedelta(minutes=10)
++        self.assertEqual(c.execute(op)['status'],'NEEDS_REAPPROVAL')
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_verified_booking_duplicate_confirmation_and_transport_retry(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        first=c.confirm(wid,a['approval_id'])
++        second=c.confirm(wid,a['approval_id'])
++        self.assertEqual(first['booking_id'],second['booking_id'])
++        self.assertEqual(first['operation_id'],second['operation_id'])
++        self.assertEqual(first['status'],'BOOKED')
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++        self.assertEqual(len(self.rows('operations')),1)
++        self.assertEqual(self.request(),wid)
++
++    def test_logical_request_cannot_book_second_slot_or_replace_unknown(self):
++        c=self.setup_controller('timeout_without_booking')
++        wid,a=self.approval()
++        self.assertEqual(c.confirm(wid,a['approval_id'])['status'],'OUTCOME_UNKNOWN')
++        self.deny('request_locked',lambda:c.correct(wid,slot='2026-11-03T11:00:00+05:30'))
++        self.deny('request_locked',lambda:c.prepare_booking(wid,'plumber-0-1','2026-11-03T11:00:00+05:30'))
++        self.deny('logical_request_mismatch',lambda:c.create_request('request-1',service='electrician'))
++        self.assertEqual(len(self.rows('operations')),1)
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_booked_logical_request_cannot_create_fresh_booking(self):
++        c=self.setup_controller()
++        wid,result=self.booked()
++        self.deny('request_locked',lambda:c.prepare_booking(wid,'plumber-0-1','2026-11-03T11:00:00+05:30'))
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_two_connections_concurrent_confirmations_one_booking(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        other=WorkflowController(self.path,user_id='alice',clock=self.clock)
++        barrier=Barrier(2)
++        def run(controller):
++            barrier.wait()
++            return controller.confirm(wid,a['approval_id'])
++        with ThreadPoolExecutor(max_workers=2) as pool:
++            results=list(pool.map(run,[c,other]))
++        self.assertEqual(results[0]['booking_id'],results[1]['booking_id'])
++        self.assertEqual(len(self.rows('operations')),1)
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_cross_user_workflow_approval_and_operation_denied(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        op=c.grant_approval(wid,a['approval_id'])
++        other=WorkflowController(self.path,user_id='bob',clock=self.clock)
++        for fn in [lambda:other.view(wid),lambda:other.confirm(wid,a['approval_id']),
++                   lambda:other.execute(op),lambda:other.correct(wid,area='Koramangala')]:
++            self.deny('forbidden',fn)
++        bw=other.create_request('request-1',service='plumber',area='Indiranagar',date_window=WINDOW)['workflow_id']
++        self.deny('approval_invalid',lambda:other.confirm(bw,a['approval_id']))
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_provider_context_mismatch_and_client_identity_rejected(self):
++        c=self.setup_controller()
++        with self.assertRaises(SafetyError):
++            WorkflowController(self.path,user_id='bob',clock=self.clock,provider=self.p)
++        wid=self.request()
++        self.deny('untrusted_fields',lambda:c.propose(wid,{'user_id':'admin'}))
++        self.deny('untrusted_fields',lambda:c.correct(wid,user_id='admin'))
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_review_injection_quarantined_no_permission_or_intent_change(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        before=c.view(wid)
++        detail=c.details(a['snapshot']['provider_id'])
++        self.assertTrue(any('SYSTEM' in r['text'] for r in detail['reviews']))
++        for review in detail['reviews']:
++            self.assertEqual(review['trust'],'untrusted')
++            self.assertEqual(review['source'],'provider_review')
++        self.assertEqual(c.view(wid),before)
++        self.assertFalse(self.rows('provider_bookings'))
++        self.assertFalse(self.rows('operations'))
++
++    def test_timeout_after_success_status_before_any_retry_and_verified_message(self):
++        c=self.setup_controller('timeout_after_success')
++        wid,a=self.approval()
++        r=c.confirm(wid,a['approval_id'])
++        self.assertEqual(r['status'],'BOOKED')
++        self.assertIn('verified',r['message'].lower())
++        tools=[x['tool'] for x in self.p.calls]
++        i=tools.index('book')
++        self.assertEqual(tools[i+1],'get_booking_status')
++        self.assertEqual(tools.count('book'),1)
++        self.assertEqual(self.rows('provider_bookings')[0]['id'],r['booking_id'])
++        self.assertEqual(self.rows('operations')[0]['status'],'COMMITTED')
++
++    def test_timeout_without_booking_is_bounded_across_restarts(self):
++        c=self.setup_controller('timeout_without_booking')
++        wid,a=self.approval()
++        first=c.confirm(wid,a['approval_id'])
++        self.assertEqual(first['status'],'OUTCOME_UNKNOWN')
++        self.assertIn('unverified',first['message'].lower())
++        calls=[x for x in self.p.calls if x['tool']=='book']
++        self.assertEqual(len(calls),3)
++        self.assertEqual(len({x['args'][1] for x in calls}),1)
++        tools=[x['tool'] for x in self.p.calls]
++        for i,name in enumerate(tools):
++            if name=='book': self.assertEqual(tools[i+1],'get_booking_status')
++        fresh=WorkflowController(self.path,user_id='alice',clock=self.clock)
++        self.assertEqual(fresh.confirm(wid,a['approval_id'])['status'],'OUTCOME_UNKNOWN')
++        self.assertEqual(self.rows('operations')[0]['attempts'],3)
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_restart_pending_operation_before_first_provider_write(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        op=c.grant_approval(wid,a['approval_id'])
++        self.assertFalse(self.rows('provider_bookings'))
++        fresh=WorkflowController(self.path,user_id='alice',clock=self.clock)
++        self.assertEqual(fresh.recover()[0]['status'],'BOOKED')
++        self.assertEqual(fresh.execute(op)['booking_id'],self.rows('provider_bookings')[0]['id'])
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_real_process_crash_after_provider_side_effect_reconciles_first(self):
++        c=self.setup_controller('timeout_after_success')
++        wid,a=self.approval()
++        op=c.grant_approval(wid,a['approval_id'])
++        code='''
++import os,sys
++from datetime import datetime
++from app.workflow import WorkflowController
++from app.provider_mock import ProviderMock
++p=ProviderMock(sys.argv[1],user_id='alice',clock=lambda:datetime.fromisoformat(sys.argv[3]))
++original=p.book
++def crash(*args):
++    try: original(*args)
++    finally: os._exit(23)
++p.book=crash
++c=WorkflowController(sys.argv[1],user_id='alice',clock=p.clock,provider=p)
++c.execute(sys.argv[2])
++'''
++        run=subprocess.run([sys.executable,'-X','utf8','-c',code,str(self.path),op,NOW.isoformat()],capture_output=True)
++        self.assertEqual(run.returncode,23,run.stderr)
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++        self.p.calls.clear()
++        fresh=WorkflowController(self.path,user_id='alice',clock=self.clock,provider=self.p)
++        r=fresh.recover()[0]
++        self.assertEqual(r['status'],'BOOKED')
++        self.assertEqual(self.p.calls[0]['tool'],'get_booking_status')
++        self.assertNotIn('book',[v['tool'] for v in self.p.calls])
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_slot_taken_and_provider_hold_expired_require_new_approval(self):
++        for branch in ['slot_taken','hold_expired']:
++            with self.subTest(branch=branch):
++                if self.c is not None:
++                    self.path=Path(self.tmp.name)/(branch+'.sqlite3')
++                c=self.setup_controller(branch)
++                wid,a=self.approval()
++                r=c.confirm(wid,a['approval_id'])
++                self.assertEqual(r['status'],'NEEDS_REAPPROVAL')
++                self.assertFalse(self.rows('provider_bookings'))
++                option=c.search(wid)[0]
++                new=c.prepare_booking(wid,option['id'],option['free_slots'][1])
++                self.assertNotEqual(new['approval_id'],a['approval_id'])
++                self.deny('approval_invalid',lambda:c.confirm(wid,a['approval_id']))
++
++    def test_cancel_503_same_key_verified_and_duplicate_safe(self):
++        c=self.setup_controller()
++        wid,b=self.booked()
++        a=c.prepare_change(wid,'cancel',b['booking_id'])
++        self.assertEqual(a['snapshot']['price_status'],'original_booking_price')
++        self.assertEqual(a['snapshot']['price_amount'],900)
++        r=c.confirm(wid,a['approval_id'])
++        self.assertEqual(r['status'],'CANCELLED')
++        calls=[v for v in self.p.calls if v['tool']=='cancel']
++        self.assertEqual(len(calls),2)
++        self.assertEqual(calls[0]['args'][1],calls[1]['args'][1])
++        self.assertEqual(self.rows('provider_bookings')[0]['status'],'cancelled')
++        self.assertEqual(c.confirm(wid,a['approval_id'])['status'],'CANCELLED')
++
++    def test_cancel_restart_after_503_reuses_key_and_verifies(self):
++        c=self.setup_controller()
++        wid,b=self.booked()
++        a=c.prepare_change(wid,'cancel',b['booking_id'])
++        op=c.grant_approval(wid,a['approval_id'])
++        code='''
++import os,sys
++from datetime import datetime
++from app.workflow import WorkflowController
++from app.provider_mock import ProviderMock
++p=ProviderMock(sys.argv[1],user_id='alice',clock=lambda:datetime.fromisoformat(sys.argv[3]))
++original=p.cancel
++def crash(*args):
++    try: original(*args)
++    finally: os._exit(23)
++p.cancel=crash
++WorkflowController(sys.argv[1],user_id='alice',clock=p.clock,provider=p).execute(sys.argv[2])
++'''
++        run=subprocess.run([sys.executable,'-X','utf8','-c',code,str(self.path),op,NOW.isoformat()],capture_output=True)
++        self.assertEqual(run.returncode,23,run.stderr)
++        fresh=WorkflowController(self.path,user_id='alice',clock=self.clock)
++        self.assertEqual(fresh.execute(op)['status'],'CANCELLED')
++        self.assertEqual(self.rows('provider_bookings')[0]['status'],'cancelled')
++        self.assertEqual(len([v for v in self.rows('provider_operation_outcomes') if v['action']=='cancel']),1)
++
++    def test_reschedule_conflict_preserves_original_and_fresh_success_verified(self):
++        target='2026-11-02T11:00:00+05:30'
++        c=self.setup_controller(conflicts=(target,))
++        wid,b=self.booked()
++        original=self.rows('provider_bookings')[0]['slot']
++        a=c.prepare_change(wid,'reschedule',b['booking_id'],new_slot=target)
++        self.assertEqual(a['snapshot']['new_price_status'],'unavailable_no_fee_mock')
++        self.assertEqual(c.confirm(wid,a['approval_id'])['status'],'CONFLICT')
++        self.assertEqual(self.rows('provider_bookings')[0]['slot'],original)
++        new='2026-11-02T15:00:00+05:30'
++        a2=c.prepare_change(wid,'reschedule',b['booking_id'],new_slot=new)
++        self.assertEqual(c.confirm(wid,a2['approval_id'])['status'],'RESCHEDULED')
++        self.assertEqual(self.rows('provider_bookings')[0]['slot'],new)
++
++    def test_unknown_historical_price_disclosed_and_price_change_blocked(self):
++        c=self.setup_controller()
++        # Seed history using provider infrastructure; no controller price ledger.
++        pid='plumber-0-0'; slot='2026-11-02T09:00:00+05:30'
++        h=self.p.hold_slot(pid,slot)
++        bid=self.p.book(h['hold_id'],'historical-book')['booking_id']
++        wid=self.request()
++        self.deny('price_unknown',lambda:c.prepare_change(wid,'reschedule',bid,
++            new_slot='2026-11-02T11:00:00+05:30',price_change_requested=True))
++        a=c.prepare_change(wid,'cancel',bid)
++        self.assertIsNone(a['snapshot']['price_amount'])
++        self.assertEqual(a['snapshot']['price_status'],'price_unavailable_from_provider_contract')
++        self.assertEqual(c.confirm(wid,a['approval_id'])['status'],'CANCELLED')
++
++    def test_price_changing_reschedule_blocked_even_with_original_quote(self):
++        c=self.setup_controller()
++        wid,b=self.booked()
++        self.deny('price_unknown',lambda:c.prepare_change(wid,'reschedule',b['booking_id'],
++            new_slot='2026-11-02T11:00:00+05:30',price_change_requested=True))
++        self.assertEqual(self.rows('provider_bookings')[0]['slot'],'2026-11-02T09:00:00+05:30')
++
++    def test_unexpected_provider_error_never_fabricates_success(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        self.p.fault=lambda name,args: (_ for _ in ()).throw(RuntimeError('synthetic unexpected')) if name=='book' else None
++        r=c.confirm(wid,a['approval_id'])
++        self.assertEqual(r['status'],'OUTCOME_UNKNOWN')
++        self.assertIn('unverified',r['message'].lower())
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_status_read_failure_after_commit_reports_unverified_then_recovers(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        count=[0]
++        def fault(name,args):
++            if name=='get_booking_status':
++                count[0]+=1
++                if count[0]>1: raise RuntimeError('status unavailable')
++        self.p.fault=fault
++        r=c.confirm(wid,a['approval_id'])
++        self.assertEqual(r['status'],'OUTCOME_UNKNOWN')
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++        self.p.fault=None
++        self.assertEqual(c.execute(r['operation_id'])['status'],'BOOKED')
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_constraints_earliest_hour_and_time_window_enforced(self):
++        c=self.setup_controller()
++        wid=self.request(preferences={'earliest_hour':10,'latest_hour':12,'technician':'Tech 0-0'})
++        options=c.search(wid)
++        self.assertTrue(options)
++        self.assertEqual(len(options),1)
++        self.assertTrue(all(datetime.fromisoformat(s).hour==11 for s in options[0]['free_slots']))
++        self.deny('constraint_violation',lambda:c.prepare_booking(wid,'plumber-0-0','2026-11-02T09:00:00+05:30'))
++        self.deny('constraint_violation',lambda:c.prepare_booking(wid,'plumber-0-1','2026-11-02T11:00:00+05:30'))
++
++    def test_second_user_cannot_change_booking_even_with_known_id(self):
++        c=self.setup_controller()
++        wid,b=self.booked()
++        other=WorkflowController(self.path,user_id='bob',clock=self.clock)
++        own=other.create_request('bob-action')['workflow_id']
++        self.deny('forbidden',lambda:other.prepare_change(own,'cancel',b['booking_id']))
++        self.assertEqual(self.rows('provider_bookings')[0]['status'],'booked')
++
++    def test_two_users_race_for_same_slot_one_approved_booking(self):
++        c=self.setup_controller()
++        wid=self.request()
++        other=WorkflowController(self.path,user_id='bob',clock=self.clock)
++        bw=other.create_request('bob',service='plumber',area='Indiranagar',date_window=WINDOW)['workflow_id']
++        barrier=Barrier(2)
++        def run(pair):
++            controller,workflow=pair
++            barrier.wait()
++            try:
++                a=controller.prepare_booking(workflow,'plumber-0-0','2026-11-02T09:00:00+05:30')
++                return controller.confirm(workflow,a['approval_id'])['status']
++            except ProviderError as exc:
++                return exc.code
++        with ThreadPoolExecutor(max_workers=2) as pool:
++            outcomes=list(pool.map(run,[(c,wid),(other,bw)]))
++        self.assertEqual(sorted(outcomes),['BOOKED','slot_unavailable'])
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_cancel_requires_its_own_approval_not_old_book_confirmation(self):
++        c=self.setup_controller()
++        wid,b=self.booked()
++        book_op=b['operation_id']
++        cancel=c.prepare_change(wid,'cancel',b['booking_id'])
++        self.assertEqual(c.execute(book_op)['status'],'BOOKED')
++        self.assertEqual(self.rows('provider_bookings')[0]['status'],'booked')
++        c.confirm(wid,cancel['approval_id'])
++        self.assertEqual(c.execute(book_op)['status'],'NOT_ACTIVE')
++        self.assertEqual(self.rows('provider_bookings')[0]['status'],'cancelled')
++
++    def test_response_success_without_authoritative_booking_never_claims_success(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        self.p.inner.book=lambda *args:{'booking_id':'fabricated-response'}
++        result=c.confirm(wid,a['approval_id'])
++        self.assertEqual(result['status'],'OUTCOME_UNKNOWN')
++        self.assertFalse(self.rows('provider_bookings'))
++
++    def test_provider_booked_different_slot_is_not_approved_success(self):
++        c=self.setup_controller()
++        wid,a=self.approval()
++        original=self.p.inner.book
++        def wrong_slot(*args):
++            response=original(*args)
++            self.p.inner.reschedule(response['booking_id'],'2026-11-02T11:00:00+05:30','test-only-external-move')
++            return response
++        self.p.inner.book=wrong_slot
++        result=c.confirm(wid,a['approval_id'])
++        self.assertEqual(result['status'],'OUTCOME_UNKNOWN')
++        self.assertEqual(self.rows('provider_bookings')[0]['slot'],'2026-11-02T11:00:00+05:30')
++        self.assertEqual(len(self.rows('provider_bookings')),1)
++
++    def test_hold_expiring_during_status_read_stops_with_truthful_response(self):
++        c=self.setup_controller('timeout_without_booking')
++        wid,a=self.approval()
++        calls=[0]
++        def move_clock(name,args):
++            if name=='get_booking_status':
++                calls[0]+=1
++                if calls[0]==2: self.clock.value=NOW+timedelta(minutes=10)
++        self.p.fault=move_clock
++        result=c.confirm(wid,a['approval_id'])
++        self.assertEqual(result['status'],'OUTCOME_UNKNOWN')
++        self.assertFalse(self.rows('provider_bookings'))
++        self.assertEqual(len([x for x in self.p.calls if x['tool']=='book']),1)
++
++if __name__=='__main__':
++    unittest.main()

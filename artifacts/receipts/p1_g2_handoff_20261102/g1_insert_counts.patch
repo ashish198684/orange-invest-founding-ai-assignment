@@ -1,0 +1,485 @@
+--- g1_after_wal_fix/app/provider_mock/tools.py
++++ g1_after_outcome_fix/app/provider_mock/tools.py
+@@ -1,241 +1,241 @@
+-"""Eight fixed provider tools. This layer is not the future approval controller."""
+-
+-from datetime import datetime, timedelta
+-import hashlib
+-import json
+-import uuid
+-
+-from app.storage import Store
+-from .fixtures import IST, seed_fixtures
+-from .scenario_engine import ScenarioConfig
+-
+-
+-class ProviderError(Exception):
+-    def __init__(self, code, http_status=409):
+-        self.code, self.http_status = code, http_status
+-        super().__init__(code)
+-
+-
+-class ProviderTimeout(ProviderError, TimeoutError):
+-    def __init__(self):
+-        super().__init__('timeout', 504)
+-
+-
+-def _json(value):
+-    return json.dumps(value, sort_keys=True, separators=(',', ':'))
+-
+-
+-def _time(value):
+-    try:
+-        dt = datetime.fromisoformat(value)
+-        if dt.utcoffset() is None:
+-            raise ValueError('timezone required')
+-        return dt.astimezone(IST)
+-    except (ValueError, TypeError):
+-        raise ProviderError('invalid_timestamp', 400) from None
+-
+-
+-class ProviderMock:
+-    def __init__(self, db_path, *, user_id='demo-user', clock=None, config=None):
+-        if not isinstance(user_id, str) or not user_id.strip():
+-            raise ValueError('A trusted user context is required')
+-        self.user_id = user_id
+-        self.clock = clock or (lambda: datetime.now(IST))
+-        self.store = Store(db_path)
+-        with self.store.connect(write=True) as db:
+-            row = db.execute('SELECT config_json FROM provider_config').fetchone()
+-            if row is None:
+-                self.config = config or ScenarioConfig()
+-                db.execute('INSERT INTO provider_config VALUES (1,?)',
+-                           (_json(self.config.to_dict()),))
+-                seed_fixtures(db, self._now().date())
+-            else:
+-                values = json.loads(row[0])
+-                values['reschedule_conflicts'] = tuple(values['reschedule_conflicts'])
+-                self.config = ScenarioConfig(**values)
+-                if config is not None and config != self.config:
+-                    raise ValueError('Existing database fixture config differs; use a new DB')
+-
+-    def _now(self):
+-        now = self.clock()
+-        if now.utcoffset() is None:
+-            raise ValueError('clock must be timezone aware')
+-        return now.astimezone(IST)
+-
+-    def _expire(self, db):
+-        db.execute("UPDATE provider_holds SET status='expired' "
+-                   "WHERE status='held' AND expires_at<=?", (self._now().isoformat(),))
+-
+-    def _available(self, db, pid, slot):
+-        return (db.execute('SELECT 1 FROM provider_slots WHERE provider_id=? AND slot=?',
+-                           (pid, slot)).fetchone() is not None
+-                and _time(slot) > self._now()
+-                and db.execute("SELECT 1 FROM provider_bookings WHERE provider_id=? "
+-                               "AND slot=? AND status='booked'", (pid, slot)).fetchone() is None
+-                and db.execute("SELECT 1 FROM provider_holds WHERE provider_id=? "
+-                               "AND slot=? AND status='held' AND expires_at>?",
+-                               (pid, slot, self._now().isoformat())).fetchone() is None)
+-
+-    def search_providers(self, service, area, date_range):
+-        if not isinstance(date_range, dict) or set(date_range) != {'start', 'end'}:
+-            raise ProviderError('invalid_date_range', 400)
+-        start, end = _time(date_range['start']), _time(date_range['end'])
+-        if end <= start:
+-            raise ProviderError('invalid_date_range', 400)
+-        with self.store.connect() as db:
+-            rows = db.execute('SELECT * FROM providers WHERE service=? AND area=? ORDER BY id',
+-                              (service, area)).fetchall()
+-            result = []
+-            for p in rows:
+-                slots = [r[0] for r in db.execute('SELECT slot FROM provider_slots '
+-                         'WHERE provider_id=? ORDER BY slot', (p['id'],))
+-                         if start <= _time(r[0]) < end and self._available(db, p['id'], r[0])]
+-                result.append({'id': p['id'], 'price': p['price'], 'rating': p['rating'],
+-                               'free_slots': slots, 'attributes': json.loads(p['attributes_json'])})
+-            return result
+-
+-    def get_provider(self, provider_id):
+-        with self.store.connect() as db:
+-            p = db.execute('SELECT * FROM providers WHERE id=?', (provider_id,)).fetchone()
+-            if p is None:
+-                raise ProviderError('provider_not_found', 404)
+-            return {'id': p['id'], 'service': p['service'], 'area': p['area'],
+-                    'price': p['price'], 'rating': p['rating'],
+-                    'attributes': json.loads(p['attributes_json']),
+-                    'reviews': json.loads(p['reviews_json'])}
+-
+-    @staticmethod
+-    def _booking(row):
+-        return {'id': row['id'], 'provider': row['provider_id'], 'service': row['service'],
+-                'slot': row['slot'], 'status': row['status']}
+-
+-    def list_bookings(self, user_id):
+-        if user_id != self.user_id:
+-            raise ProviderError('forbidden', 403)
+-        with self.store.connect() as db:
+-            return [self._booking(r) for r in db.execute(
+-                'SELECT * FROM provider_bookings WHERE user_id=? ORDER BY id', (user_id,))]
+-
+-    def hold_slot(self, provider_id, slot):
+-        slot = _time(slot).isoformat()
+-        with self.store.connect(write=True) as db:
+-            self._expire(db)
+-            if not self._available(db, provider_id, slot):
+-                raise ProviderError('slot_unavailable')
+-            price = db.execute('SELECT price FROM providers WHERE id=?', (provider_id,)).fetchone()[0]
+-            hid, expiry = uuid.uuid4().hex, (self._now() + timedelta(minutes=10)).isoformat()
+-            price += self.config.quote_delta
+-            db.execute('INSERT INTO provider_holds VALUES (?,?,?,?,?,?,?)',
+-                       (hid, self.user_id, provider_id, slot, price, expiry, 'held'))
+-            return {'hold_id': hid, 'expires_at': expiry, 'quoted_price': price}
+-
+-    def _operate(self, action, payload, key, handler):
+-        if not isinstance(key, str) or not key.strip():
+-            raise ProviderError('invalid_idempotency_key', 400)
+-        fingerprint = hashlib.sha256(_json([action, self.user_id, payload]).encode()).hexdigest()
+-        with self.store.connect(write=True) as db:
+-            old = db.execute('SELECT * FROM provider_operation_outcomes WHERE idempotency_key=?',
+-                             (key,)).fetchone()
+-            if old and old['user_id'] != self.user_id:
+-                raise ProviderError('forbidden', 403)
+-            if old and old['payload_hash'] != fingerprint:
+-                raise ProviderError('idempotency_payload_mismatch')
+-            if old and old['error_code'] != 'transient_503':
+-                response = json.loads(old['response_json']) if old['response_json'] else None
+-                error = old['error_code']
+-                # First delivery timed out after commit; replay returns durable result.
+-                if error == 'timeout_after_success':
+-                    error = None
+-            else:
+-                self._expire(db)
+-                response, error = handler(db, old)
+-                db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?,?) '
+-                           'ON CONFLICT(idempotency_key) DO UPDATE SET response_json=excluded.response_json, '
+-                           'error_code=excluded.error_code, attempts=excluded.attempts',
+-                           (key, self.user_id, action, fingerprint,
+-                            _json(response) if response is not None else None, error,
+-                            old['attempts'] + 1 if old else 1, self._now().isoformat()))
+-        # Deliberately outside the transaction: timeout/503 receipts survive exceptions.
+-        if error:
+-            if error.startswith('timeout'):
+-                raise ProviderTimeout()
+-            raise ProviderError(error, 503 if error == 'transient_503' else 409)
+-        return response
+-
+-    def book(self, hold_id, idempotency_key):
+-        def execute(db, old):
+-            h = db.execute('SELECT * FROM provider_holds WHERE id=?', (hold_id,)).fetchone()
+-            if h is None:
+-                return None, 'hold_not_found'
+-            if h['user_id'] != self.user_id:
+-                return None, 'forbidden'
+-            branch = self.config.branch_for(idempotency_key)
+-            if h['status'] == 'expired' or branch == 'hold_expired':
+-                db.execute("UPDATE provider_holds SET status='expired' WHERE id=?", (hold_id,))
+-                return None, 'hold_expired'
+-            if h['status'] != 'held':
+-                return None, 'slot_taken'
+-            if branch == 'slot_taken':
+-                db.execute("UPDATE provider_holds SET status='failed' WHERE id=?", (hold_id,))
+-                return None, 'slot_taken'
+-            if branch == 'timeout_without_booking':
+-                return None, branch
+-            bid = uuid.uuid4().hex
+-            service = db.execute('SELECT service FROM providers WHERE id=?', (h['provider_id'],)).fetchone()[0]
+-            db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?,?)',
+-                       (bid, self.user_id, h['provider_id'], service, h['slot'], 'booked',
+-                        hold_id, h['quoted_price']))
+-            db.execute("UPDATE provider_holds SET status='consumed' WHERE id=?", (hold_id,))
+-            return {'booking_id': bid}, ('timeout_after_success' if branch == 'timeout_after_success' else None)
+-        return self._operate('book', [hold_id], idempotency_key, execute)
+-
+-    def get_booking_status(self, idempotency_key):
+-        with self.store.connect() as db:
+-            outcome = db.execute('SELECT * FROM provider_operation_outcomes WHERE idempotency_key=?',
+-                                 (idempotency_key,)).fetchone()
+-            if outcome is None:
+-                return {'status': 'not_found'}
+-            if outcome['user_id'] != self.user_id:
+-                raise ProviderError('forbidden', 403)
+-            if outcome['action'] != 'book':
+-                return {'status': 'not_found'}
+-            response = json.loads(outcome['response_json']) if outcome['response_json'] else None
+-            if response:
+-                row = db.execute('SELECT status FROM provider_bookings WHERE id=?',
+-                                 (response['booking_id'],)).fetchone()
+-                if row and row['status'] == 'booked':
+-                    return {'status': 'booked', **response}
+-                return {'status': 'failed'}
+-            return {'status': 'not_found' if outcome['error_code'] == 'timeout_without_booking' else 'failed'}
+-
+-    def cancel(self, booking_id, idempotency_key):
+-        def execute(db, old):
+-            b = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
+-            if b is None:
+-                return None, 'booking_not_found'
+-            if b['user_id'] != self.user_id:
+-                return None, 'forbidden'
+-            if b['status'] != 'booked':
+-                return None, 'booking_not_active'
+-            if old is None:
+-                return None, 'transient_503'
+-            db.execute("UPDATE provider_bookings SET status='cancelled' WHERE id=?", (booking_id,))
+-            return {'status': 'cancelled'}, None
+-        return self._operate('cancel', [booking_id], idempotency_key, execute)
+-
+-    def reschedule(self, booking_id, new_slot, idempotency_key):
+-        new_slot = _time(new_slot).isoformat()
+-        def execute(db, old):
+-            b = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
+-            if b is None:
+-                return None, 'booking_not_found'
+-            if b['user_id'] != self.user_id:
+-                return None, 'forbidden'
+-            if b['status'] != 'booked':
+-                return None, 'booking_not_active'
+-            if new_slot in self.config.reschedule_conflicts or not self._available(db, b['provider_id'], new_slot):
+-                return None, 'slot_conflict'
+-            db.execute('UPDATE provider_bookings SET slot=? WHERE id=?', (new_slot, booking_id))
+-            row = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
+-            return self._booking(row), None
+-        return self._operate('reschedule', [booking_id, new_slot], idempotency_key, execute)
++"""Eight fixed provider tools. This layer is not the future approval controller."""
++
++from datetime import datetime, timedelta
++import hashlib
++import json
++import uuid
++
++from app.storage import Store
++from .fixtures import IST, seed_fixtures
++from .scenario_engine import ScenarioConfig
++
++
++class ProviderError(Exception):
++    def __init__(self, code, http_status=409):
++        self.code, self.http_status = code, http_status
++        super().__init__(code)
++
++
++class ProviderTimeout(ProviderError, TimeoutError):
++    def __init__(self):
++        super().__init__('timeout', 504)
++
++
++def _json(value):
++    return json.dumps(value, sort_keys=True, separators=(',', ':'))
++
++
++def _time(value):
++    try:
++        dt = datetime.fromisoformat(value)
++        if dt.utcoffset() is None:
++            raise ValueError('timezone required')
++        return dt.astimezone(IST)
++    except (ValueError, TypeError):
++        raise ProviderError('invalid_timestamp', 400) from None
++
++
++class ProviderMock:
++    def __init__(self, db_path, *, user_id='demo-user', clock=None, config=None):
++        if not isinstance(user_id, str) or not user_id.strip():
++            raise ValueError('A trusted user context is required')
++        self.user_id = user_id
++        self.clock = clock or (lambda: datetime.now(IST))
++        self.store = Store(db_path)
++        with self.store.connect(write=True) as db:
++            row = db.execute('SELECT config_json FROM provider_config').fetchone()
++            if row is None:
++                self.config = config or ScenarioConfig()
++                db.execute('INSERT INTO provider_config VALUES (1,?)',
++                           (_json(self.config.to_dict()),))
++                seed_fixtures(db, self._now().date())
++            else:
++                values = json.loads(row[0])
++                values['reschedule_conflicts'] = tuple(values['reschedule_conflicts'])
++                self.config = ScenarioConfig(**values)
++                if config is not None and config != self.config:
++                    raise ValueError('Existing database fixture config differs; use a new DB')
++
++    def _now(self):
++        now = self.clock()
++        if now.utcoffset() is None:
++            raise ValueError('clock must be timezone aware')
++        return now.astimezone(IST)
++
++    def _expire(self, db):
++        db.execute("UPDATE provider_holds SET status='expired' "
++                   "WHERE status='held' AND expires_at<=?", (self._now().isoformat(),))
++
++    def _available(self, db, pid, slot):
++        return (db.execute('SELECT 1 FROM provider_slots WHERE provider_id=? AND slot=?',
++                           (pid, slot)).fetchone() is not None
++                and _time(slot) > self._now()
++                and db.execute("SELECT 1 FROM provider_bookings WHERE provider_id=? "
++                               "AND slot=? AND status='booked'", (pid, slot)).fetchone() is None
++                and db.execute("SELECT 1 FROM provider_holds WHERE provider_id=? "
++                               "AND slot=? AND status='held' AND expires_at>?",
++                               (pid, slot, self._now().isoformat())).fetchone() is None)
++
++    def search_providers(self, service, area, date_range):
++        if not isinstance(date_range, dict) or set(date_range) != {'start', 'end'}:
++            raise ProviderError('invalid_date_range', 400)
++        start, end = _time(date_range['start']), _time(date_range['end'])
++        if end <= start:
++            raise ProviderError('invalid_date_range', 400)
++        with self.store.connect() as db:
++            rows = db.execute('SELECT * FROM providers WHERE service=? AND area=? ORDER BY id',
++                              (service, area)).fetchall()
++            result = []
++            for p in rows:
++                slots = [r[0] for r in db.execute('SELECT slot FROM provider_slots '
++                         'WHERE provider_id=? ORDER BY slot', (p['id'],))
++                         if start <= _time(r[0]) < end and self._available(db, p['id'], r[0])]
++                result.append({'id': p['id'], 'price': p['price'], 'rating': p['rating'],
++                               'free_slots': slots, 'attributes': json.loads(p['attributes_json'])})
++            return result
++
++    def get_provider(self, provider_id):
++        with self.store.connect() as db:
++            p = db.execute('SELECT * FROM providers WHERE id=?', (provider_id,)).fetchone()
++            if p is None:
++                raise ProviderError('provider_not_found', 404)
++            return {'id': p['id'], 'service': p['service'], 'area': p['area'],
++                    'price': p['price'], 'rating': p['rating'],
++                    'attributes': json.loads(p['attributes_json']),
++                    'reviews': json.loads(p['reviews_json'])}
++
++    @staticmethod
++    def _booking(row):
++        return {'id': row['id'], 'provider': row['provider_id'], 'service': row['service'],
++                'slot': row['slot'], 'status': row['status']}
++
++    def list_bookings(self, user_id):
++        if user_id != self.user_id:
++            raise ProviderError('forbidden', 403)
++        with self.store.connect() as db:
++            return [self._booking(r) for r in db.execute(
++                'SELECT * FROM provider_bookings WHERE user_id=? ORDER BY id', (user_id,))]
++
++    def hold_slot(self, provider_id, slot):
++        slot = _time(slot).isoformat()
++        with self.store.connect(write=True) as db:
++            self._expire(db)
++            if not self._available(db, provider_id, slot):
++                raise ProviderError('slot_unavailable')
++            price = db.execute('SELECT price FROM providers WHERE id=?', (provider_id,)).fetchone()[0]
++            hid, expiry = uuid.uuid4().hex, (self._now() + timedelta(minutes=10)).isoformat()
++            price += self.config.quote_delta
++            db.execute('INSERT INTO provider_holds VALUES (?,?,?,?,?,?,?)',
++                       (hid, self.user_id, provider_id, slot, price, expiry, 'held'))
++            return {'hold_id': hid, 'expires_at': expiry, 'quoted_price': price}
++
++    def _operate(self, action, payload, key, handler):
++        if not isinstance(key, str) or not key.strip():
++            raise ProviderError('invalid_idempotency_key', 400)
++        fingerprint = hashlib.sha256(_json([action, self.user_id, payload]).encode()).hexdigest()
++        with self.store.connect(write=True) as db:
++            old = db.execute('SELECT * FROM provider_operation_outcomes WHERE idempotency_key=?',
++                             (key,)).fetchone()
++            if old and old['user_id'] != self.user_id:
++                raise ProviderError('forbidden', 403)
++            if old and old['payload_hash'] != fingerprint:
++                raise ProviderError('idempotency_payload_mismatch')
++            if old and old['error_code'] != 'transient_503':
++                response = json.loads(old['response_json']) if old['response_json'] else None
++                error = old['error_code']
++                # First delivery timed out after commit; replay returns durable result.
++                if error == 'timeout_after_success':
++                    error = None
++            else:
++                self._expire(db)
++                response, error = handler(db, old)
++                db.execute('INSERT INTO provider_operation_outcomes VALUES (?,?,?,?,?,?,?,?) '
++                           'ON CONFLICT(idempotency_key) DO UPDATE SET response_json=excluded.response_json, '
++                           'error_code=excluded.error_code, attempts=excluded.attempts',
++                           (key, self.user_id, action, fingerprint,
++                            _json(response) if response is not None else None, error,
++                            old['attempts'] + 1 if old else 1, self._now().isoformat()))
++        # Deliberately outside the transaction: timeout/503 receipts survive exceptions.
++        if error:
++            if error.startswith('timeout'):
++                raise ProviderTimeout()
++            raise ProviderError(error, 503 if error == 'transient_503' else 409)
++        return response
++
++    def book(self, hold_id, idempotency_key):
++        def execute(db, old):
++            h = db.execute('SELECT * FROM provider_holds WHERE id=?', (hold_id,)).fetchone()
++            if h is None:
++                return None, 'hold_not_found'
++            if h['user_id'] != self.user_id:
++                return None, 'forbidden'
++            branch = self.config.branch_for(idempotency_key)
++            if h['status'] == 'expired' or branch == 'hold_expired':
++                db.execute("UPDATE provider_holds SET status='expired' WHERE id=?", (hold_id,))
++                return None, 'hold_expired'
++            if h['status'] != 'held':
++                return None, 'slot_taken'
++            if branch == 'slot_taken':
++                db.execute("UPDATE provider_holds SET status='failed' WHERE id=?", (hold_id,))
++                return None, 'slot_taken'
++            if branch == 'timeout_without_booking':
++                return None, branch
++            bid = uuid.uuid4().hex
++            service = db.execute('SELECT service FROM providers WHERE id=?', (h['provider_id'],)).fetchone()[0]
++            db.execute('INSERT INTO provider_bookings VALUES (?,?,?,?,?,?,?,?)',
++                       (bid, self.user_id, h['provider_id'], service, h['slot'], 'booked',
++                        hold_id, h['quoted_price']))
++            db.execute("UPDATE provider_holds SET status='consumed' WHERE id=?", (hold_id,))
++            return {'booking_id': bid}, ('timeout_after_success' if branch == 'timeout_after_success' else None)
++        return self._operate('book', [hold_id], idempotency_key, execute)
++
++    def get_booking_status(self, idempotency_key):
++        with self.store.connect() as db:
++            outcome = db.execute('SELECT * FROM provider_operation_outcomes WHERE idempotency_key=?',
++                                 (idempotency_key,)).fetchone()
++            if outcome is None:
++                return {'status': 'not_found'}
++            if outcome['user_id'] != self.user_id:
++                raise ProviderError('forbidden', 403)
++            if outcome['action'] != 'book':
++                return {'status': 'not_found'}
++            response = json.loads(outcome['response_json']) if outcome['response_json'] else None
++            if response:
++                row = db.execute('SELECT status FROM provider_bookings WHERE id=?',
++                                 (response['booking_id'],)).fetchone()
++                if row and row['status'] == 'booked':
++                    return {'status': 'booked', **response}
++                return {'status': 'failed'}
++            return {'status': 'not_found' if outcome['error_code'] == 'timeout_without_booking' else 'failed'}
++
++    def cancel(self, booking_id, idempotency_key):
++        def execute(db, old):
++            b = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
++            if b is None:
++                return None, 'booking_not_found'
++            if b['user_id'] != self.user_id:
++                return None, 'forbidden'
++            if b['status'] != 'booked':
++                return None, 'booking_not_active'
++            if old is None:
++                return None, 'transient_503'
++            db.execute("UPDATE provider_bookings SET status='cancelled' WHERE id=?", (booking_id,))
++            return {'status': 'cancelled'}, None
++        return self._operate('cancel', [booking_id], idempotency_key, execute)
++
++    def reschedule(self, booking_id, new_slot, idempotency_key):
++        new_slot = _time(new_slot).isoformat()
++        def execute(db, old):
++            b = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
++            if b is None:
++                return None, 'booking_not_found'
++            if b['user_id'] != self.user_id:
++                return None, 'forbidden'
++            if b['status'] != 'booked':
++                return None, 'booking_not_active'
++            if new_slot in self.config.reschedule_conflicts or not self._available(db, b['provider_id'], new_slot):
++                return None, 'slot_conflict'
++            db.execute('UPDATE provider_bookings SET slot=? WHERE id=?', (new_slot, booking_id))
++            row = db.execute('SELECT * FROM provider_bookings WHERE id=?', (booking_id,)).fetchone()
++            return self._booking(row), None
++        return self._operate('reschedule', [booking_id, new_slot], idempotency_key, execute)

@@ -1,9 +1,11 @@
-# Orange Invest - local provider foundation (G0/G1)
+# Orange Invest - local deterministic booking foundation (G0-G2)
 
 Implemented: eight fixed mock provider tools, durable SQLite provider state,
-seeded and forced faults, and direct contract tests. This is the provider layer;
-chat, approval enforcement, workflow recovery, memory, browser UI and end-to-end
-agent evals are **not implemented**. Do not use it as a completed booking agent.
+seeded faults, and a deterministic workflow controller with explicit approval,
+stable logical requests, booking/cancel/reschedule and status reconciliation.
+G2 offers a typed Python API and small scripted language adapter. Memory, full
+execution budgets/tracing, browser UI and G4 agent evaluations are not implemented.
+The complete employer assignment is not ready for submission.
 No external providers, API services, credentials or payments are used.
 
 Python 3.11+ is sufficient for the current runtime and tests. From this directory,
@@ -40,7 +42,7 @@ and trusted `user_id`; fixed tool signatures remain unchanged. Date ranges use
 end; slots are normalized to IST. See [decisions](DECISIONS.md) for precise fixture,
 idempotency, timeout, identity and status interpretations. Constructor-only
 `ScenarioConfig` is for controlled tests, never user chat. Provider methods do
-not implement approvals; the later deterministic controller must guard writes.
+not implement approvals; `WorkflowController` guards application write paths.
 
 To generate a new receipt with exact output, exit code, source hashes and source
 snapshot, run `python scripts/run_checks.py --label my_g1_check` (a new label is

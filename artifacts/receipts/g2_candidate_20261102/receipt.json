@@ -1,0 +1,95 @@
+{
+  "gate": "G2",
+  "objective_status": "PASS",
+  "acceptance": "CTO review pending",
+  "source_commit": "4685c4abc1481a58daec61ea40e467b0f6408788",
+  "source_matches_commit": false,
+  "uncommitted_source": [
+    "app/agent/__init__.py",
+    "app/agent/scripted.py",
+    "app/workflow.py",
+    "scripts/controller_probe.py",
+    "scripts/g2_evidence.py",
+    "scripts/test_results.py",
+    "tests/test_g2_safety.py"
+  ],
+  "commands": [
+    {
+      "command": [
+        "C:\\Users\\marke\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/check_contract.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "C:\\Users\\marke\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/test_results.py",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g2_candidate_20261102"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "C:\\Users\\marke\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "scripts/controller_probe.py",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g2_candidate_20261102\\timeout_probe"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "tests_run": 65,
+  "passed": 65,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "g1_provider_tests": 28,
+  "g2_controller_tests": 37,
+  "source_sha256": {
+    "AGENTS.md": "916ad72dc63ac8dda8c2c89f9966906891096de44ab4e88facecc3f51959d22b",
+    "app/__init__.py": "d983fae5c189eb2593dfb08bc5143cea5ac57b12dfd695fd599c13d49041b376",
+    "app/agent/__init__.py": "f266a1c9291b1a714e900d85f45518dcd78be3ea7a4c5064bed3b08254576cec",
+    "app/agent/scripted.py": "2db1065b55bfa32b6f58da9cc1ebac10cb119aac474d99aba7f2c5d443719c8a",
+    "app/provider_mock/__init__.py": "4ded9d322a05db2a1990dd3818047f700a34a86ce697d3521003bee1257fc99f",
+    "app/provider_mock/__main__.py": "0e50f9ca57a4b25604a726b55994523cbb15c414c8a5ee3a8b735faaef7a4c7b",
+    "app/provider_mock/fixtures.py": "ef21c97717aa7a8efccef9d130360f6901fe34e003774e8e279822b452dc1c7c",
+    "app/provider_mock/scenario_engine.py": "6adba126dd1c7966d2caadd00209f8420fec820d7a440bc72c73a5460c456633",
+    "app/provider_mock/tools.py": "3716ac9d687e438cc93177d4e7333d78e21dba76bbc00911a5ccb8fadf8dbe1b",
+    "app/storage.py": "4f6dcaa4b7832e589f975e9c8eee5a5ef40bcc67680de9dfc90dd0943d06798d",
+    "app/workflow.py": "d964f465961d4d8c155574da0825db73469d4e79c97c029afb8c8170b1a21774",
+    "CANONICAL.md": "2f057c7a626174dde3cc35c04a6c4082f2b55e8f49e2b92d2bda43703895b5e2",
+    "DECISIONS.md": "a950e2671d9b7969e184d3c8e2e8a523ff74836b64191484deac28e178394773",
+    "requirements.txt": "2c40f476779d90e047ec790498d31ac87ef28cbac6aa44c4996cd384fcae298b",
+    "scripts/check_contract.py": "d2c1b64655797efbcdd4db903eb7ab6f5a5e727f748dab271bf7a0b20722cc83",
+    "scripts/close_g1.py": "227c37cb20c654b027768e52cfca2e9206dc01ae7ec648100d9ca86fb779bf85",
+    "scripts/controller_probe.py": "24e852b86745512af42f60589ce8fbdc7f3629aabf1e8bd4c1cf199f9da4fc8e",
+    "scripts/g2_evidence.py": "dec60aab85c72f44c5f74ba5df6af259ad36fab03fd9276c3b6d6bfd70ed42dc",
+    "scripts/provider_probe.py": "17d0d8aeaf02ef6810bed02ff79e8cc4ef00b0d52828d18a9f01dd8a347483b4",
+    "scripts/run_checks.py": "11a759aedd692a874d0ccef72596154ed0ac70d71e2552bbce429dd1532cc726",
+    "scripts/test_results.py": "d6f9ac1ae0c7a0a2f45a4c1b645bc914981ea956931bd50bf8824c0631e9592b",
+    "tests/test_g2_safety.py": "dc01c0f6982f753f1d9778cab40ec7aeb61146625740e090a1f39186733bb030",
+    "tests/test_provider_contract.py": "14e65f1e1b8d0bfa3ccd8941cb02a99ff404ac2d3ae211a331ea410b6ca93550"
+  },
+  "historical_evidence_unchanged": true,
+  "timestamp_utc": "2026-11-01T18:40:51.895257+00:00",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "sqlite": "3.49.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "seed": 20261101,
+  "controlled_clock": "2026-11-01T09:00:00+05:30",
+  "diff_check_exit_code": 0,
+  "unresolved_failures": [],
+  "later_gates": {
+    "G3": "NOT_STARTED",
+    "G4": "NOT_STARTED",
+    "G5": "NOT_STARTED",
+    "Groq": "NOT_IMPLEMENTED"
+  },
+  "claims_boundary": "G2 acceptance tests; not the employer G4 scripted-agent evaluation count"
+}

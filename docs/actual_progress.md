@@ -120,3 +120,21 @@ accepted. Provider-level correctness cannot prove those later invariants. No
 model-proposed actions exist; the future controller must check persisted approval
 and reconcile status before reporting any write outcome. No screenshots or demo
 link exist in this pass. The plan maps all remaining must-haves and deliverables.
+
+
+## 2026-11-02 sponsor-dispatched P1 -> G2 update
+
+The earlier sections are historical G1 observations, not current completion claims.
+G1 source/governance commit: 32e707cdb0c4fb509455e0d2525f196e756d49ac;
+fresh receipt-only commit: 4685c4abc1481a58daec61ea40e467b0f6408788.
+Post-commit G0 4/4 and G1 28/28 passed, skipped 0, commands exit 0, source bytes
+match Git and historical receipts are unchanged. Receipt:
+artifacts/receipts/p1_postcommit_20261101/receipt.json.
+
+G2 now has a real persisted controller and scripted proposal adapter. The expanded
+candidate passed 65/65 tests (28 provider + 37 controller), zero skipped, and 38/38
+independent SQL evidence-DB inspections. Final committed-source G2 counts and SHA
+are established only by artifacts/receipts/g2_postcommit_20261102/receipt.json
+once generated; see docs/g2_handoff.md and ADR-007 for scope, bugs and limitations.
+The canonical remains pinned to 2f057c7a626174dde3cc35c04a6c4082f2b55e8f49e2b92d2bda43703895b5e2.
+G3-G5/Groq NOT_STARTED. Employer submission remains NO-GO; stop after G2 for CTO review.

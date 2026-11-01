@@ -1,0 +1,7 @@
+# Codex repository rules — Orange Invest
+
+**READ `CANONICAL.md` ENTIRELY BEFORE CHANGING ANY CODE.** The three-page employer assignment PDF is the fixed contract and takes precedence over this file or chat. This repository's `CANONICAL.md` is the engineering source of truth for scope, safety, architecture, tests and deliverables. Treat code and executed tests as proof, never the chat or a model's statement that work is complete.
+
+Roles: sponsor = product authority; ChatGPT = CTO/design reviewer; Codex = founding implementation engineer. Document ambiguities as an ADR in `DECISIONS.md`. Keep all tools local/mocked, do not operate on real providers or payments, do not invent bugs/test results. Preserve evidence for each gate; implement G0 through G5 in sequence as described in section J. No model-proposed booking/cancel/reschedule may bypass persisted approval, idempotency and authoritative status reconciliation. Keep durable memory user-scoped, provenance-tagged, correctable and forgettable. Default to scripted/recorded model for offline evals.
+
+Before coding: verify canonical file and assignment transcription, inspect local environment, create `docs/implementation_plan.md`, identify exact mock signatures and tests, then implement G1. Don't change unrelated projects, don't use cloud infrastructure for this local assessment. Deadline is 3 November 2026 at 2 PM (timezone not stated; conservatively assume IST).

@@ -1,11 +1,12 @@
 # ORANGE INVEST — FOUNDING AI ENGINEER ASSIGNMENT
 ## Canonical engineering specification and Codex execution contract
 
-**Canonical ID:** `ORANGE-FOUNDINGAI-20261101-001`  
-**Status:** `SPECIFICATION / IMPLEMENTATION NOT YET ACCEPTED`  
-**Date:** 2026-11-01 (Asia/Kolkata)  
+**Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
+**Status:** `SPONSOR-REQUESTED V3 FIVE-YEAR ARCHITECTURE REVIEW / G3X AWAITING MANUAL DISPATCH`  
+**Date:** 2026-11-02 (Asia/Kolkata)
+**Current authoritative Codex directions:** Section L4 as amended by binding Section M2–M4; M takes precedence over conflicting V2 directions. All Codex instructions are in this canonical, not chat.  
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
-**Source of truth:** This file governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
+**Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
 **Employer deadline:** The email says **3 November 2026, 2:00 PM**, without explicitly stating a timezone. Plan conservatively for **14:00 IST on Tuesday, 3 Nov** and submit **before** that time. No asynchronous delivery promise.
 
@@ -475,3 +476,297 @@ NEXT: <next gated change>
 - Implementation code, mocks, UI, tests and all six final submission deliverables: **NOT YET VERIFIED / DO NOT CLAIM COMPLETE**.
 
 **END OF CANONICAL `ORANGE-FOUNDINGAI-20261101-001`.**
+
+---
+
+# L. CANONICAL V2 — SPONSOR DIRECTIVE: BUILD 100×-READY LOCALLY NOW
+
+**Canonical ID:** `ORANGE-FOUNDINGAI-20261102-002`  
+**Status:** SPONSOR-APPROVED ARCHITECTURAL REVISION / IMPLEMENTATION AWAITING MANUAL CODEX DISPATCH  
+**Decision date:** 2026-11-02 Asia/Kolkata  
+**Previous baseline:** `ORANGE-FOUNDINGAI-20261101-001` SHA-256 `2f057c7a626174dde3cc35c04a6c4082f2b55e8f49e2b92d2bda43703895b5e2`, byte-for-byte preserved at `docs/canonical_history/CANONICAL_ORANGE-FOUNDINGAI-20261101-001_FROZEN.md`.  
+**Source of authority:** Employer PDF > THIS CURRENT CANONICAL (including section L) > recorded ADRs > implementation/evidence. **Chat, prior untracked CTO order files, draft architecture proposals, and screenshots are NOT engineering instructions.**  
+**Execution control:** The human sponsor alone manually dispatches Codex. ChatGPT CTO maintains canonical directions and independently adjudicates evidence. Codex implements, tests and returns exact receipts. **No autonomous continuation beyond the next authorized gate.**
+
+## L0. Conflict resolution / supersession (do not improvise)
+
+This is an explicit sponsor-requested **architecture change**, not a silent hash update. Section L controls wherever older canonical text disagrees. In particular, it **supersedes** earlier sentences in A1/B/H/J/J2 that discouraged Docker, PostgreSQL, local worker distribution or implementing the 100× architecture. We WILL IMPLEMENT a **local, distributed-capable** variant now, while keeping the employer's eight tools, user consent, offline scripted evaluations and six deliverables. It does **not** override the employer's requirement to run entirely locally, without real providers/payments/external services, or its <=3-command README.
+
+The previous G3-only instruction at `docs/cto_orders/CTO_ORDER_20261102_G3_MEMORY_BOUNDS_TRACES.md` and earlier work-order files are **SUPERSEDED AS EXECUTION ORDERS**. Their original content may be retained solely as historical drafts; Codex MUST NOT follow them as current directions. The separate `docs/architecture/CTO_20261102_WINNING_LOCAL_FIRST_DISTRIBUTED_READY.md` is reference research, **not authoritative**. All current and future Codex execution orders MUST appear in THIS canonical master as explicit versioned sections; no chat-based dispatch content may introduce new engineering requirements or override its boundaries. An engineering dispatch may merely tell Codex to read this canonical and name its exact authorized gate.
+
+The older canonical's baseline/phase status statements are historical; **current observed state** (subject to independent verification) is: G0 G1 accepted, G2 source commit `3d79a207bffd3bda1505333e3c7804bf00e657ae`, evidence commit `855e372f11e2329774fff9efe6060ece6035891d`; 65/65 recorded tests (28 provider + 37 controller), 38/38 independent saved-DB inspections; no real HTTP/browser or G3 memory/budgets/full traces/G4 evaluations/G5 demo yet. G2 source and receipts MUST be preserved and rerun before the migration. Never claim this revision or 100× profile has been implemented merely because this specification exists.
+
+## L1. Why this is the stronger architecture for THIS employer
+
+**Win condition:** a locally runnable, authenticated, observable, multi-process agent that proves **never act without exact approval**, no duplicate logical booking despite crash/races, status-before-retry, scoped forgettable memory, bounded execution, injection resilience, 15+ offline simulated user end-to-end scenarios, and a real side-by-side chat/trace demo. Also demonstrate a 100× **synthetic load factor** against a measured one-unit baseline, without pretending it proves 100× throughput or production readiness.
+
+**Not the win condition:** maximum service count, a fake Kubernetes diagram, AWS cloud bills, a Temporal dependency without a fault-tolerant workflow, or a beautiful UI with incorrect DB state. Complexity earns inclusion only if a graded property or a measured 100× risk justifies it. Anthropic: simplest composable workflow, bounded tools, ground-truth tests. AWS: least privilege, human approval, durable messaging, scoped memory, telemetry, replay and idempotent external effects. These are methodological precedents, NOT vendor endorsements.
+
+**Mandatory 100× implementation decision, effective NOW:** Use a **modular monolith with locally distributed runtime processes**. Do not turn eight bounded mock calls into a multi-agent swarm. The hard parts are concurrency, authority, durable work and trustworthy observation.
+
+### L1.1 Target deployment (everything LOCAL, docker-compose)
+
+```text
+Browser SPA: chat / providers / approval card / memory / trace side-by-side
+     | HTTPS-like security semantics in local HTTP development
+     v
+Local reverse-proxied API replicas (>=2 for multi-replica verification)
+  - signed, expiring session; user principal resolved on server
+  - CSRF/authorization; validated versioned schemas
+  - typed model interpretation proposal (ScriptedModel default)
+     |
+Deterministic WorkflowController + Approval Policy
+  - exact immutable approval snapshot (action/provider/slot/price/revision/expiry)
+  - explicit confirmation; no model/provider review can grant it
+     |
+Local PostgreSQL (ONE shared authority, schema-owned tables)
+  - workflows / approvals / operations / user memory / provider mock state
+  - UNIQUE constraints / CAS / row-level locks / durable transactional outbox
+     |
+PostgreSQL outbox/queue with claim leases & fencing generations
+     |
+Local worker replicas (>=2 for collision/recovery test)
+  - re-read granted approval and durable operation before side effect
+  - provider mock gateway, eight unchanged employer public methods
+  - same idempotency key; authoritative status-first reconciliation
+  - bounded retries, abandonment recovery, no new key after ambiguity
+     |
+Mock provider authoritative state (local PG isolated schema)
+     |
+OpenTelemetry traces / metrics (local collector OR demonstrably exported
+OTLP sink) + sanitized per-run JSONL for employer's raw trace deliverable
+```
+
+**Exactly one orchestration implementation now:** durable PostgreSQL outbox/operation queue with `FOR UPDATE SKIP LOCKED`-style atomic claims, persistent attempts, lease expiry and fencing token/generation. No Redis, Kafka, Celery broker, Temporal, Step Functions or cloud dependency unless empirical tests prove the native Postgres worker design fails a required invariant. If an extra orchestrator is proposed, STOP for sponsor approval; never add it automatically. PostgreSQL `SKIP LOCKED` is suitable for queue consumers, not general authorization decisions; DB uniqueness and approval guards are the actual authority.
+
+**Auth now, no fake OIDC claim:** local authenticated demo accounts with password hashing (Argon2id or comparably reviewed KDF), server-verified session cookie (`HttpOnly`, `SameSite`, expiry, appropriate `Secure` in HTTPS mode), CSRF protection on mutations, per-route resource ownership, and separate test identities. Provide pre-seeded **synthetic** credentials for demo. In local plain-HTTP mode, disclose its limitations and restrict to loopback; don't claim production-grade TLS or federated OIDC. OIDC is a later swap behind the same verified principal boundary, not a required external service.
+
+**Observability now:** OpenTelemetry-compatible spans for API request, model proposal, workflow/approval, durable queue claim, provider call, status reconciliation, memory action, run-budget exit; trace IDs correlate with structured **sanitized** JSONL evidence. Use local collector or local sink; no external telemetry SaaS. Capture p50/p95, duplicate-prevention count, status-unknown count, queue wait and recovery latency from measured synthetic test runs. Do not invent latency/cost/token metrics or log credentials/sensitive text.
+
+**Repository & environment:** Windows Docker Desktop observed installed/running 2026-11-02, 12 CPUs, ~8 GB daemon allocation. Confirm again during Codex intake; this is **environment evidence, not proof of Docker Compose readiness**. Pin container images/dependencies and migrations; minimize image size/service footprint to fit resources. Service readiness checks and safe shutdown/restart are mandatory.
+
+**Local install/run/test in <=3 documented commands** from a clean checkout, using `docker compose` (the full commands must actually be executed from a clean worktree). Target interface:
+1. `docker compose up -d --build --wait` (DB + API + worker replicas + local telemetry, with health checks).
+2. `docker compose exec -T api python -m unittest discover -s tests -v` or a single documented eval+regression command; it must generate the employer's eval CSV and raw timeout trace.
+3. `docker compose down` (optional cleanup; alternatively one command to open/run the demo). No separate Postgres/OIDC/OTel install or cloud account. Docker image fetching is installation setup; **offline evaluation itself MUST NOT call an LLM API or external provider**.
+
+**Preservation of old correctness:** keep the 28 G1 and 37 G2 recorded tests reproducible on SQLite, then add a **same-contract PostgreSQL conformance suite**. Do not substitute a brand-new PG implementation without equivalent approval, retry, crash, and provider behavior. Migrate schemas through versioned migrations; ownership and provider semantics must remain exact. Existing fixture provider responses/failure frequencies and tool method signatures are non-negotiable.
+
+## L2. Formal invariants — every layer enforces, never just promises
+
+1. **User authority**: signed authenticated principal is server-established and propagated to API, queue job and provider gateway; user A cannot read/change/approve/recover B's workflow, memory or booking. The model/review/browser cannot supply an authoritative `user_id`.
+2. **Approval gate**: every booking, cancellation and reschedule requires a versioned exact approval. Consent binds action, user, workflow/logical request, provider, old/new slot, original/current quote or explicit unknown sentinel, hold ID/expiry, booking ID, revision and fingerprint; changes and ABA revoke it. No worker may execute without a persisted matching GRANTED approval.
+3. **Durable outcome**: one logical booking intent -> one stable idempotency key and at most one booked side effect, even with multiple API/worker replicas, duplicate queue delivery, process kill, forced timeout-after-success and lease expiry. At-most-once effect is proved through provider key dedupe + DB uniqueness + status-first recovery; **do not claim the network call executed exactly once**.
+4. **PostgreSQL coordination**: transactionally write approval grant + operation + outbox event. Workers atomically claim job, obtain lease/fencing generation, validate approval/principal/revision, and retry with same key. A stale worker cannot authorize a **different** payload or key. After ambiguous tool outcome ALWAYS reconcile the provider's authoritative status before resending.
+5. **No held DB transaction during model, user consent or provider network wait**. Short SQL transactions only; row locks are not substituted for provider idempotency or external consistency.
+6. **Cancellation and reschedule**: first cancel 503 -> same-key retry, verify via `list_bookings`. Configured reschedule conflict leaves old slot unchanged. Quote ambiguity from PDF must be disclosed as `unknown`, never fabricated; fail closed if user cannot meaningfully authorize a price-changing action.
+7. **Memory**: facts scoped by verified user identity, tagged `user_stated` or `inferred`; unconfirmed inference never applies. Correct/forget across API instances, worker processes, traces, caches and future model context. Tombstones reject stale replay/resurrection; do not preserve forgotten raw values unnecessarily.
+8. **Execution bounds**: model calls <=8, tool calls <=16, monotonic user-turn wall <=20 seconds, transient retries <=2 beyond first, search candidates <=8. Enforced at the actual action wrappers. A hung external call must not leave an unbounded user response; if absolute hard cap cannot be met, report a failing gate, not a theoretical timeout.
+9. **Prompt injection**: review text is untrusted; can be displayed/summarized but cannot change policy, identity, approval or memory. Try forged roles/tool JSON, fake consent and cross-user exfiltration in tests. Security does not rely on a prompt saying 'ignore previous instructions'.
+10. **Honest UX and traces**: browser, worker, trace and provider DB agree; one run ID links them. Final UI success only after authoritative booked/cancelled/rescheduled read-back and exact slot. Unknown is an honest terminal state. Every failure/exhaustion has explicit user message and sanitized trace exit.
+11. **Fixed employer contract**: exactly eight original mock tool methods, fixed signatures/faults, seeded deterministic offline results; no real payments/providers/external services.
+12. **Evidence and version governance**: every claim links exact commit, test command/exit, raw per-run trace, SQL state, source/evidence SHA-256 and a generated evaluation result. No source or canonical silently changed to satisfy a checker.
+
+## L3. 100×-now test strategy and release gates
+
+**No fake performance claims.** Establish measured baseline with ONE API + ONE worker and 1x scenario batch. Then execute the **same workload with 100 logical concurrent customer workflows/requests** (and at least two API/worker processes), under seeded faults and repeat confirmations. Record CPU/memory limits, actual concurrency, p50/p95/maximum latency, queue wait, completion vs unknown and every invariant breach. 100x means **100× compared scenario count/concurrency**, not an unearned 100× throughput or scale-SLO claim.
+
+**Required concurrency/fault runs:**
+- 100 separate synthetic user intents under simultaneous booking, including contested provider/slot, 10-minute hold expiry, price drift and cross-user reuse.
+- 100 duplicate confirmations against one approved logical request: ONE operation and at most ONE committed booking across replicas.
+- Multiple worker crashes: before provider call, after provider success but before result persistence, after a 503, during lease reclaim, and during status readback. Surviving worker rechecks status first, same key, no duplicate.
+- Expired lease and zombie worker collision: generation/fencing plus provider dedupe; no fresh key or conflicting payload.
+- Wrong-slot provider response, status unavailable, malicious review, approval revision ABA, stale/forged cookies and CSRF, memory forgotten during an in-flight read, model/tool/wall budget exhaustion.
+- Independently query PostgreSQL tables (not only controller output) and compare browser response + per-run traces. Keep read-only SQL queries and hashed snapshots.
+- Equivalent SQLite vs PostgreSQL behavior for all prior G1/G2 invariants and employer fault branches; no regression accepted.
+
+**Gates, each sponsor-dispatched and CTO-adjudicated separately:**
+- `G0-V2`: source/old-canonical archive/new-canonical hash and versioned verifier agree; original employer PDF and `AGENTS.md` untouched.
+- `G1/G2-PARITY`: existing 65 tests green; all eight provider mock behaviors and G2 approval/recovery effects pass identically under PG conformance harness.
+- `G3X`: LOCAL PostgreSQL + >=2 worker replicas + >=2 API replicas, signed local auth, Postgres outbox/leases/fencing, governed memory, actual execution bounds and local OTel/JSONL instrumentation, validated by adversarial 100× scenario tests. **Do not report PASS without a running system, killed-worker recovery and raw DB/trace evidence.**
+- `G4`: complete local browser, real approval-card route, user-memory controls and side-by-side live trace. **At least 15, target 28** actual scripted-user end-to-end offline scenarios, generated CSV and inspected final DB/UX evidence. Groq `openai/gpt-oss-20b` optional live adapter only after deterministic offline baseline; never required for evals. The live model cannot directly grant approval/mutate DB.
+- `G5`: original six employer deliverables, <=2-page rendered design note with **measured 100× limitations and credible further evolution**, 3 authentic red/fix/regression bugs, full timeout-after-success JSONL and annotated excerpt, 3–5-minute REAL screen recording with chat/trace side by side, <=3 command README, Git repo accessible to the hiring team. Submission before Tuesday 2026-11-03 14:00 IST conservatively.
+- Any gate can be `PASS`, `FAIL` or `BLOCKED`; no "green" from self-reporting, attractive diagrams or an invalid hash.
+
+**At most ONE employer-defined nice-to-have**, only when must-haves and six deliverables are ready. Production-shaped infrastructure is a sponsor-directed architectural constraint, not an excuse to introduce optional customer features. Do NOT build proactive follow-up AND model routing; neither is necessary to win.
+
+## L4. NEXT CODEX ENGINEERING ORDER — G3X ONLY (SPONSOR MUST MANUALLY DISPATCH)
+
+**Dispatch status: PREPARED, NOT RUN.** Human sponsor authorizes by manually instructing Codex to read this exact section L4 of the current `CANONICAL.md`. No hidden assistant execution or autonomous next phase.
+
+**Sequence—mandatory with hard stop conditions:**
+
+**0. Intake / integrity**:
+- Read the FULL employer PDF, the FULL current `CANONICAL.md` including L, `AGENTS.md`, `DECISIONS.md`, G2 source and receipts. Report any conflict between sections; L0 supersession resolves the specified Docker/Postgres conflict. Do not edit frozen PDF, `AGENTS.md`, or historical receipts. Confirm active canonical hash from `scripts/check_contract.py` and `docs/canonical_history/` baseline; current Git status and current source commit.
+- Rerun G0-V2 plus prior 28 provider + 37 controller regressions from current source before creating any migration. If ANY fail, STOP and return evidence.
+- Check `docker compose version`, Docker daemon, available memory, ports and disk. Confirm local-only test environment; do not silently connect to remote services.
+- Verify existing ADR-008 already records the sponsor-authorized PostgreSQL/outbox decision and alternatives. Do NOT create a duplicate ADR. Create a new ADR only if implementation reveals a genuinely new architectural ambiguity or material decision, with evidence; keep ALL engineering instructions in this canonical and use `DECISIONS.md` only for historical rationale/results.
+
+**0A. Freeze the new governing contract FIRST:** after successfully verifying G0-V2, commit only the sponsor-authorized canonical V2, its byte-exact V1 archive, the updated hash verifier and ADR-008 as a separate, reviewable GOVERNANCE commit. Do not stage unrelated files, older untracked work-order drafts or evidence, and do not amend existing commits. Preserve the exact pre-commit and post-commit canonical SHA-256 and Git status. Then rerun G0-V2 against that committed source. If the verifier or recorded hash is inconsistent, STOP; do not start migration.
+
+**1. Test-first substrate, don't rewrite working safety:**
+- Write a traceability matrix mapping every L2 invariant and the PDF's eight must-haves/six deliverables to an actual test and accountable source file.
+- Implement local PostgreSQL migrations and a typed, narrowly scoped repository adapter. Existing SQLite tests remain intact; PostgreSQL parity tests must reuse G1/G2 logical scenarios, including restart, timeout-after-success, cancellation 503, reschedule conflict, user isolation, quote drift and exact approval. Do not mutate public signatures of the eight mock methods. No untested "copy" of business code.
+- Run migration on disposable PG; verify schema version, FK/unique constraints, row-level ownership, cross-process visibility and rollback. Use synthetic fixture data only.
+
+**2. Durable multiworker execution:**
+- Persist the approved operation and outbox job atomically; worker claims use PG row locks/lease expiry and fencing generation, with stable operation/idempotency key and provider-status readback. Idempotent job redelivery, poison work/dead-letter/UNKNOWN_SAFE retention, and recovery after process kill must be executable, not just described.
+- Run at least TWO real worker processes against ONE shared PG; run at least TWO API replicas and verify one logical booking across replicas. Neither API nor worker can grant approval based on model output. Queue payload may refer only to durable operation ID; worker re-reads approved snapshot.
+- Write failing race/crash tests FIRST, then minimal fixes with source snapshots and regressions. No blind new-key retry.
+
+**3. Authenticated principal and HTTP correctness:**
+- Implement locally authenticated, synthetic demo users; audited password hashing, expiry/secure cookie behavior, CSRF for mutating cookie routes, session-bound user IDs, per-row authorization. No browser/model/provider review can forge `user_id`; verify user A cannot access user B's workflow, approval, booking, memory or trace.
+- NO public auth or real user secrets; loopback-only demo and no misleading OIDC/TLS production claim. HTTP route for approval must prove the approval card was actually displayed and matches current fingerprint/revision before accepting consent. If full browser UI is not yet built, exercise this route using HTTP integration tests, and stop after G3X.
+
+**4. G3 features integrated across replicas:**
+- Persistent memory (stated/inferred confirmation/correction/forget with no resurrection), including cross-process cache and model-context tests.
+- Actual hard max model=8/tool=16/wall=20s/retries=2. Synthetic blocked-call test must produce bounded terminal response or G3X=FAIL. Unknown post-timeout statuses require durable reconciliation later, not fabricated failure or fresh key.
+- Instrument real spans and sanitized per-run JSONL. Verify trace ID spans browser/API -> durable queue worker -> mock provider -> authoritative SQL. No raw keys/token/private user input; report null for unavailable model token/cost metrics.
+
+**5. 100× empirical proof (same machine):**
+- Benchmark baseline (one worker/one API), then run controlled 100-workflow test with two workers/API replicas and 100 duplicate-confirmations test. Capture real counts, rates, p50/p95, retries, unknowns, CPU/memory, timeouts, DB violations, trace-to-response parity. Do not assert 100× throughput; explicitly explain capacity and bottleneck. Fail on ANY double-booked logical intent or unauthorized action.
+- Run clean-checkout `<=3` command procedure and verify all 65 prior tests plus new G3X checks on actual PG. Keep SQLite fallback for deterministic provider baseline but DO NOT substitute a SQLite-only system when presenting the requested distributed runtime.
+
+**6. Evidence / commit / stop:**
+- Commit implementation in reviewable commits; do not push or publish without separate sponsor authorization. Preserve every old G0–G2 receipt, and the canonical archive unchanged. Record commands, exit codes, totals, failures/skips, start/stop timestamps, exact code commit, source hashes, DB snapshots, raw trace, memory-forget proof, auth/CSRF tests, two-worker crash trace, 100× raw results and actual read-only database checks.
+- Answer from PROOF: (i) what was assumed, (ii) what was missed, (iii) what looks right but is false, (iv) what can be defended with independent evidence. State remaining risks and dependencies. Do not fake completed OIDC, AWS deployment or vendor certification.
+- **STOP AFTER G3X**, even if all tests pass. G4/G5/Groq are NOT authorized by this order; wait for CTO acceptance and separate manual sponsor dispatch. If tooling cannot support local PG or hard deadline, report `BLOCKED` with actual evidence; never silently weaken the sponsor's architecture choice or alter the canonical.
+
+**Acceptance receipt template (mandatory):**
+
+```text
+GATE: G3X | PASS / FAIL / BLOCKED (CTO acceptance pending)
+CANONICAL_ID: ORANGE-FOUNDINGAI-20261102-002
+CANONICAL_SHA256: <exact checked hash from repo, not pasted guess>
+CODE_COMMIT: <exact sha>
+COMMANDS: <all exact commands + exits, incl clean clone, tests, migrations, load>
+TESTS: provider/G2 parity, G3 memory/budgets/traces, multiworker/auth/race, 100x benchmark; passed/total/skipped
+LOCAL_DISTRIBUTED_TOPOLOGY: PostgreSQL, API replicas, worker replicas, telemetry status (observed)
+EVIDENCE_SHA256: <source/test/DB snapshots/JSONL/probe/eval files>
+OBSERVED_PROVIDER_STATE: <SQL truth vs UI result vs approved snapshot>
+REJECTED_ASSUMPTIONS: <actual counterexample + red/fix/green evidence>
+KNOWN_FAILURES: <none proven or explicit defects>
+LATER_GATES: G4/G5 NOT STARTED
+STOPPED: YES
+```
+
+## L5. CTO acceptance: no self-congratulation, only earned decisions
+
+- **What was assumed?** That PostgreSQL or an OTel collector makes us 100× scalable; it does not. Capacity needs measured workload and healthy failure-path behavior. That local login is OIDC; it is not. That an outbox worker provides exactly-once HTTP invocation; it cannot.
+- **What was missed?** Dual-writer stale-leases, token forgery, status-read race, changed approved slot, memory resuscitation via stale cache, blocked-call wall timeout and final UI's truthfulness. Write adversarial cases BEFORE calling architecture best-in-class.
+- **What looks right but isn't?** 100 green unit tests, zero real distributed workers; spans with no linked approval; two services that share no durable queue; a valid JSON intent with invalid user authorization; a success toast before provider status read; 100 requests processed but 100× throughput claimed; a <=3-command README that fails on clean checkout.
+- **What would I defend?** A fully local, measurable multiworker system whose Postgres authority independently verifies consent, provider outcome and user scoping, with reversible migrations, real injected worker crashes, exactly one *business effect per logical booking intent*, a bounded and truthful agent, and generated eval evidence tied to immutable Git source. Its 100× *concurrency test* is reported with honest capacity and confidence limits, not marketing claims.
+
+**External methodology (design inputs, not endorsements):**
+- Anthropic — https://www.anthropic.com/research/building-effective-agents
+- Anthropic agent evaluations — https://www.anthropic.com/research/demystifying-evals-for-ai-agents
+- AWS Agentic AI Lens — https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/
+- AWS reliability — https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/reliability-design-principles.html
+- PostgreSQL queue locking — https://www.postgresql.org/docs/current/sql-select.html
+
+**END OF CURRENT CANONICAL V2 `ORANGE-FOUNDINGAI-20261102-002`.**
+
+
+---
+
+# M. CANONICAL V3 — FIVE-YEAR PRINCIPAL-ARCHITECTURE ADJUDICATION AND MANDATORY CORRECTIONS
+
+**Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003`  
+**Status:** SPONSOR-REQUESTED FIVE-YEAR ARCHITECTURE REVIEW — BINDING CORRECTIONS TO G3X, NOT IMPLEMENTATION EVIDENCE  
+**Previous full canonical:** `ORANGE-FOUNDINGAI-20261102-002`, byte-for-byte archived at `docs/canonical_history/CANONICAL_ORANGE-FOUNDINGAI-20261102-002_FROZEN.md`, SHA-256 `32be62a2ec8330328ef57ad5110cbe23a63a84e8f59908aa2355324796115153`. Original V1 archive remains independently pinned.  
+**Instruction precedence:** Original employer PDF > current `CANONICAL.md`, section M superseding conflicts in L > current sections L and A–K > ADR rationale > code/evidence for implementation truth. All Codex engineering instructions are contained in this canonical, NOT chat or separate draft CTO documents. Human sponsor manually dispatches each gate; no new Codex execution is authorized by merely writing this amendment.
+
+## M1. Five-year investment thesis — durable contracts beat durable vendor choices
+
+**Architecture selected for the sponsor's 100×-NOW constraint:** A model-independent, policy-governed, modular **single business-authority domain** with locally replicated API and outbox worker processes, PostgreSQL as transactional system of record, and independently testable provider mock/tool boundary. **It is NOT a microservice swarm or a multi-agent autonomous orchestrator.** Protect the employer's fixed 8 provider tools, 8 must-haves, 6 deliverables, offline evals and <=3-command local launch.
+
+Over the next five years the likely changing dimensions are model vendors, provider integrations, identity implementation, traffic patterns, deployment environment and orchestration framework. The stable, defendable assets must remain:
+1. Typed versioned intent and deterministic workflow transition contract.
+2. Human permission as a revocable, immutable, time-limited decision tied to exact action/provider/slot/price/revision and authenticated actor.
+3. Durable logical-request/operation identities and same-key reconciliation semantics.
+4. Portable provider and model adapters behind strict schemas and untrusted-output boundaries.
+5. Governed user-scoped memory with provenance/forgetting and retrieval suppression.
+6. Outcome-driven isolated offline and adversarial evaluations, tied to released behavior/model/policy version.
+7. Traces and decision receipts containing independent ground truth, without raw private payloads.
+
+No vendor-specific API, autonomous-agent framework or queue implementation should be able to bypass or redefine these invariants. Avoid claiming five-year capacity forecasts; validate architecture experimentally and evolve under load.
+
+## M2. Binding defects to address before claiming '100×' or release
+
+### M2.1 External provider is NEVER part of our authority transaction (P0)
+
+In local PostgreSQL it is acceptable for the mock provider to use the same PG *server* for setup simplicity, but it MUST use a **separate schema/role and independent transaction/connection boundary**. No `WorkflowController`, API handler or outbox worker may directly read/write provider-booking or provider-outcome tables in the operational path. Provider behavior and status are accessible ONLY through the eight original public mock methods. The **independent test grader** may use a separate read-only role to inspect provider SQL truth.
+
+Never rely on atomic commits that simultaneously change the application's approval/operation tables and the provider's booking table; a future external provider never shares our transaction. The test MUST inject a provider commit followed by response loss, an out-of-process provider failure, and restarted worker reconciliation. All same-key no-duplicate guarantees must survive that separation. The mock may share a PostgreSQL deployment but MUST behave like an independent side-effect boundary.
+
+### M2.2 Response budget and long-running work must have an explicit protocol (P0)
+
+The canonical's `MAX_WALL_SECONDS=20` applies to an individual user-facing **run/HTTP interaction**, not necessarily to completing an already authorized durable background operation. Support an explicit `PENDING_VERIFICATION` / `OUTCOME_UNKNOWN` external response with an operation ID and safe status read/polling; this is **not** a claim of successful booking. Client retries must reuse the same logical request and operation ID, not mint new intent. Backend work may continue or recover later from durable state with separate, persisted per-operation attempt/lease budgets. User can refresh/reconnect and see the same operation state and, upon authoritative verification, the final result.
+
+No initial booking side effect is permitted to start after the initiating run's execution budget has expired; an already authorized persisted operation may be reconciled by a bounded worker under its own scope. Define *both* a synchronous response timeout and a durable recovery bound, and ensure neither can be bypassed by worker restarts. A blocking model/provider call must be isolated/cancellable or return a safe pending outcome within 20 seconds; never claim that `time.monotonic()` checking after an uninterruptible call enforces a hard deadline. Test delayed/hung model, delayed status readback, user disconnect, worker crash and response replay.
+
+### M2.3 Approval presentation cannot be inferred from backend state (P0)
+
+The server can prove it **issued** a specific immutable card/snapshot and authenticated user consent references the current card ID and revision. It cannot prove a human actually read, saw or understood the card solely from an API event. The G4 browser test MUST visibly render the exact current approved details and show that an old card cannot be confirmed after changes. The G3X HTTP integration test must prove: issued card with exact price/status; same-session authenticated confirmation; no confirmation if card absent/stale/forged, no cross-user approval, CSRF denied, and no mutation through alternate routes.
+
+Do not create a security claim that server logs prove perception by the customer. A click event is consent-record evidence in this local demo, not proof of informed understanding.
+
+### M2.4 Worker lease and fencing semantics need two independent safeguards (P0)
+
+A generation/fencing token can stop an expired worker from updating OUR PostgreSQL state, but it cannot physically cancel an external API call that already escaped. **Provider idempotency + immutable operation payload + authoritative readback** must independently prevent duplicate *provider business effects*. All duplicate/leaseless/stale-worker jobs must reference the SAME stored operation key and payload. Reclaim must never generate a new booking ID or idempotency key.
+
+Test zombie worker resumes after lease expiry while replacement worker runs, including a provider call that has already committed, and prove one logical booking. If a hypothetical future provider lacks reliable idempotency/status, define a safety-restricted or manual-reconciliation mode; do not market exactly-once effects without a provider capability that can support them.
+
+### M2.5 Privacy and audit records need separate retention policies (P0)
+
+A customer **forget** action must delete/suppress operational long-term preferences and any derived search/model context across replicas, caches and sessions. Audit logs and raw trace artifacts MUST NOT retain raw forgotten sensitive preference values as long-lived retrievable material. Prefer hash/salted ID, field-level redaction, cryptographically or physically restricted audit metadata, retention and deletion policies. Never let an audit history re-seed memory. Consent/operation receipts may retain minimal non-sensitive evidence of approval and provider action according to explicit documented retention.
+
+Test: memory forget while another replica holds stale cache; model context refresh after forget; attempts to reconstruct old values from trace/history; and cross-user trace access. If necessary, fail closed and disclose limits rather than falsely promise erasure from immutable records/backups.
+
+### M2.6 Attribution and behavior versioning across five years (P1, may be part of G4)
+
+Every run should link `workflow_version`, `policy_version`, `tool_contract_version`, `prompt_version`, `model_id`, `schema_migration_version`, `code_git_sha`, and source seed/simulation ID where relevant. Versioned interfaces are backward-compatible under in-flight jobs; a new deployment cannot rewrite an old pending operation's meaning. Include migration/rollback tests (old pending operation under new code). Prompt/model alternatives must be compared against the same offline baseline, and never promote solely on an LLM judge score.
+
+### M2.7 100× measurement validity, blast-radius control and data recovery (P1)
+
+Separate **100 simultaneously active logical workflows** from **100 repeated confirmations of ONE workflow** and from **100× sustained throughput**. They are three different tests; report absolute counts and measured latency, unknown outcomes, DB invariants, CPU/memory, retries, queue depth and seed. Repeat runs with identical initial state and clearly identify single-machine limitations; no invented throughput extrapolation or HA claim.
+
+Implement an independent PG **backup-and-restore rehearsal** of synthetic approval/operation/provider states and reconciliation after restore to a disposable local DB; prove that historical duplicate delivery does not re-book. A backup containing external-provider state must not be mistaken for ability to roll back an actual provider's side effect. Record data restoration limitations. At 100×, monitor pool limits, per-user fair scheduling, queue backpressure and memory/trace retention; do not add an unbounded queue.
+
+## M3. Architecture alternatives — explicit rejected and conditional choices
+
+| Option | Employer local/3-command fit | Authority/recovery evidence | 100× and five-year adaptability | Decision |
+|---|---|---|---|---|
+| Existing SQLite single-process controller | strongest simplicity, 65/65 observed regressions | already proven at G2 boundary | shared-write throughput and multi-instance execution limited | PRESERVE as trusted comparison, not sponsor's final architecture |
+| **PostgreSQL modular business core + native durable outbox + 2 API/2 worker replicas** | feasible if Docker Compose clean-run verified | same approval invariants, independent provider status and crash tests required | strong incremental path with replaceable queue/model/identity/telemetry adapters | **SELECT for 100× now, conditionally** |
+| PostgreSQL + Temporal (or Step Functions) now | extra service/install/dependencies and runtime complexity | durable orchestration useful for long waits, but effects still need idempotency | consider when orchestration's timer/history needs exceed validated native outbox | **DEFER; migrate when measured need** |
+| Kubernetes microservices + swarm of LLM agents now | overstates employer need; deployment burden, more failure paths | no inherent gain in consent or exactly-once effects | operational scale potential, disproportionate early cost | REJECT |
+| Hosted AWS-only solution | violates all-local employer execution expectation | not a valid submission baseline | future deployment target only | REJECT FOR ASSIGNMENT |
+
+Selection criteria are a **qualitative CTO judgment**, not empirical vendor performance scores. No "100% best" assertion is permitted; architecture promotion must earn proof under real workload and failure injection.
+
+## M4. Changes to the next engineering order and gate control — binding on Codex
+
+**All instructions remain in THIS canonical.** Section L4 G3X remains the only next executable engineering order, **as amended by M2–M4**. Codex MUST read ALL current canonical content; L4's V2 receipt label becomes `ORANGE-FOUNDINGAI-20261102-003` and G0-V3 verifies SIX pinned files (current V3, preserved V2 and V1, PDF, AGENTS, transcription). Old version receipts remain historical, not silently altered.
+
+**Sequence change before any PG migration:**
+1. **G0-V3 immutable baseline**: verify the current canonical against the updated `scripts/check_contract.py`, preserve V1 and V2 archives, rerun 65 G1/G2 tests, and commit only the V3 canonical governance set + ADR-009 + source-hash verifier. Historical CTO receipts are never overwritten. If not green, STOP. Two earlier draft CTO order files remain NON-AUTHORITATIVE.
+2. **Fault boundary design test FIRST**: provider controlled only through eight unchanged methods, separate operational DB connection/role/schema, no shared application/provider transaction, and clear independently queryable read-only grader path.
+3. **Transactional PostgreSQL execution**: atomic app approval+operation+outbox, leased/fenced worker ownership, SAME key and provider readback with real process crashes/duplicate delivery. Write failing regression before fixing.
+4. **Authenticated API and 20-second response contract**: server-owned principal, exact card issued, explicit user confirmation, CSRF, async pending status/refresh, durable recovery after user disconnect. Validate M2.2 and M2.3 before claiming safety.
+5. **Memory, trace, privacy, migrations and load**: enforce M2.5 and M2.6, exercise 100-workflow and duplicate-confirmation loads and restore rehearsal with real SQL/trace evidence.
+6. **G3X outcome gate**: submit actual code commit, commands/exits, fresh G0-V3 6/6, all 65 previous regressions (SQLite baseline), PostgreSQL parity and new G3X tests, independent PG and provider state, trace JSONL, crash/timeouts, cleanup behavior, actual benchmark measurements, known limitations. NO automatic G4; human sponsor manually dispatches next phase after CTO review.
+
+**Do not trade off employer deliverables** for fake infrastructure: the actual >=15 scripted-user end-to-end evaluations and 3–5-minute real screen recording remain mandatory G4/G5 acceptance. G3X cannot declare a fully delivered assignment.
+
+**Stop rule:** if local compose fails three-command proof, a required 20s deadline has an unbounded call, authority boundaries permit an unapproved mutation, external provider state is assumed atomically committed with app state, memory is resurrected, or any 65 baseline regression fails, report G3X FAIL/BLOCKED with exact commands/receipts. No silent fallback, no false-green test, no auto advance.
+
+**Five-year methodology references (not vendor endorsement):**
+- Anthropic, `Building effective agents`: https://www.anthropic.com/research/building-effective-agents
+- Anthropic, `Demystifying evals for AI agents`: https://www.anthropic.com/research/demystifying-evals-for-ai-agents
+- AWS Agentic AI Lens: https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/
+- AWS agent security: https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/security-design-principles.html
+- AWS agent observability/non-repudiation: https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec05.html
+- PostgreSQL queue locking: https://www.postgresql.org/docs/current/sql-select.html
+
+**END OF CURRENT CANONICAL V3 `ORANGE-FOUNDINGAI-20261102-003`.**

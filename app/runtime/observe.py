@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import time
 import uuid
+from functools import lru_cache
 from opentelemetry import trace, propagate
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -60,9 +61,16 @@ class Run:
         with (folder/(self.run_id+'.jsonl')).open('a') as f: f.write(encoded+'\n')
         return record
 
+@lru_cache(maxsize=1)
 def build_sha():
     p=Path('BUILD_INFO.json')
-    return json.loads(p.read_text()).get('code_git_sha','UNCOMMITTED') if p.exists() else 'UNCOMMITTED'
+    if not p.exists():return 'UNCOMMITTED'
+    metadata=json.loads(p.read_text())
+    for name,expected in metadata.get('source_sha256',{}).items():
+        source=Path(name)
+        if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest()!=expected:
+            return 'UNCOMMITTED'
+    return metadata.get('code_git_sha','UNCOMMITTED')
 
 def current_traceparent():
     carrier={}; propagate.inject(carrier)

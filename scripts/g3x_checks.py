@@ -36,6 +36,7 @@ def main():
     os.environ['G3X_EVIDENCE_DIR']=str(out/'cases')
     paths=[*ROOT.glob('app/**/*.py'),*ROOT.glob('scripts/*.py'),*ROOT.glob('tests/**/*.py'),*ROOT.glob('tests_g3x/**/*.py'),
            ROOT/'CANONICAL.md',ROOT/'compose.yaml',ROOT/'requirements-g3x.txt']
+    if (ROOT/'BUILD_INFO.json').exists():paths.append(ROOT/'BUILD_INFO.json')
     hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
     with zipfile.ZipFile(out/'source.zip','x',zipfile.ZIP_DEFLATED) as z:
         for path in paths:z.write(path,path.relative_to(ROOT))
@@ -77,8 +78,9 @@ def main():
                 for span in library.get('spans',[]):
                     if base64.b64decode(span['traceId']).hex() in trace_ids:exported.append(span)
     (out/'otel_spans.json').write_text(json.dumps(exported,indent=2)+'\n')
+    from app.runtime.observe import build_sha
     report={'command':[sys.executable,'-X','utf8','scripts/g3x_checks.py','--label',a.label]+(['--match',a.match] if a.match else []),
-            'code_git_sha':json.loads((ROOT/'BUILD_INFO.json').read_text())['code_git_sha'] if (ROOT/'BUILD_INFO.json').exists() else 'UNCOMMITTED',
+            'code_git_sha':build_sha(),
             'baseline_command':command,'baseline_exit_code':old.returncode,'baseline_tests':65,
             'source_check_command':check_command,'source_check_exit_code':check.returncode,
             'timestamp_utc':datetime.now(timezone.utc).isoformat(),'g3x_tests_run':result.testsRun,

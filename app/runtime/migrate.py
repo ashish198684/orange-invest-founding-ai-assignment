@@ -109,6 +109,8 @@ INSERT INTO authority.schema_versions(version) VALUES(2) ON CONFLICT DO NOTHING;
 
 UPGRADE_V3='''
 ALTER TABLE authority.memory_facts ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+UPDATE authority.memory_facts SET expires_at=clock_timestamp()+interval '1 day'
+ WHERE provenance='inferred' AND NOT confirmed AND NOT forgotten AND expires_at IS NULL;
 INSERT INTO authority.schema_versions(version) VALUES(3) ON CONFLICT DO NOTHING;
 '''
 

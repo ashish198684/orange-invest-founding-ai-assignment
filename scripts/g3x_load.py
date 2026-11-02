@@ -64,9 +64,13 @@ def main():
     barrier=Barrier(args.count);started=time.monotonic();rows=[]
     def create(i):
         barrier.wait();code,result=trials[i].call('POST','/workflows',{'logical_request_id':plans[i]['logical_id'],'draft':plans[i]['draft']})
-        assert code==200,result
-        return result['workflow_id']
-    with ThreadPoolExecutor(args.count) as pool:workflows=list(pool.map(create,range(args.count)))
+        return {'http_status':code,'result':result}
+    with ThreadPoolExecutor(args.count) as pool:created=list(pool.map(create,range(args.count)))
+    (out/'create_results.json').write_text(json.dumps(created,indent=2))
+    (out/'create_state.json').write_text(json.dumps({'workflows':query('SELECT status,count(*) n FROM authority.workflows GROUP BY status'),
+                                                   'provider_bookings':query('SELECT count(*) n FROM provider.provider_bookings')},indent=2))
+    assert all(r['http_status']==200 for r in created),{code:sum(r['http_status']==code for r in created) for code in {r['http_status'] for r in created}}
+    workflows=[r['result']['workflow_id'] for r in created]
     active=query("SELECT count(*) n FROM authority.workflows WHERE status='COLLECTING'")[0]['n']
     stop=Event();queue_samples=[]
     def sample():

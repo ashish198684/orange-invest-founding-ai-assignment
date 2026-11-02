@@ -109,7 +109,9 @@ class Handler(BaseHTTPRequestHandler):
             status=403 if exc.code=='forbidden' else 409
             result={'error':exc.code,'message':'No unapproved action was performed.'}
         except BudgetExceeded:status=202;result={'status':'OUTCOME_UNKNOWN','message':'Response limit reached; refresh the same request to verify its status.'}
-        except Exception:status=400;result={'error':'invalid_or_unavailable','message':'Request could not be verified; no success is claimed.'}
+        except Exception as exc:
+            run.emit('handler_error',error_class=type(exc).__name__)
+            status=400;result={'error':'invalid_or_unavailable','message':'Request could not be verified; no success is claimed.'}
         finally:
             if result is None:result={}
             if not run.closed:run.emit('run_exit',exit_reason='denied_or_error',status=str(status))

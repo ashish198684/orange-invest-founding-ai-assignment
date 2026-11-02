@@ -27,13 +27,13 @@ class PgController(WorkflowController):
 
     def _approval(self,db,w,snapshot):
         before=_memory_revision.get()
-        if before is not None and before!=Memory(self.context.user_id).revision():
+        if before is not None and before!=Memory(self.context.user_id).revision(db):
             raise SafetyError('memory_changed_retry')
         return super()._approval(db,w,snapshot)
 
-    def _draft(self,w):
-        raw=super()._draft(w)
-        memory=Memory(self.context.user_id).context()
+    def _draft(self,w,db=None):
+        raw=super()._draft(w,db)
+        memory=Memory(self.context.user_id).context(db)
         if 'area' not in raw and 'area' in memory:raw['area']=memory['area']
         preferences={k:memory[k] for k in ['earliest_hour','technician'] if k in memory}
         if preferences:raw['preferences']={**preferences,**raw.get('preferences',{})}

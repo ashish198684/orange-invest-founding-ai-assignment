@@ -8,19 +8,20 @@ from app.runtime.observe import active
 
 class Memory:
     def __init__(self,user_id):self.user_id=user_id;self.store=PgStore(user_id)
-    def view(self):
-        with self.store.connect() as db:
-            rows=[dict(r) for r in db.execute('SELECT * FROM memory_facts WHERE user_id=?',(self.user_id,))]
+    def view(self,db=None):
+        if db is None:
+            with self.store.connect() as connection:return self.view(connection)
+        rows=[dict(r) for r in db.execute('SELECT * FROM memory_facts WHERE user_id=?',(self.user_id,))]
         for row in rows:
             if row['expires_at'] and row['expires_at']<=datetime.now(timezone.utc):
                 row['value_json']=None;row['forgotten']=True
         return rows
-    def revision(self):
+    def revision(self,db=None):
         # Includes tombstones and expiry; values never enter the revision token.
-        return tuple(sorted((r['key'],r['version'],r['forgotten']) for r in self.view()))
-    def context(self):
+        return tuple(sorted((r['key'],r['version'],r['forgotten']) for r in self.view(db)))
+    def context(self,db=None):
         # No process cache or audit-history fallback is permitted.
-        return {r['key']:json.loads(r['value_json']) for r in self.view()
+        return {r['key']:json.loads(r['value_json']) for r in self.view(db)
                 if not r['forgotten'] and r['confirmed'] and r['value_json'] is not None}
     def update(self,key,value,*,event_id,expected_version=0,provenance='user_stated',forget=False,confirm=False):
         if key not in {'area','earliest_hour','technician'}:raise ValueError('invalid_memory_key')

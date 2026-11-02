@@ -62,8 +62,8 @@ def main():
             finally:
                 stop.set();thread.join(timeout=12)
                 (out/('resources_'+str(count)+'.json')).write_text(json.dumps(measurements,indent=2))
+                compose(project,'cp','api:/state/receipts/'+label,str(out/label))
             run(sample)
-            compose(project,'cp','api:/state/receipts/'+label,str(out/label))
             if count==100:
                 restore_label='restore'
                 compose(project,'exec','-T','api','python','-X','utf8','scripts/g3x_restore.py','--prepare','--label',restore_label)

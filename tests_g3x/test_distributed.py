@@ -398,6 +398,40 @@ class Distributed(unittest.TestCase):
         self.assertIsNone(memory.view()[0]['value_json'])
         with self.assertRaises(ValueError):memory.update('area',None,event_id='late-confirm',expected_version=1,confirm=True)
 
+    def test_concurrent_views_use_one_database_slot_each(self):
+        from threading import Barrier
+        w=self.c.create_request('pool-regression',**self.draft())['workflow_id']
+        original=Memory.view;barrier=Barrier(12)
+        def synchronized(memory,db=None):
+            if db is not None:barrier.wait(timeout=5)
+            return original(memory,db)
+        Memory.view=synchronized
+        try:
+            with ThreadPoolExecutor(12) as pool:rows=list(pool.map(lambda _:self.c.view(w),range(12)))
+        finally:Memory.view=original
+        self.assertEqual(len(rows),12)
+        self.assertTrue(all(row['workflow_id']==w for row in rows))
+
+    def test_wrong_slot_readback_cannot_claim_success(self):
+        w,a,oid=self.reserve();original=self.c.provider.list_bookings
+        def wrong_slot(uid):
+            rows=original(uid)
+            return [{**row,'slot':'2099-01-01T10:00:00+05:30'} for row in rows]
+        self.c.provider.list_bookings=wrong_slot
+        self.assertEqual(self.c.execute(oid)['status'],'OUTCOME_UNKNOWN')
+        truth=self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))
+        self.assertEqual(len(truth),1);self.assertEqual(truth[0]['slot'],a['snapshot']['new_slot'])
+        self.assertEqual(PgController(self.uid).execute(oid)['status'],'BOOKED')
+        self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))),1)
+
+    def test_status_unavailable_prevents_mutation_until_reconciled(self):
+        w,a,oid=self.reserve()
+        def unavailable(key):raise ProviderError('transient_503',503)
+        self.c.provider.get_booking_status=unavailable
+        self.assertEqual(self.c.execute(oid)['status'],'OUTCOME_UNKNOWN')
+        self.assertFalse(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,)))
+        self.assertEqual(PgController(self.uid).execute(oid)['status'],'BOOKED')
+
     def test_memory_forget_during_inflight_search_discards_stale_context(self):
         memory=Memory(self.uid);memory.update('area','Indiranagar',event_id='remember')
         w=self.c.create_request('inflight-memory',service='plumber',date_window=self.draft()['date_window'])['workflow_id']

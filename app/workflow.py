@@ -180,7 +180,7 @@ class WorkflowController:
             raise SafetyError('forbidden')
         return row
 
-    def _draft(self,w):
+    def _draft(self,w,db=None):
         return json.loads(w['draft_json'])
 
     def _state(self, db, wid, state):
@@ -249,7 +249,7 @@ class WorkflowController:
         with self.store.connect() as db:
             w=self._owned(db,workflow_id)
             return {'workflow_id':w['workflow_id'],'logical_request_id':w['logical_request_id'],
-                    'draft':self._draft(w),'revision':w['revision'],
+                    'draft':self._draft(w,db),'revision':w['revision'],
                     'status':w['status'],'booking_id':w['booking_id']}
 
     def next_question(self, workflow_id):
@@ -341,7 +341,7 @@ class WorkflowController:
             w=self._owned(db,workflow_id)
             self._editable(db,w,booking=True)
             revision=w['revision']
-            draft=self._draft(w)
+            draft=self._draft(w,db)
         if self.next_question(workflow_id): raise SafetyError('missing_fields')
         detail=self.provider.get_provider(provider_id)
         if not self._matches(draft,detail,slot): raise SafetyError('constraint_violation')

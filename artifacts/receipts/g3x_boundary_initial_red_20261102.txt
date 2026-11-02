@@ -1,0 +1,24 @@
+ Container orange-invest-api-run-3be05c79c904 Creating 
+ Container orange-invest-api-run-3be05c79c904 Created 
+test_fault_boundary (unittest.loader._FailedTest.test_fault_boundary) ... ERROR
+
+======================================================================
+ERROR: test_fault_boundary (unittest.loader._FailedTest.test_fault_boundary)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_fault_boundary
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/orange/tests_g3x/test_fault_boundary.py", line 4, in <module>
+    from app.runtime.provider_client import ProviderClient
+ModuleNotFoundError: No module named 'app.runtime.provider_client'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+

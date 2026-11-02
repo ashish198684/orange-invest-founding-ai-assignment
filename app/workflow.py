@@ -140,15 +140,19 @@ def execution_lock(path):
 class WorkflowController:
     MAX_ATTEMPTS = 3  # one delivery + two same-key retries; durable across restart
 
-    def __init__(self, db_path, *, user_id, clock=None, provider=None):
+    def __init__(self, db_path, *, user_id, clock=None, provider=None, store=None, execution_scope=None):
         if not isinstance(user_id,str) or not user_id.strip():
             raise SafetyError('forbidden')
         self.context = RequestContext(user_id)
         self.clock = clock or (lambda:datetime.now(IST))
         self.path = Path(db_path).resolve()
         self.provider = provider or ProviderMock(self.path,user_id=user_id,clock=self.clock)
+        self.store = store or self.provider.store
+        self.execution_scope = execution_scope or (lambda:execution_lock(self.path))
+        self.interpreter = ScriptedModel()
         self._check_context()
-        self.store = self.provider.store
+        if getattr(self.store,'managed_schema',False):
+            return
         db = self.store._open()
         try:
             db.executescript(SCHEMA)
@@ -156,6 +160,10 @@ class WorkflowController:
             db.close()
 
     def _check_context(self):
+        if getattr(self.store,'external_provider',False):
+            if self.provider.user_id!=self.context.user_id or self.store.principal!=self.context.user_id:
+                raise SafetyError('forbidden')
+            return
         if (self.provider.user_id != self.context.user_id
                 or Path(self.provider.store.path).resolve() != self.path):
             raise SafetyError('forbidden')
@@ -171,6 +179,9 @@ class WorkflowController:
         if row is None or row['user_id'] != self.context.user_id:
             raise SafetyError('forbidden')
         return row
+
+    def _draft(self,w):
+        return json.loads(w['draft_json'])
 
     def _state(self, db, wid, state):
         row = self._owned(db,wid)
@@ -238,7 +249,7 @@ class WorkflowController:
         with self.store.connect() as db:
             w=self._owned(db,workflow_id)
             return {'workflow_id':w['workflow_id'],'logical_request_id':w['logical_request_id'],
-                    'draft':json.loads(w['draft_json']),'revision':w['revision'],
+                    'draft':self._draft(w),'revision':w['revision'],
                     'status':w['status'],'booking_id':w['booking_id']}
 
     def next_question(self, workflow_id):
@@ -269,7 +280,7 @@ class WorkflowController:
     def chat(self, workflow_id, text):
         if text.strip().lower() in {'yes','y','confirm','approved','approve','ok','okay'}:
             raise SafetyError('approval_required')
-        patch=ScriptedModel().interpret(text,self._now())
+        patch=self.interpreter.interpret(text,self._now())
         if patch: self.propose(workflow_id,patch)
         return {'workflow':self.view(workflow_id),'question':self.next_question(workflow_id),
                 'message':'Constraints recorded. Consequential actions require an exact approval card.'}
@@ -330,7 +341,7 @@ class WorkflowController:
             w=self._owned(db,workflow_id)
             self._editable(db,w,booking=True)
             revision=w['revision']
-            draft=json.loads(w['draft_json'])
+            draft=self._draft(w)
         if self.next_question(workflow_id): raise SafetyError('missing_fields')
         detail=self.provider.get_provider(provider_id)
         if not self._matches(draft,detail,slot): raise SafetyError('constraint_violation')
@@ -422,6 +433,8 @@ class WorkflowController:
             db.execute("UPDATE approval_snapshots SET status='GRANTED',approved_at=? WHERE approval_id=?",
                        (self._now().isoformat(),approval_id))
             self._state(db,workflow_id,'EXECUTING')
+            if hasattr(self.store,'enqueue'):
+                self.store.enqueue(db,oid)
             return oid
 
     def confirm(self, workflow_id, approval_id):
@@ -489,7 +502,7 @@ class WorkflowController:
     def execute(self, operation_id):
         """Single mutation gate; only persisted, granted immutable operations execute."""
         self._check_context()
-        with execution_lock(self.path):
+        with self.execution_scope():
             with self.store.connect() as db:
                 op,s,w=self._operation(db,operation_id)
             completed={'book':'BOOKED','cancel':'CANCELLED','reschedule':'RESCHEDULED'}[s['action']]

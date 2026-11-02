@@ -1,0 +1,87 @@
+name: orange-invest
+x-code: &code
+  build: .
+  image: orange-invest-g3x:local
+  environment: &env
+    PGHOST: pg
+    PGDATABASE: orange
+    RUNTIME_STATE: /state
+    PROVIDER_URL: http://provider:8090
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+  volumes:
+    - runtime:/state
+  mem_limit: 384m
+  cpus: 1
+  init: true
+services:
+  pg:
+    image: postgres:16.15
+    environment:
+      POSTGRES_PASSWORD: local-bootstrap-only
+      POSTGRES_DB: orange
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres -d orange"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    mem_limit: 768m
+    cpus: 2
+  migrate:
+    <<: *code
+    command: [python, -m, app.runtime.migrate]
+    depends_on:
+      pg: {condition: service_healthy}
+  provider:
+    <<: *code
+    command: [python, -m, app.runtime.provider_server]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health',timeout=2)"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  telemetry:
+    <<: *code
+    command: [python, -m, app.runtime.telemetry_sink]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  api:
+    <<: *code
+    ports: ["127.0.0.1:8081:8080"]
+    depends_on:
+      provider: {condition: service_healthy}
+    healthcheck: &apihealth
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2)"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  api2:
+    <<: *code
+    ports: ["127.0.0.1:8082:8080"]
+    depends_on:
+      provider: {condition: service_healthy}
+    healthcheck: *apihealth
+  worker:
+    <<: *code
+    command: [python, -m, app.runtime.worker]
+    depends_on:
+      provider: {condition: service_healthy}
+  worker2:
+    <<: *code
+    command: [python, -m, app.runtime.worker]
+    depends_on:
+      provider: {condition: service_healthy}
+  gateway:
+    <<: *code
+    command: [python, -m, app.runtime.gateway]
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      api: {condition: service_healthy}
+      api2: {condition: service_healthy}
+    healthcheck: *apihealth
+volumes:
+  pgdata:
+  runtime:

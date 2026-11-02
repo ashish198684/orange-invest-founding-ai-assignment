@@ -36,12 +36,12 @@ def _time(value):
 
 
 class ProviderMock:
-    def __init__(self, db_path, *, user_id='demo-user', clock=None, config=None):
+    def __init__(self, db_path, *, user_id='demo-user', clock=None, config=None, store=None):
         if not isinstance(user_id, str) or not user_id.strip():
             raise ValueError('A trusted user context is required')
         self.user_id = user_id
         self.clock = clock or (lambda: datetime.now(IST))
-        self.store = Store(db_path)
+        self.store = store or Store(db_path)
         with self.store.connect(write=True) as db:
             row = db.execute('SELECT config_json FROM provider_config').fetchone()
             if row is None:

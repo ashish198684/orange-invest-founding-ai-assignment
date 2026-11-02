@@ -791,3 +791,11 @@ This journal records executed evidence under the sponsor-authorized update polic
 - **Source attribution:** `a6318d2dad919d6ba4fc7a02f5135dd94afd9f83`.
 - **Prior canonical SHA-256:** `4a5dcdb85c58922e335c25f7cff449203a5d04faad98945f2bfbfc58f702b977`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_4a5dcdb85c58922e335c25f7cff449203a5d04faad98945f2bfbfc58f702b977_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
 - **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.
+
+### Execution record 2026-11-02T14:35:49.932659+00:00
+
+- **Evidence:** `artifacts/receipts/g3x_pool_milestone_20261102/milestone.json`, SHA-256 `0e8fc29094f879a9b21dd4dd0cd5d2013ca2a96bca80c11c10e407cb2ea552cf`.
+- **Observed:** The first 100-request burst failed during creation: retained SQL shows 43 COLLECTING workflows and zero bookings. Nested memory reads exhausted bounded connection slots. Shared-transaction retrieval and a concurrent-reader regression now pass alongside wrong-slot and unavailable-status checks: SQLite 65/65, G3X 38/38, zero skipped, exit 0. Per-file hashes identify the tested source; an intermediate stale build label and one bounded OTLP exporter timeout are explicitly recorded. Fresh benchmark, restore and committed clean-worktree proof remain required; no release PASS yet.
+- **Source attribution:** `ee78b4d862324ff9e66d5ce0cae9955eff693741`.
+- **Prior canonical SHA-256:** `cf6d10eed84b12c4776b6ea54b7cb3d0fe44b64ff52c8a8ecfd986b0ca158265`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_cf6d10eed84b12c4776b6ea54b7cb3d0fe44b64ff52c8a8ecfd986b0ca158265_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.

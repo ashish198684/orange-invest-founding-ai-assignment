@@ -1,0 +1,29 @@
+{
+  "source_commit": "4acd387",
+  "implementation_commit": "a6318d2dad919d6ba4fc7a02f5135dd94afd9f83",
+  "failed_run": "artifacts/receipts/g3x_release_rehearsal_20261102",
+  "failed_command_index": 15,
+  "exit_code": 1,
+  "observed_retained_sql": {
+    "authority.workflows.COLLECTING": 43,
+    "provider.provider_bookings": 0
+  },
+  "inspection_command": [
+    "docker",
+    "compose",
+    "--project-name",
+    "orange-bench-100-1857eed4",
+    "exec",
+    "-T",
+    "pg",
+    "psql",
+    "-U",
+    "orange_grader",
+    "-d",
+    "orange",
+    "-c",
+    "SELECT status,count(*) FROM authority.workflows GROUP BY status; SELECT count(*) FROM provider.provider_bookings;"
+  ],
+  "finding": "Nested memory retrieval borrowed a second bounded connection while workflow view retained the first. The 100-request create burst failed; no booking load or throughput result was earned. Reuse the caller transaction and add a 12-reader barrier regression.",
+  "diagnostic_limit": "Reopening the retained benchmark also hit a localhost port collision with restored development API; no volumes were removed."
+}

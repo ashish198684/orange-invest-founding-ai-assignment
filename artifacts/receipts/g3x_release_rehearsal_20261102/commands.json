@@ -1,0 +1,266 @@
+[
+  {
+    "command": [
+      "docker",
+      "info",
+      "--format",
+      "{{.NCPU}} CPUs; {{.MemTotal}} bytes; engine {{.ServerVersion}}"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:16:38.461603+00:00",
+    "elapsed_seconds": 1.421000000089407,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "config"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:16:39.881856+00:00",
+    "elapsed_seconds": 0.2970000000204891,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-invest",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:16:40.170323+00:00",
+    "elapsed_seconds": 13.625,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:16:53.800424+00:00",
+    "elapsed_seconds": 49.46899999980815,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "stop",
+      "api2",
+      "worker2"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:17:43.274703+00:00",
+    "elapsed_seconds": 0.9220000000204891,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:17:44.189870+00:00",
+    "elapsed_seconds": 0.35900000017136335,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "stats",
+      "--no-stream",
+      "--format",
+      "{{json .}}",
+      "orange-bench-1-1857eed4-api-1",
+      "orange-bench-1-1857eed4-worker-1",
+      "orange-bench-1-1857eed4-pg-1",
+      "orange-bench-1-1857eed4-provider-1",
+      "orange-bench-1-1857eed4-telemetry-1",
+      "orange-bench-1-1857eed4-gateway-1"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:17:44.556363+00:00",
+    "elapsed_seconds": 1.656999999890104,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g3x_load.py",
+      "--count",
+      "1",
+      "--label",
+      "load_1",
+      "--base",
+      "http://api:8080"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:17:46.214489+00:00",
+    "elapsed_seconds": 15.046000000089407,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "stats",
+      "--no-stream",
+      "--format",
+      "{{json .}}",
+      "orange-bench-1-1857eed4-api-1",
+      "orange-bench-1-1857eed4-worker-1",
+      "orange-bench-1-1857eed4-pg-1",
+      "orange-bench-1-1857eed4-provider-1",
+      "orange-bench-1-1857eed4-telemetry-1",
+      "orange-bench-1-1857eed4-gateway-1"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:18:01.510442+00:00",
+    "elapsed_seconds": 2.406999999890104,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "cp",
+      "api:/state/receipts/load_1",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g3x_release_rehearsal_20261102\\load_1"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:18:03.920694+00:00",
+    "elapsed_seconds": 0.9529999999795109,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-1-1857eed4",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:18:04.873380+00:00",
+    "elapsed_seconds": 9.703999999910593,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-100-1857eed4",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:18:14.582871+00:00",
+    "elapsed_seconds": 46.54600000008941,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-100-1857eed4",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:19:01.128471+00:00",
+    "elapsed_seconds": 0.39099999982863665,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "stats",
+      "--no-stream",
+      "--format",
+      "{{json .}}",
+      "orange-bench-100-1857eed4-api-1",
+      "orange-bench-100-1857eed4-worker-1",
+      "orange-bench-100-1857eed4-pg-1",
+      "orange-bench-100-1857eed4-provider-1",
+      "orange-bench-100-1857eed4-telemetry-1",
+      "orange-bench-100-1857eed4-gateway-1",
+      "orange-bench-100-1857eed4-api2-1",
+      "orange-bench-100-1857eed4-worker2-1"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:19:01.516414+00:00",
+    "elapsed_seconds": 1.672000000020489,
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-bench-100-1857eed4",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g3x_load.py",
+      "--count",
+      "100",
+      "--label",
+      "load_100",
+      "--base",
+      "http://gateway:8080"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:19:03.190670+00:00",
+    "elapsed_seconds": 30.25,
+    "exit_code": 1
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "started_at": "2026-11-02T11:19:41.701800+00:00",
+    "elapsed_seconds": 30.421000000089407,
+    "exit_code": 0
+  }
+]

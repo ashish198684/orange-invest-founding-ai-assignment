@@ -770,3 +770,16 @@ Selection criteria are a **qualitative CTO judgment**, not empirical vendor perf
 - PostgreSQL queue locking: https://www.postgresql.org/docs/current/sql-select.html
 
 **END OF CURRENT CANONICAL V3 `ORANGE-FOUNDINGAI-20261102-003`.**
+
+
+## N. Verified execution journal
+
+This journal records executed evidence under the sponsor-authorized update policy. It does not expand L4/M2-M4 scope. Prior complete master revisions are byte-preserved as historical archives, never competing masters.
+
+### Execution record 2026-11-02T09:44:52.926164+00:00
+
+- **Evidence:** `artifacts/receipts/g3x_first_complete_20261102/milestone.json`, SHA-256 `e40b0ea303c7595df5b03366e7c076ef82b570282f73dff533810828797309ab`.
+- **Observed:** Local PostgreSQL, independent provider RPC, two API replicas and two worker processes are running. SQLite regressions 65/65 passed. First distributed integration run passed 20/21, with one HTTP denial classification failure (409 instead of 403); the failed receipt/source are preserved. G3X is not accepted; load, restore, full telemetry and clean-checkout proof remain outstanding.
+- **Source attribution:** `aeee0109e6d6bde9d2305afbab5d37611baaca0e`.
+- **Prior canonical SHA-256:** `6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.

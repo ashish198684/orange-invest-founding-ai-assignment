@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/orange/scripts/g3x_load.py", line 178, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/orange/scripts/g3x_load.py", line 72, in main
+    assert all(r['http_status']==200 for r in created),{code:sum(r['http_status']==code for r in created) for code in {r['http_status'] for r in created}}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {200: 69, 403: 18, 400: 13}

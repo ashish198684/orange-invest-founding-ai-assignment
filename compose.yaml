@@ -67,11 +67,13 @@ services:
     healthcheck: *apihealth
   worker:
     <<: *code
+    restart: unless-stopped
     command: [python, -m, app.runtime.worker]
     depends_on:
       provider: {condition: service_healthy}
   worker2:
     <<: *code
+    restart: unless-stopped
     command: [python, -m, app.runtime.worker]
     depends_on:
       provider: {condition: service_healthy}

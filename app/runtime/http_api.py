@@ -47,6 +47,7 @@ class Handler(BaseHTTPRequestHandler):
                     result=c.create_request(value['logical_request_id'],**value.get('draft',{}))
                 elif parts[0]=='workflows' and len(parts)>=2:
                     wid=parts[1]
+                    if len(wid)==32 and all(ch in '0123456789abcdef' for ch in wid):run.workflow_id=wid
                     if self.command=='GET':result=c.view(wid)
                     elif len(parts)==2 and self.command=='PATCH':result=c.correct(wid,**value['draft'])
                     elif parts[-1]=='search':result=c.search(wid)
@@ -62,6 +63,7 @@ class Handler(BaseHTTPRequestHandler):
                         a=db.execute('SELECT * FROM approval_snapshots WHERE approval_id=?',(aid,)).fetchone()
                         if not a:raise PermissionError('forbidden')
                         w=c._owned(db,a['workflow_id'])
+                        run.workflow_id=w['workflow_id']
                         c._valid_snapshot(db,w,a)
                     if self.command=='GET':
                         card=uuid.uuid4().hex
@@ -70,7 +72,7 @@ class Handler(BaseHTTPRequestHandler):
                                 (card,uid,session['session_hash'],aid,a['payload_fingerprint'],a['revision'],a['expires_at']))
                         result={'card_id':card,'approval_id':aid,'snapshot':json.loads(a['snapshot_json']),
                                 'fingerprint':a['payload_fingerprint'],'revision':a['revision'],'evidence':'issued; not proof of human perception'}
-                        run.emit('approval_card_issued')
+                        run.emit('approval_card_issued',approval_fingerprint_prefix=a['payload_fingerprint'][:12])
                     elif parts[-1]=='confirm':
                         with c.store.connect() as db:
                             card=db.execute('SELECT * FROM issued_cards WHERE card_id=? AND session_hash=? AND approval_id=?',
@@ -81,11 +83,12 @@ class Handler(BaseHTTPRequestHandler):
                             raise PermissionError('card_snapshot_mismatch')
                         op=c.grant_approval(a['workflow_id'],aid)
                         result={'status':'PENDING_VERIFICATION','operation_id':op,'message':'Approval recorded. Provider outcome is not yet verified.'}
-                        run.emit('approval_granted',operation_hash=hashed(op))
+                        run.emit('approval_granted',operation_hash=hashed(op),approval_fingerprint_prefix=a['payload_fingerprint'][:12])
                     else:raise ValueError('unknown_route')
                 elif parts[0]=='operations' and len(parts)==2 and self.command=='GET':
                     with c.store.connect() as db:op=db.execute('SELECT * FROM operations WHERE operation_id=?',(parts[1],)).fetchone()
                     if not op:raise PermissionError('forbidden')
+                    run.workflow_id=op['workflow_id']
                     result=json.loads(op['result_json']) if op['result_json'] else {'status':'PENDING_VERIFICATION','operation_id':parts[1],'message':'Provider outcome is not yet verified.'}
                 elif parts==['memory']:
                     memory=Memory(uid)
@@ -100,7 +103,8 @@ class Handler(BaseHTTPRequestHandler):
                         path=Path(os.getenv('RUNTIME_STATE','data/runtime'))/'traces'/(parts[1]+'.jsonl')
                         if path.exists():result=[json.loads(line) for line in path.read_text().splitlines()]
                 else:raise ValueError('unknown_route')
-                final=run.emit('run_exit',exit_reason='response',status=result.get('status','returned') if isinstance(result,dict) else 'returned')
+                final=run.emit('run_exit',exit_reason='response',status=result.get('status','returned') if isinstance(result,dict) else 'returned',
+                               decision_reason=result.get('message') if isinstance(result,dict) else 'Read-only result returned.')
                 with c.store.connect(write=True) as db:
                     db.execute('INSERT INTO trace_events(user_id,run_id,trace_id,event_json) VALUES(?,?,?,?)',(uid,run.run_id,final['trace_id'],json.dumps(final)))
                 if isinstance(result,dict):result={**result,'run_id':run.run_id,'trace_id':final['trace_id']}
@@ -109,6 +113,8 @@ class Handler(BaseHTTPRequestHandler):
             status=403 if exc.code=='forbidden' else 409
             result={'error':exc.code,'message':'No unapproved action was performed.'}
         except BudgetExceeded:status=202;result={'status':'OUTCOME_UNKNOWN','message':'Response limit reached; refresh the same request to verify its status.'}
+        except TimeoutError:
+            status=503;result={'error':'capacity_unavailable','message':'Capacity unavailable. Retry the same logical request; no success is claimed.'}
         except Exception as exc:
             run.emit('handler_error',error_class=type(exc).__name__)
             status=400;result={'error':'invalid_or_unavailable','message':'Request could not be verified; no success is claimed.'}

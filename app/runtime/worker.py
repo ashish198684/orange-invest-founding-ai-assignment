@@ -7,19 +7,22 @@ import time
 import uuid
 import psycopg
 from psycopg.rows import dict_row
-from app.runtime.pg import dsn,PgStore,LostLease
+from app.runtime.pg import dsn,PgStore,LostLease,borrow
 from app.runtime.controller import PgController
 from app.runtime.observe import Run,scope
 from app.workflow import SafetyError
 
 def claim(target=None):
-    with psycopg.connect(**dsn('orange_worker'),row_factory=dict_row) as db:
+    with borrow('orange_worker') as db:
         return db.execute('SELECT * FROM authority.claim_job(%s,%s)',(os.getenv('HOSTNAME','local')+'-'+uuid.uuid4().hex[:8],target)).fetchone()
 
 def perform(job,fault=None):
     uid=job['user_id'];oid=job['operation_id'];generation=job['generation']
     run=Run(uid,wall=8)
     c=PgController(uid,fence=(oid,generation))
+    with c.store.connect() as db:
+        op=db.execute('SELECT workflow_id FROM operations WHERE operation_id=?',(oid,)).fetchone()
+        run.workflow_id=op['workflow_id'] if op else None
     with scope(run,'worker.execute',job['traceparent']):
         run.emit('job_claim',operation_hash=hashlib.sha256(oid.encode()).hexdigest(),generation=generation)
         if fault=='before_provider':os._exit(31)

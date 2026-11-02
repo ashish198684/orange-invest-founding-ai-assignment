@@ -472,7 +472,25 @@ class Distributed(unittest.TestCase):
         result=self.poll(pending['operation_id'])
         self.assertEqual(result['status'],'BOOKED')
         self.assertEqual(result['booking']['slot'],a['snapshot']['new_slot'])
+        actor=hashlib.sha256(self.uid.encode()).hexdigest();events=[]
+        for path in (Path(os.environ.get('RUNTIME_STATE','data/runtime'))/'traces').glob('*.jsonl'):
+            events.extend(row for row in map(json.loads,path.read_text().splitlines()) if row['user_id_hash']==actor)
+        timeout=next(e for e in events if e['event_type']=='provider_timeout' and e['tool_name']=='book')
+        self.assertEqual(timeout['error_class'],'ProviderTimeout');self.assertGreater(timeout['duration_ms'],0)
+        self.assertEqual(len(timeout['idempotency_key_suffix_or_hash']),64)
+        required={'timestamp','workflow_id','sanitized_args','sanitized_result','approval_fingerprint_prefix','decision_reason','exit_reason'}
+        self.assertTrue(all(required<=event.keys() for event in events))
         self.extra_evidence={'trace_ids':[card['trace_id'],pending['trace_id']],
                              'approved_snapshot':a,'operation_id':pending['operation_id'],'customer_result':result}
+
+    def test_trace_redacts_credentials_and_rejects_private_payloads(self):
+        run=Run(self.uid)
+        with scope(run,'redaction-test'):
+            event=run.emit('run_exit',exit_reason='test',private_message='private-memory-sentinel',
+                           decision_reason='Bearer synthetic-private-token',
+                           sanitized_args={'password':'private-memory-sentinel','argument_count':1})
+        raw=json.dumps(event)
+        self.assertNotIn('synthetic-private-token',raw);self.assertNotIn('private-memory-sentinel',raw)
+        self.assertEqual(event['sanitized_args'],{'argument_count':1})
 
 if __name__=='__main__':unittest.main()

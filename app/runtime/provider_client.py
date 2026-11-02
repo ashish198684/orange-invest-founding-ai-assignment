@@ -1,5 +1,7 @@
 """Eight-method RPC boundary. Child process isolation enforces absolute call deadlines."""
 import json
+import hashlib
+import time
 import multiprocessing as mp
 import os
 from pathlib import Path
@@ -31,11 +33,27 @@ class ProviderClient:
         run=active.get()
         if run:run.charge('tool')
         if not _slots.acquire(timeout=run.remaining() if run else self.timeout):raise BudgetExceeded('provider_capacity')
-        try:return self._rpc(name,args)
+        started=time.monotonic()
+        key=hashlib.sha256(args[-1].encode()).hexdigest() if name in {'book','cancel','reschedule','get_booking_status'} else None
+        if run:run.emit('provider_start',tool=name,idempotency_key_suffix_or_hash=key,
+                        sanitized_args={'argument_count':len(args),'payload_sha256':hashlib.sha256(json.dumps(args,sort_keys=True).encode()).hexdigest()})
+        try:
+            result=self._rpc(name,args)
+            summary={'shape':'list' if isinstance(result,list) else 'object','count':len(result) if isinstance(result,list) else None}
+            if isinstance(result,dict):
+                if result.get('status') in {'booked','not_found','failed','cancelled'}:summary['status']=result['status']
+                if type(result.get('quoted_price')) in {int,float}:summary['quoted_price']=result['quoted_price']
+            if run:run.emit('provider_result',tool=name,status='returned',duration_ms=(time.monotonic()-started)*1000,
+                            sanitized_result=summary,idempotency_key_suffix_or_hash=key)
+            return result
+        except Exception as exc:
+            if run:run.emit('provider_timeout' if isinstance(exc,ProviderTimeout) else 'provider_error',tool=name,
+                            error_class=type(exc).__name__,status='OUTCOME_UNKNOWN',idempotency_key_suffix_or_hash=key,
+                            duration_ms=(time.monotonic()-started)*1000)
+            raise
         finally:_slots.release()
     def _rpc(self,name,args):
         run=active.get()
-        if run:run.emit('provider_start',tool=name)
         limit=min(self.timeout,run.remaining() if run else self.timeout)
         if limit<=0: raise BudgetExceeded('wall_limit')
         with tracer.start_as_current_span('provider.'+name):
@@ -46,7 +64,6 @@ class ProviderClient:
             child.start(); send.close()
             try:
                 if not recv.poll(limit):
-                    if run: run.emit('provider_timeout',tool=name,status='OUTCOME_UNKNOWN')
                     raise ProviderTimeout()
                 result=recv.recv()
             finally:
@@ -57,7 +74,6 @@ class ProviderClient:
             if 'error' in result:
                 if result['error']=='timeout': raise ProviderTimeout()
                 raise ProviderError(result['error'],result.get('http_status',503))
-            if run: run.emit('provider_result',tool=name,status='returned')
             if name=='search_providers' and len(result['result'])>8:raise ProviderError('candidate_limit',400)
             return result['result']
     def search_providers(self,service,area,date_range): return self._call('search_providers',(service,area,date_range))

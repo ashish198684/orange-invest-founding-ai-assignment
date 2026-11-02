@@ -7,7 +7,9 @@ import os
 from pathlib import Path
 import time
 import uuid
+import re
 from functools import lru_cache
+from datetime import datetime,timezone
 from opentelemetry import trace, propagate
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -27,6 +29,7 @@ class Run:
         self.user_id=user_id; self.wall=wall; self.started=time.monotonic()
         self.run_id=uuid.uuid4().hex; self.tools=0; self.models=0; self.sequence=0
         self.closed=False;self.last_trace_id='0'*32
+        self.workflow_id=None
     def remaining(self): return max(0,self.wall-(time.monotonic()-self.started))
     def charge(self,kind):
         if self.remaining()<=0: raise BudgetExceeded('wall_limit')
@@ -43,9 +46,11 @@ class Run:
         self.sequence+=1
         span=trace.get_current_span().get_span_context()
         # Only explicit safe metadata is accepted; never serialize caller payloads.
-        allowed={'tool','status','action','operation_hash','generation','exit_reason','error_class','duration_ms','memory_key_hash','state_before','state_after'}
+        allowed={'tool','status','action','operation_hash','generation','exit_reason','error_class','duration_ms','memory_key_hash','state_before','state_after',
+                 'idempotency_key_suffix_or_hash','approval_fingerprint_prefix','decision_reason'}
         if span.is_valid:self.last_trace_id=format(span.trace_id,'032x')
-        record={'schema_version':1,'run_id':self.run_id,'sequence':self.sequence,
+        record={'schema_version':2,'run_id':self.run_id,'sequence':self.sequence,
+            'timestamp':datetime.now(timezone.utc).isoformat(),'workflow_id':self.workflow_id,
             'trace_id':self.last_trace_id,'span_id':format(span.span_id,'016x'),
             'user_id_hash':hashlib.sha256(self.user_id.encode()).hexdigest(),
             'monotonic_offset_ms':(time.monotonic()-self.started)*1000,
@@ -53,9 +58,25 @@ class Run:
             'policy_version':'g3x-v1','tool_contract_version':'employer-v1','schema_migration_version':3,
             'code_git_sha':build_sha(),'model_call_count':self.models,'tool_call_count':self.tools,
             'token_in':None,'token_out':None,'cost_usd':None,'event_type':event,
+            'model_name_or_scripted':'scripted','model_prompt_version':'scripted-v1',
+            'tool_name':values.get('tool'),'sanitized_args':None,'sanitized_result':None,
+            'error_class':None,'idempotency_key_suffix_or_hash':None,'approval_fingerprint_prefix':None,
+            'duration_ms':(time.monotonic()-self.started)*1000 if event=='run_exit' else None,
+            'decision_reason':None,'exit_reason':None,'state_before':None,'state_after':None,
             'budget_remaining':{'wall_seconds':self.remaining(),'tools':16-self.tools,'models':8-self.models},
             **{k:v for k,v in values.items() if k in allowed}}
-        trace.get_current_span().add_event(event,{k:str(v) for k,v in values.items() if k in allowed})
+        # Accept only explicit metadata, never arbitrary nested caller payloads.
+        for field,keys in [('sanitized_args',{'argument_count','payload_sha256'}),
+                           ('sanitized_result',{'shape','count','field_count','status','quoted_price'})]:
+            if isinstance(values.get(field),dict):record[field]={k:v for k,v in values[field].items() if k in keys}
+        def redact(value):
+            if isinstance(value,str):
+                value=re.sub(r'(?i)bearer\s+[a-z0-9._-]+','Bearer [REDACTED]',value)
+                return re.sub(r'(?i)\b(?:gsk_|sk-)[a-z0-9_-]{8,}','[REDACTED]',value)
+            if isinstance(value,dict):return {k:redact(v) for k,v in value.items()}
+            return value
+        record=redact(record)
+        trace.get_current_span().add_event(event,{k:str(record[k]) for k in allowed if k in record and record[k] is not None})
         encoded=json.dumps(record,sort_keys=True)
         folder=Path(os.getenv('RUNTIME_STATE','data/runtime'))/'traces'; folder.mkdir(exist_ok=True,parents=True)
         with (folder/(self.run_id+'.jsonl')).open('a') as f: f.write(encoded+'\n')

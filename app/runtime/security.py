@@ -20,8 +20,8 @@ def login(username,password):
     return sid+'.'+signature,csrf
 
 def authenticate(cookie):
+    from http.cookies import SimpleCookie,CookieError
     try:
-        from http.cookies import SimpleCookie
         cookies=SimpleCookie();cookies.load(cookie)
         sid,sig=cookies['orange_session'].value.split('.')
         expected=hmac.new(bytes.fromhex(settings()['session_secret']),sid.encode(),'sha256').hexdigest()
@@ -30,7 +30,7 @@ def authenticate(cookie):
             session=db.execute('SELECT * FROM sessions WHERE session_hash=? AND expires_at>clock_timestamp()',(hashed(sid),)).fetchone()
         if not session:raise ValueError()
         return dict(session)
-    except Exception:raise PermissionError('unauthenticated') from None
+    except (ValueError,KeyError,TypeError,CookieError):raise PermissionError('unauthenticated') from None
 
 def check_csrf(session,token,origin):
     allowed={'http://127.0.0.1:8080','http://127.0.0.1:8081','http://127.0.0.1:8082','http://localhost:8080'}

@@ -4,17 +4,38 @@ import hashlib
 import os
 import re
 from threading import BoundedSemaphore
+from queue import Queue,Empty,Full
 import psycopg
 from psycopg.rows import dict_row
 
 class LostLease(Exception): pass
 _connections=BoundedSemaphore(12)
+_idle={}
 
 @contextmanager
 def connection_slot():
-    if not _connections.acquire(timeout=2):raise TimeoutError('connection_capacity')
+    from app.runtime.observe import active
+    run=active.get()
+    if not _connections.acquire(timeout=min(5,run.remaining()) if run else 5):raise TimeoutError('connection_capacity')
     try:yield
     finally:_connections.release()
+
+@contextmanager
+def borrow(role,database=None):
+    # A bounded reusable pool per process/role/database. Transaction-local user
+    # and search_path settings are cleared by commit/rollback before reuse.
+    pool=_idle.setdefault((role,database),Queue(maxsize=12))
+    with connection_slot():
+        try:db=pool.get_nowait()
+        except Empty:db=psycopg.connect(**dsn(role,database),row_factory=dict_row)
+        if db.closed:db=psycopg.connect(**dsn(role,database),row_factory=dict_row)
+        try:
+            with db.transaction():yield db
+        finally:
+            if not db.closed and db.info.transaction_status==psycopg.pq.TransactionStatus.IDLE:
+                try:pool.put_nowait(db)
+                except Full:db.close()
+            else:db.close()
 
 def dsn(role='orange_app', database=None):
     passwords={'orange_app':'local-app-only','orange_provider':'local-provider-only',
@@ -55,7 +76,7 @@ class PgStore:
     @contextmanager
     def connect(self,*,write=False):
         schema='provider' if self.role=='orange_provider' else 'authority'
-        with connection_slot(),psycopg.connect(**dsn(self.role,self.database),row_factory=dict_row) as db:
+        with borrow(self.role,self.database) as db:
             db.execute('SET LOCAL statement_timeout=2500')
             db.execute('SET LOCAL lock_timeout=2000')
             db.execute('SELECT set_config(%s,%s,true)',('search_path',schema+',public'))

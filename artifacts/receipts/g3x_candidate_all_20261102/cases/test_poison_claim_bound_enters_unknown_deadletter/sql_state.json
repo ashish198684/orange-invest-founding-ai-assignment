@@ -1,0 +1,90 @@
+{
+  "authority.workflows": [
+    {
+      "workflow_id": "fb2a2287c26746f5bcedae49419e8b9a",
+      "user_id": "trial-9547d3d072bf",
+      "logical_request_id": "c032a795ce194af68f5eeb78d83bbd18",
+      "initial_draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-10T16:03:18.076245+05:30\",\"start\":\"2026-11-02T16:03:18.076245+05:30\"},\"service\":\"ac servicing\"}",
+      "draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-10T16:03:18.076245+05:30\",\"start\":\"2026-11-02T16:03:18.076245+05:30\"},\"service\":\"ac servicing\"}",
+      "revision": 1,
+      "status": "OUTCOME_UNKNOWN",
+      "booking_id": null,
+      "current_approval_id": "f1122368be1c43978544bd2e039712e7",
+      "created_at": "2026-11-02T16:03:18.086626+05:30"
+    }
+  ],
+  "authority.approval_snapshots": [
+    {
+      "approval_id": "f1122368be1c43978544bd2e039712e7",
+      "workflow_id": "fb2a2287c26746f5bcedae49419e8b9a",
+      "user_id": "trial-9547d3d072bf",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-02T16:13:20.013221+05:30\",\"hold_id\":\"1e996b96454a4478854289c885642f44\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-03T11:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"ac-servicing-1-0\",\"revision\":1,\"user_id\":\"trial-9547d3d072bf\",\"workflow_id\":\"fb2a2287c26746f5bcedae49419e8b9a\"}",
+      "payload_fingerprint": "cc69794276363f1433b0005401c090424d5ae104cd42e294f71f932089ba7857",
+      "revision": 1,
+      "expires_at": "2026-11-02T16:13:20.013221+05:30",
+      "status": "GRANTED",
+      "approved_at": "2026-11-02T16:03:20.095590+05:30"
+    }
+  ],
+  "authority.operations": [
+    {
+      "operation_id": "110f6f59689d4232adaa8572a4f4cdc0",
+      "workflow_id": "fb2a2287c26746f5bcedae49419e8b9a",
+      "user_id": "trial-9547d3d072bf",
+      "action": "book",
+      "booking_id": null,
+      "idempotency_key": "operation-110f6f59689d4232adaa8572a4f4cdc0",
+      "approval_id": "f1122368be1c43978544bd2e039712e7",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-02T16:13:20.013221+05:30\",\"hold_id\":\"1e996b96454a4478854289c885642f44\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-03T11:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"ac-servicing-1-0\",\"revision\":1,\"user_id\":\"trial-9547d3d072bf\",\"workflow_id\":\"fb2a2287c26746f5bcedae49419e8b9a\"}",
+      "payload_fingerprint": "cc69794276363f1433b0005401c090424d5ae104cd42e294f71f932089ba7857",
+      "status": "OUTCOME_UNKNOWN",
+      "attempts": 0,
+      "last_error": "recovery_budget_exhausted",
+      "result_json": "{\"status\" : \"OUTCOME_UNKNOWN\", \"operation_id\" : \"110f6f59689d4232adaa8572a4f4cdc0\", \"message\" : \"Status unverified; durable recovery budget exhausted. Manual reconciliation is required.\"}",
+      "verified_at": null,
+      "workflow_version": "g2-v1",
+      "policy_version": "g3x-v1"
+    }
+  ],
+  "authority.jobs": [
+    {
+      "operation_id": "110f6f59689d4232adaa8572a4f4cdc0",
+      "user_id": "trial-9547d3d072bf",
+      "state": "DEAD",
+      "generation": 1,
+      "claims": 6,
+      "worker": null,
+      "lease_until": null,
+      "available_at": "2026-11-02 11:33:20.121577+00:00",
+      "created_at": "2026-11-02 10:33:20.080967+00:00",
+      "initiation_deadline": "2026-11-02 10:33:38.120670+00:00",
+      "recovery_deadline": "2026-11-02 10:38:20.080967+00:00",
+      "traceparent": "",
+      "claimed_at": null,
+      "finished_at": "2026-11-02 10:33:20.153763+00:00"
+    }
+  ],
+  "authority.memory_facts": [],
+  "authority.trace_events": [
+    {
+      "event_id": 250,
+      "user_id": "trial-9547d3d072bf",
+      "run_id": "2479f586eca84de3a422ac2788e24516",
+      "trace_id": "ca8fdc66ca68712a794355fa3256e614",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"2479f586eca84de3a422ac2788e24516\", \"sequence\": 2, \"trace_id\": \"ca8fdc66ca68712a794355fa3256e614\", \"span_id\": \"085fda44e51f37c4\", \"user_id_hash\": \"d8ac695c249d600ef88825a65c377b95f6e747b841064f978d1d4e0d12ad8fbe\", \"monotonic_offset_ms\": 31.400076986756176, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.968472645035945, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"OUTCOME_UNKNOWN\"}"
+    }
+  ],
+  "provider.provider_holds": [
+    {
+      "id": "1e996b96454a4478854289c885642f44",
+      "user_id": "trial-9547d3d072bf",
+      "provider_id": "ac-servicing-1-0",
+      "slot": "2026-11-03T11:00:00+05:30",
+      "quoted_price": 900,
+      "expires_at": "2026-11-02T16:13:20.013221+05:30",
+      "status": "held"
+    }
+  ],
+  "provider.provider_bookings": [],
+  "provider.provider_operation_outcomes": []
+}

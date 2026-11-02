@@ -783,3 +783,11 @@ This journal records executed evidence under the sponsor-authorized update polic
 - **Source attribution:** `aeee0109e6d6bde9d2305afbab5d37611baaca0e`.
 - **Prior canonical SHA-256:** `6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
 - **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.
+
+### Execution record 2026-11-02T11:12:16.059222+00:00
+
+- **Evidence:** `artifacts/receipts/g3x_privacy_milestone_20261102/milestone.json`, SHA-256 `2c074469f5204ac775e7146312b0d504077cbffe8e9a706bc98eee76091893de`.
+- **Observed:** SQLite 65/65 and real PostgreSQL G3X 35/35 passed, zero skipped, commands exit 0. Raw SQL, 139 sanitized JSONL files and 542 OTLP spans retained. In-flight forgotten memory is discarded before search return or approval publication; inferred preferences expire. Real worker/provider crashes, stale fencing and HTTP timeout recovery passed. Load, backup/restore and clean-checkout proof remain outstanding; G3X is not yet a release PASS.
+- **Source attribution:** `a6318d2dad919d6ba4fc7a02f5135dd94afd9f83`.
+- **Prior canonical SHA-256:** `4a5dcdb85c58922e335c25f7cff449203a5d04faad98945f2bfbfc58f702b977`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_4a5dcdb85c58922e335c25f7cff449203a5d04faad98945f2bfbfc58f702b977_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.

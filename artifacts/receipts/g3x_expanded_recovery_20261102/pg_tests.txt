@@ -1,0 +1,158 @@
+test_actual_tool_model_and_wall_caps (test_distributed.Distributed.test_actual_tool_model_and_wall_caps) ... ok
+test_blocked_model_is_killed_before_wall_deadline (test_distributed.Distributed.test_blocked_model_is_killed_before_wall_deadline) ... ok
+test_cancel_retry_and_reschedule_conflict_preserve_truth (test_distributed.Distributed.test_cancel_retry_and_reschedule_conflict_preserve_truth) ... ok
+test_crash_before_and_after_provider_and_status_recovery (test_distributed.Distributed.test_crash_before_and_after_provider_and_status_recovery) ... ok
+test_exact_quote_budget_and_no_model_approval (test_distributed.Distributed.test_exact_quote_budget_and_no_model_approval) ... ok
+test_expired_worker_cannot_update_state (test_distributed.Distributed.test_expired_worker_cannot_update_state) ... ok
+test_http_card_issuance_csrf_session_and_no_alternate_mutation (test_distributed.Distributed.test_http_card_issuance_csrf_session_and_no_alternate_mutation) ... ok
+test_http_duplicate_confirmation_two_replicas_one_operation (test_distributed.Distributed.test_http_duplicate_confirmation_two_replicas_one_operation) ... ok
+test_http_hung_provider_returns_within_20_seconds_without_booking (test_distributed.Distributed.test_http_hung_provider_returns_within_20_seconds_without_booking) ... ok
+test_inferred_memory_not_applied_until_confirmed (test_distributed.Distributed.test_inferred_memory_not_applied_until_confirmed) ... ok
+test_issued_card_expiry_session_expiry_and_cross_user_operations (test_distributed.Distributed.test_issued_card_expiry_session_expiry_and_cross_user_operations) ... ok
+test_local_otel_context_propagates_api_queue_worker_provider (test_distributed.Distributed.test_local_otel_context_propagates_api_queue_worker_provider) ... ok
+test_memory_cross_replica_forget_stale_replay_and_privacy (test_distributed.Distributed.test_memory_cross_replica_forget_stale_replay_and_privacy) ... ok
+test_model_context_drops_forgotten_memory_without_persisting_it_in_draft (test_distributed.Distributed.test_model_context_drops_forgotten_memory_without_persisting_it_in_draft) ... ok
+test_model_turn_cap_at_actual_interpreter_boundary (test_distributed.Distributed.test_model_turn_cap_at_actual_interpreter_boundary) ... ok
+test_provider_commit_survives_rolled_back_authority_transaction (test_distributed.Distributed.test_provider_commit_survives_rolled_back_authority_transaction) ... ok
+test_provider_process_dies_after_commit_restarted_workers_reconcile (test_distributed.Distributed.test_provider_process_dies_after_commit_restarted_workers_reconcile) ... ERROR
+test_provider_slot_taken_and_hold_expired_conformance (test_distributed.Distributed.test_provider_slot_taken_and_hold_expired_conformance) ... ERROR
+test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement (test_distributed.Distributed.test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement) ... ERROR
+test_response_loss_after_provider_commit_does_not_repeat_effect (test_distributed.Distributed.test_response_loss_after_provider_commit_does_not_repeat_effect) ... ERROR
+test_stale_card_revision_aba_and_identity_override_rejected (test_distributed.Distributed.test_stale_card_revision_aba_and_identity_override_rejected) ... ERROR
+test_timeout_after_success_and_logical_request_deduplication (test_distributed.Distributed.test_timeout_after_success_and_logical_request_deduplication) ... ERROR
+test_timeout_without_booking_three_attempts_no_new_key (test_distributed.Distributed.test_timeout_without_booking_three_attempts_no_new_key) ... ERROR
+test_unknown_price_change_fails_closed (test_distributed.Distributed.test_unknown_price_change_fails_closed) ... ERROR
+test_untrusted_reviews_do_not_modify_intent_or_permissions (test_distributed.Distributed.test_untrusted_reviews_do_not_modify_intent_or_permissions) ... ERROR
+test_authority_role_cannot_read_or_write_provider (test_fault_boundary.FaultBoundary.test_authority_role_cannot_read_or_write_provider) ... ok
+test_client_has_exact_eight_signatures_and_no_provider_db (test_fault_boundary.FaultBoundary.test_client_has_exact_eight_signatures_and_no_provider_db) ... ok
+
+======================================================================
+ERROR: test_provider_process_dies_after_commit_restarted_workers_reconcile (test_distributed.Distributed.test_provider_process_dies_after_commit_restarted_workers_reconcile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 171, in test_provider_process_dies_after_commit_restarted_workers_reconcile
+    w,a=self.prepare();oid=self.c.grant_approval(w,a['approval_id'])
+        ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_provider_slot_taken_and_hold_expired_conformance (test_distributed.Distributed.test_provider_slot_taken_and_hold_expired_conformance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 165, in test_provider_slot_taken_and_hold_expired_conformance
+    w,a,oid=self.reserve();result=perform(claim(oid))
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement (test_distributed.Distributed.test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 283, in test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement
+    w,a,oid=self.reserve()
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_response_loss_after_provider_commit_does_not_repeat_effect (test_distributed.Distributed.test_response_loss_after_provider_commit_does_not_repeat_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 182, in test_response_loss_after_provider_commit_does_not_repeat_effect
+    w,a,oid=self.reserve();result=perform(claim(oid))
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_stale_card_revision_aba_and_identity_override_rejected (test_distributed.Distributed.test_stale_card_revision_aba_and_identity_override_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 113, in test_stale_card_revision_aba_and_identity_override_rejected
+    w,a=self.prepare();_,card=self.call('GET','/approvals/'+a['approval_id'])
+        ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_timeout_after_success_and_logical_request_deduplication (test_distributed.Distributed.test_timeout_after_success_and_logical_request_deduplication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 145, in test_timeout_after_success_and_logical_request_deduplication
+    w,a,oid=self.reserve();job=claim(oid)
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_timeout_without_booking_three_attempts_no_new_key (test_distributed.Distributed.test_timeout_without_booking_three_attempts_no_new_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 154, in test_timeout_without_booking_three_attempts_no_new_key
+    w,a,oid=self.reserve();result=perform(claim(oid))
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_unknown_price_change_fails_closed (test_distributed.Distributed.test_unknown_price_change_fails_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 343, in test_unknown_price_change_fails_closed
+    w,a,oid=self.reserve();result=perform(claim(oid))
+            ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 69, in reserve
+    w,a=self.prepare(reserved=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_untrusted_reviews_do_not_modify_intent_or_permissions (test_distributed.Distributed.test_untrusted_reviews_do_not_modify_intent_or_permissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 335, in test_untrusted_reviews_do_not_modify_intent_or_permissions
+    w,a=self.prepare();before=self.c.view(w)
+        ^^^^^^^^^^^^^^
+  File "/orange/tests_g3x/test_distributed.py", line 60, in prepare
+    a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+                                       ~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+----------------------------------------------------------------------
+Ran 27 tests in 88.180s
+
+FAILED (errors=9)

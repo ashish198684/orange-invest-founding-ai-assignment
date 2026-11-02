@@ -1,0 +1,245 @@
+{
+  "authority.workflows": [
+    {
+      "workflow_id": "48c9419778184912bc5153213cfae675",
+      "user_id": "trial-b62ef1c9125b",
+      "logical_request_id": "dccdcb1a19994971909ea9e0c3fe3502",
+      "initial_draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-10T15:45:53.618461+05:30\",\"start\":\"2026-11-02T15:45:53.618461+05:30\"},\"service\":\"plumber\"}",
+      "draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-10T15:45:53.618461+05:30\",\"start\":\"2026-11-02T15:45:53.618461+05:30\"},\"service\":\"plumber\"}",
+      "revision": 1,
+      "status": "BOOKED",
+      "booking_id": "6a4cd86c9f4a42d695dd1f721b74aa6d",
+      "current_approval_id": "2fa5679e932c4af0a30abd57527f651c",
+      "created_at": "2026-11-02T15:45:53.636961+05:30"
+    }
+  ],
+  "authority.approval_snapshots": [
+    {
+      "approval_id": "2fa5679e932c4af0a30abd57527f651c",
+      "workflow_id": "48c9419778184912bc5153213cfae675",
+      "user_id": "trial-b62ef1c9125b",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-02T15:55:56.196468+05:30\",\"hold_id\":\"c05e0fb005094debb185b00697b363d2\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"plumber-1-0\",\"revision\":1,\"user_id\":\"trial-b62ef1c9125b\",\"workflow_id\":\"48c9419778184912bc5153213cfae675\"}",
+      "payload_fingerprint": "2c23baaef3d2d4fb6725e6455c816a0ff21245e70029d53a37e624af1a4166e3",
+      "revision": 1,
+      "expires_at": "2026-11-02T15:55:56.196468+05:30",
+      "status": "GRANTED",
+      "approved_at": "2026-11-02T15:45:56.439108+05:30"
+    }
+  ],
+  "authority.operations": [
+    {
+      "operation_id": "6e6a97c5311c494a8630aa4dbbef04d2",
+      "workflow_id": "48c9419778184912bc5153213cfae675",
+      "user_id": "trial-b62ef1c9125b",
+      "action": "book",
+      "booking_id": null,
+      "idempotency_key": "operation-6e6a97c5311c494a8630aa4dbbef04d2",
+      "approval_id": "2fa5679e932c4af0a30abd57527f651c",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-02T15:55:56.196468+05:30\",\"hold_id\":\"c05e0fb005094debb185b00697b363d2\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"plumber-1-0\",\"revision\":1,\"user_id\":\"trial-b62ef1c9125b\",\"workflow_id\":\"48c9419778184912bc5153213cfae675\"}",
+      "payload_fingerprint": "2c23baaef3d2d4fb6725e6455c816a0ff21245e70029d53a37e624af1a4166e3",
+      "status": "COMMITTED",
+      "attempts": 1,
+      "last_error": null,
+      "result_json": "{\"booking\":{\"id\":\"6a4cd86c9f4a42d695dd1f721b74aa6d\",\"provider\":\"plumber-1-0\",\"service\":\"plumber\",\"slot\":\"2026-11-04T09:00:00+05:30\",\"status\":\"booked\"},\"booking_id\":\"6a4cd86c9f4a42d695dd1f721b74aa6d\",\"message\":\"Booking verified with the provider.\",\"operation_id\":\"6e6a97c5311c494a8630aa4dbbef04d2\",\"reason\":null,\"status\":\"BOOKED\"}",
+      "verified_at": "2026-11-02T15:46:00.130043+05:30",
+      "workflow_version": "g2-v1",
+      "policy_version": "g3x-v1"
+    }
+  ],
+  "authority.jobs": [
+    {
+      "operation_id": "6e6a97c5311c494a8630aa4dbbef04d2",
+      "user_id": "trial-b62ef1c9125b",
+      "state": "DONE",
+      "generation": 1,
+      "claims": 1,
+      "worker": "7b5ba373af8e-ae481c45",
+      "lease_until": null,
+      "available_at": "2026-11-02 10:16:01.161737+00:00",
+      "created_at": "2026-11-02 10:15:56.421133+00:00",
+      "initiation_deadline": "2026-11-02 10:16:16.421133+00:00",
+      "recovery_deadline": "2026-11-02 10:20:56.421133+00:00",
+      "traceparent": "00-de796c04468fc9a212b5061931ccec2c-03f1763998c0439b-01",
+      "claimed_at": "2026-11-02 10:15:56.568517+00:00",
+      "finished_at": "2026-11-02 10:16:00.161737+00:00"
+    }
+  ],
+  "authority.memory_facts": [],
+  "authority.trace_events": [
+    {
+      "event_id": 127,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "d8bfc686975e4105b24c47d89138ce6f",
+      "trace_id": "50e2ede2384547a83c4c42bd570e0513",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"d8bfc686975e4105b24c47d89138ce6f\", \"sequence\": 3, \"trace_id\": \"50e2ede2384547a83c4c42bd570e0513\", \"span_id\": \"0a3553d446d6d9b6\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 61.00010796217248, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.938977605022956, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"returned\"}"
+    },
+    {
+      "event_id": 128,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "1660d96b8e1a4f3d98ce81b522e936a5",
+      "trace_id": "de796c04468fc9a212b5061931ccec2c",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"1660d96b8e1a4f3d98ce81b522e936a5\", \"sequence\": 4, \"trace_id\": \"de796c04468fc9a212b5061931ccec2c\", \"span_id\": \"03f1763998c0439b\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 106.06429498875514, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.8939142349991, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 129,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "b7d61295c31e4eefb1f4395922ec8967",
+      "trace_id": "95d911404996f3c9fc1e090a0ed0f6a1",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"b7d61295c31e4eefb1f4395922ec8967\", \"sequence\": 3, \"trace_id\": \"95d911404996f3c9fc1e090a0ed0f6a1\", \"span_id\": \"fb1e583192a3f92e\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 113.81486302707344, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.88616201496916, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 130,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "42ff185986904d1b89d035150eb19326",
+      "trace_id": "91f735bfd9a0a8d06af265abb06f016d",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"42ff185986904d1b89d035150eb19326\", \"sequence\": 2, \"trace_id\": \"91f735bfd9a0a8d06af265abb06f016d\", \"span_id\": \"b803e1621fe5b9da\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 34.37960596056655, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.965553390036803, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 131,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "bf167aa0ec3c474c86bbf587083de1a0",
+      "trace_id": "5a92724ae1cdd9ccb52c874c17119f30",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"bf167aa0ec3c474c86bbf587083de1a0\", \"sequence\": 2, \"trace_id\": \"5a92724ae1cdd9ccb52c874c17119f30\", \"span_id\": \"4cdcee5f2a40ba82\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 36.17924702120945, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.963729353970848, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 132,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "09f6371006c94c15acf969ee2f755987",
+      "trace_id": "aaf31483a79227ccb1c9531d5c08dcee",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"09f6371006c94c15acf969ee2f755987\", \"sequence\": 2, \"trace_id\": \"aaf31483a79227ccb1c9531d5c08dcee\", \"span_id\": \"4a1fc211e4f17e92\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 48.16653695888817, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.951771550055128, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 133,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "92c1c4e7f0b3482293bac23d893cc491",
+      "trace_id": "6274fab182c8ac716e4a3ce17272a162",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"92c1c4e7f0b3482293bac23d893cc491\", \"sequence\": 2, \"trace_id\": \"6274fab182c8ac716e4a3ce17272a162\", \"span_id\": \"5bff97e4c0e96eda\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 37.987584015354514, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.961950981989503, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 134,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "cfd68bd949e14db79ee98c1cc749cf24",
+      "trace_id": "a4f61f22fdca91aa7c154cadd7083ea0",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"cfd68bd949e14db79ee98c1cc749cf24\", \"sequence\": 2, \"trace_id\": \"a4f61f22fdca91aa7c154cadd7083ea0\", \"span_id\": \"dd7aec1ca463fb3f\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 32.33802999602631, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.96759296604432, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 135,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "f89d99d6db274d2bbe4697a791524500",
+      "trace_id": "d40b154e8e6a07a81e95c4ce2a45acc7",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"f89d99d6db274d2bbe4697a791524500\", \"sequence\": 2, \"trace_id\": \"d40b154e8e6a07a81e95c4ce2a45acc7\", \"span_id\": \"47c0ceb0baa513e5\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 55.16474699834362, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.944726935005747, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 136,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "cbf72116a8f3454a96796d9bfeadb704",
+      "trace_id": "d0c5339b6d710006fdaba4b1a8d39ebe",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"cbf72116a8f3454a96796d9bfeadb704\", \"sequence\": 2, \"trace_id\": \"d0c5339b6d710006fdaba4b1a8d39ebe\", \"span_id\": \"ad2957298f9f9dab\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 67.54457805072889, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.93234564899467, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 137,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "ff2555286d42412b98ea8354c1bea49c",
+      "trace_id": "d61244ae2108ddfc4c5196c32a892ab3",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"ff2555286d42412b98ea8354c1bea49c\", \"sequence\": 2, \"trace_id\": \"d61244ae2108ddfc4c5196c32a892ab3\", \"span_id\": \"8c0e78b42c16cc6b\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 37.39298100117594, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.962536191975232, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 138,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "138ac4cc7c5b41baa934c5ba1942ce70",
+      "trace_id": "2aef15812985d7b27b11c72b4709a722",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"138ac4cc7c5b41baa934c5ba1942ce70\", \"sequence\": 2, \"trace_id\": \"2aef15812985d7b27b11c72b4709a722\", \"span_id\": \"aa0ac14c01ee8734\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 50.69962900597602, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.949185287987348, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 139,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "e05ba0a9a4c9492e9dd10013d42c1e1e",
+      "trace_id": "74b969dd7f29c131f5826b9a2b25bd2c",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"e05ba0a9a4c9492e9dd10013d42c1e1e\", \"sequence\": 2, \"trace_id\": \"74b969dd7f29c131f5826b9a2b25bd2c\", \"span_id\": \"98dac4d4ee8750c1\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 55.21707097068429, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.9446758350241, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 140,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "183f146cd2a24d0da37ec907cb33daa8",
+      "trace_id": "a8043dafd7e291d9a24b268790f1636e",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"183f146cd2a24d0da37ec907cb33daa8\", \"sequence\": 2, \"trace_id\": \"a8043dafd7e291d9a24b268790f1636e\", \"span_id\": \"f7f5b7250efb84cd\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 46.24993202742189, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.95368791895453, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 141,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "7371c95858104361baa9e1c77d94b7e5",
+      "trace_id": "8b7202f5a4a9c7b24e07dbf02d111bc8",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"7371c95858104361baa9e1c77d94b7e5\", \"sequence\": 2, \"trace_id\": \"8b7202f5a4a9c7b24e07dbf02d111bc8\", \"span_id\": \"043ce8ea0be819cb\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 45.38140102522448, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.954412941006012, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 142,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "2e9dcb2de2a641f98292f38b7c8bb6ff",
+      "trace_id": "1b745e69717b6e8dc91016072e444c00",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"2e9dcb2de2a641f98292f38b7c8bb6ff\", \"sequence\": 2, \"trace_id\": \"1b745e69717b6e8dc91016072e444c00\", \"span_id\": \"34c2cf2def1a894f\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 41.45199101185426, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.958456600026693, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 143,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "7f58a3b4255f41df9b164db94221289a",
+      "trace_id": "f1481d7358dcdfab552874ff41097f40",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"7f58a3b4255f41df9b164db94221289a\", \"sequence\": 2, \"trace_id\": \"f1481d7358dcdfab552874ff41097f40\", \"span_id\": \"9b18a55184462bc3\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 45.46207300154492, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.954427916032728, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 144,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "1b4ca7fb9e85471abfc48ba15039689c",
+      "trace_id": "5cc78daa5b8b4d250d11814d366400c2",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"1b4ca7fb9e85471abfc48ba15039689c\", \"sequence\": 2, \"trace_id\": \"5cc78daa5b8b4d250d11814d366400c2\", \"span_id\": \"7ed1562dc75939db\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 68.93294595647603, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.930888561997563, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 145,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "60fd8a8f344243bf8537afe05fcda7f2",
+      "trace_id": "c94247673f7c12917e4a8bd753535a6d",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"60fd8a8f344243bf8537afe05fcda7f2\", \"sequence\": 2, \"trace_id\": \"c94247673f7c12917e4a8bd753535a6d\", \"span_id\": \"fc93e9798aae6c36\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 62.74820398539305, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.93717619002564, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"PENDING_VERIFICATION\"}"
+    },
+    {
+      "event_id": 146,
+      "user_id": "trial-b62ef1c9125b",
+      "run_id": "da79627d7ea24b20bc2912e47a0259fd",
+      "trace_id": "ef7e88a5fdd8f62399169bb43fd5acad",
+      "event_json": "{\"schema_version\": 1, \"run_id\": \"da79627d7ea24b20bc2912e47a0259fd\", \"sequence\": 2, \"trace_id\": \"ef7e88a5fdd8f62399169bb43fd5acad\", \"span_id\": \"75f8bba4c814942c\", \"user_id_hash\": \"4c563063cce3b8a9a4bbd6be83c2ff6d0bd2f5312516183d3bb5d7cec93aa5ab\", \"monotonic_offset_ms\": 38.89435698511079, \"model_id\": \"scripted\", \"prompt_version\": \"scripted-v1\", \"workflow_version\": \"g2-v1\", \"policy_version\": \"g3x-v1\", \"tool_contract_version\": \"employer-v1\", \"schema_migration_version\": 2, \"code_git_sha\": \"UNCOMMITTED\", \"model_call_count\": 0, \"tool_call_count\": 0, \"token_in\": null, \"token_out\": null, \"cost_usd\": null, \"event_type\": \"run_exit\", \"budget_remaining\": {\"wall_seconds\": 17.96102281601634, \"tools\": 16, \"models\": 8}, \"exit_reason\": \"response\", \"status\": \"BOOKED\"}"
+    }
+  ],
+  "provider.provider_holds": [
+    {
+      "id": "c05e0fb005094debb185b00697b363d2",
+      "user_id": "trial-b62ef1c9125b",
+      "provider_id": "plumber-1-0",
+      "slot": "2026-11-04T09:00:00+05:30",
+      "quoted_price": 900,
+      "expires_at": "2026-11-02T15:55:56.196468+05:30",
+      "status": "consumed"
+    }
+  ],
+  "provider.provider_bookings": [
+    {
+      "id": "6a4cd86c9f4a42d695dd1f721b74aa6d",
+      "user_id": "trial-b62ef1c9125b",
+      "provider_id": "plumber-1-0",
+      "service": "plumber",
+      "slot": "2026-11-04T09:00:00+05:30",
+      "status": "booked",
+      "hold_id": "c05e0fb005094debb185b00697b363d2",
+      "quoted_price": 900
+    }
+  ],
+  "provider.provider_operation_outcomes": [
+    {
+      "idempotency_key": "operation-6e6a97c5311c494a8630aa4dbbef04d2",
+      "user_id": "trial-b62ef1c9125b",
+      "action": "book",
+      "payload_hash": "4cff58f3908be9394ca5e7a728ef63e9c067b0054e1cb253367d15c4249c131a",
+      "response_json": "{\"booking_id\":\"6a4cd86c9f4a42d695dd1f721b74aa6d\"}",
+      "error_code": null,
+      "attempts": 1,
+      "created_at": "2026-11-02T15:45:58.139735+05:30"
+    }
+  ]
+}

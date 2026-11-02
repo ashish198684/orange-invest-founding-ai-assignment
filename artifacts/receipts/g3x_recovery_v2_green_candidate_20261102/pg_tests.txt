@@ -1,0 +1,44 @@
+test_actual_tool_model_and_wall_caps (test_distributed.Distributed.test_actual_tool_model_and_wall_caps) ... ok
+test_blocked_model_is_killed_before_wall_deadline (test_distributed.Distributed.test_blocked_model_is_killed_before_wall_deadline) ... ok
+test_cancel_retry_and_reschedule_conflict_preserve_truth (test_distributed.Distributed.test_cancel_retry_and_reschedule_conflict_preserve_truth) ... ok
+test_client_disconnect_replays_same_persisted_operation (test_distributed.Distributed.test_client_disconnect_replays_same_persisted_operation) ... ok
+test_crash_before_and_after_provider_and_status_recovery (test_distributed.Distributed.test_crash_before_and_after_provider_and_status_recovery) ... ok
+test_exact_quote_budget_and_no_model_approval (test_distributed.Distributed.test_exact_quote_budget_and_no_model_approval) ... ok
+test_expired_initiating_turn_cannot_start_first_booking_effect (test_distributed.Distributed.test_expired_initiating_turn_cannot_start_first_booking_effect) ... ok
+test_expired_worker_cannot_update_state (test_distributed.Distributed.test_expired_worker_cannot_update_state) ... ok
+test_http_card_issuance_csrf_session_and_no_alternate_mutation (test_distributed.Distributed.test_http_card_issuance_csrf_session_and_no_alternate_mutation) ... ok
+test_http_duplicate_confirmation_two_replicas_one_operation (test_distributed.Distributed.test_http_duplicate_confirmation_two_replicas_one_operation) ... ok
+test_http_hung_provider_returns_within_20_seconds_without_booking (test_distributed.Distributed.test_http_hung_provider_returns_within_20_seconds_without_booking) ... ok
+test_inferred_memory_not_applied_until_confirmed (test_distributed.Distributed.test_inferred_memory_not_applied_until_confirmed) ... ok
+test_issued_card_expiry_session_expiry_and_cross_user_operations (test_distributed.Distributed.test_issued_card_expiry_session_expiry_and_cross_user_operations) ... ok
+test_local_otel_context_propagates_api_queue_worker_provider (test_distributed.Distributed.test_local_otel_context_propagates_api_queue_worker_provider) ... ok
+test_memory_cross_replica_forget_stale_replay_and_privacy (test_distributed.Distributed.test_memory_cross_replica_forget_stale_replay_and_privacy) ... ok
+test_model_context_drops_forgotten_memory_without_persisting_it_in_draft (test_distributed.Distributed.test_model_context_drops_forgotten_memory_without_persisting_it_in_draft) ... ok
+test_model_turn_cap_at_actual_interpreter_boundary (test_distributed.Distributed.test_model_turn_cap_at_actual_interpreter_boundary) ... ok
+test_poison_claim_bound_enters_unknown_deadletter (test_distributed.Distributed.test_poison_claim_bound_enters_unknown_deadletter) ... ok
+test_provider_commit_survives_rolled_back_authority_transaction (test_distributed.Distributed.test_provider_commit_survives_rolled_back_authority_transaction) ... ERROR
+test_provider_process_dies_after_commit_restarted_workers_reconcile (test_distributed.Distributed.test_provider_process_dies_after_commit_restarted_workers_reconcile) ... ok
+test_provider_slot_taken_and_hold_expired_conformance (test_distributed.Distributed.test_provider_slot_taken_and_hold_expired_conformance) ... ok
+test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement (test_distributed.Distributed.test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement) ... ok
+test_response_loss_after_provider_commit_does_not_repeat_effect (test_distributed.Distributed.test_response_loss_after_provider_commit_does_not_repeat_effect) ... ok
+test_stale_card_revision_aba_and_identity_override_rejected (test_distributed.Distributed.test_stale_card_revision_aba_and_identity_override_rejected) ... ok
+test_timeout_after_success_and_logical_request_deduplication (test_distributed.Distributed.test_timeout_after_success_and_logical_request_deduplication) ... ok
+test_timeout_without_booking_three_attempts_no_new_key (test_distributed.Distributed.test_timeout_without_booking_three_attempts_no_new_key) ... ok
+test_unknown_price_change_fails_closed (test_distributed.Distributed.test_unknown_price_change_fails_closed) ... ok
+test_untrusted_reviews_do_not_modify_intent_or_permissions (test_distributed.Distributed.test_untrusted_reviews_do_not_modify_intent_or_permissions) ... ok
+test_authority_role_cannot_read_or_write_provider (test_fault_boundary.FaultBoundary.test_authority_role_cannot_read_or_write_provider) ... ok
+test_client_has_exact_eight_signatures_and_no_provider_db (test_fault_boundary.FaultBoundary.test_client_has_exact_eight_signatures_and_no_provider_db) ... ok
+
+======================================================================
+ERROR: test_provider_commit_survives_rolled_back_authority_transaction (test_distributed.Distributed.test_provider_commit_survives_rolled_back_authority_transaction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/orange/tests_g3x/test_distributed.py", line 137, in test_provider_commit_survives_rolled_back_authority_transaction
+    hold=p.hold_slot(option['id'],option['free_slots'][0]);key='boundary-'+uuid.uuid4().hex
+                                  ~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+----------------------------------------------------------------------
+Ran 30 tests in 191.412s
+
+FAILED (errors=1)

@@ -77,6 +77,8 @@ class Handler(BaseHTTPRequestHandler):
                                 (value.get('card_id'),session['session_hash'],aid)).fetchone()
                         if not card or card['fingerprint']!=value.get('fingerprint') or card['revision']!=value.get('revision'):
                             raise PermissionError('card_absent_stale_or_forged')
+                        if 'snapshot' in value and value['snapshot']!=json.loads(a['snapshot_json']):
+                            raise PermissionError('card_snapshot_mismatch')
                         op=c.grant_approval(a['workflow_id'],aid)
                         result={'status':'PENDING_VERIFICATION','operation_id':op,'message':'Approval recorded. Provider outcome is not yet verified.'}
                         run.emit('approval_granted',operation_hash=hashed(op))
@@ -92,13 +94,20 @@ class Handler(BaseHTTPRequestHandler):
                 elif parts[0]=='traces' and len(parts)==2 and self.command=='GET':
                     with c.store.connect() as db:
                         result=[json.loads(r[0]) for r in db.execute('SELECT event_json FROM trace_events WHERE run_id=? ORDER BY event_id',(parts[1],))]
+                    if not result:raise PermissionError('forbidden')
+                    from pathlib import Path
+                    if len(parts[1])==32 and all(ch in '0123456789abcdef' for ch in parts[1]):
+                        path=Path(os.getenv('RUNTIME_STATE','data/runtime'))/'traces'/(parts[1]+'.jsonl')
+                        if path.exists():result=[json.loads(line) for line in path.read_text().splitlines()]
                 else:raise ValueError('unknown_route')
                 final=run.emit('run_exit',exit_reason='response',status=result.get('status','returned') if isinstance(result,dict) else 'returned')
                 with c.store.connect(write=True) as db:
                     db.execute('INSERT INTO trace_events(user_id,run_id,trace_id,event_json) VALUES(?,?,?,?)',(uid,run.run_id,final['trace_id'],json.dumps(final)))
                 if isinstance(result,dict):result={**result,'run_id':run.run_id,'trace_id':final['trace_id']}
         except PermissionError as exc:status=403;result={'error':str(exc),'message':'Request denied.'}
-        except (SafetyError,ProviderError) as exc:status=409;result={'error':exc.code,'message':'No unapproved action was performed.'}
+        except (SafetyError,ProviderError) as exc:
+            status=403 if exc.code=='forbidden' else 409
+            result={'error':exc.code,'message':'No unapproved action was performed.'}
         except BudgetExceeded:status=202;result={'status':'OUTCOME_UNKNOWN','message':'Response limit reached; refresh the same request to verify its status.'}
         except Exception:status=400;result={'error':'invalid_or_unavailable','message':'Request could not be verified; no success is claimed.'}
         finally:

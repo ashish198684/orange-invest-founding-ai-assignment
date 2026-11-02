@@ -5,8 +5,10 @@ import os
 from pathlib import Path
 import urllib.request
 import urllib.error
+from threading import BoundedSemaphore
 from app.provider_mock import ProviderError,ProviderTimeout
 from app.runtime.observe import active,current_traceparent,tracer,BudgetExceeded
+_slots=BoundedSemaphore(3)
 
 def settings():
     return json.loads((Path(os.getenv('RUNTIME_STATE','data/runtime'))/'runtime.json').read_text())
@@ -27,7 +29,13 @@ class ProviderClient:
     def __init__(self,user_id,*,timeout=5): self.user_id=user_id; self.timeout=timeout
     def _call(self,name,args):
         run=active.get()
-        if run: run.charge('tool'); run.emit('provider_start',tool=name)
+        if run:run.charge('tool')
+        if not _slots.acquire(timeout=run.remaining() if run else self.timeout):raise BudgetExceeded('provider_capacity')
+        try:return self._rpc(name,args)
+        finally:_slots.release()
+    def _rpc(self,name,args):
+        run=active.get()
+        if run:run.emit('provider_start',tool=name)
         limit=min(self.timeout,run.remaining() if run else self.timeout)
         if limit<=0: raise BudgetExceeded('wall_limit')
         with tracer.start_as_current_span('provider.'+name):
@@ -50,6 +58,7 @@ class ProviderClient:
                 if result['error']=='timeout': raise ProviderTimeout()
                 raise ProviderError(result['error'],result.get('http_status',503))
             if run: run.emit('provider_result',tool=name,status='returned')
+            if name=='search_providers' and len(result['result'])>8:raise ProviderError('candidate_limit',400)
             return result['result']
     def search_providers(self,service,area,date_range): return self._call('search_providers',(service,area,date_range))
     def get_provider(self,provider_id): return self._call('get_provider',(provider_id,))

@@ -3,10 +3,18 @@ from contextlib import contextmanager
 import hashlib
 import os
 import re
+from threading import BoundedSemaphore
 import psycopg
 from psycopg.rows import dict_row
 
 class LostLease(Exception): pass
+_connections=BoundedSemaphore(12)
+
+@contextmanager
+def connection_slot():
+    if not _connections.acquire(timeout=2):raise TimeoutError('connection_capacity')
+    try:yield
+    finally:_connections.release()
 
 def dsn(role='orange_app', database=None):
     passwords={'orange_app':'local-app-only','orange_provider':'local-provider-only',
@@ -47,7 +55,7 @@ class PgStore:
     @contextmanager
     def connect(self,*,write=False):
         schema='provider' if self.role=='orange_provider' else 'authority'
-        with psycopg.connect(**dsn(self.role,self.database),row_factory=dict_row) as db:
+        with connection_slot(),psycopg.connect(**dsn(self.role,self.database),row_factory=dict_row) as db:
             db.execute('SET LOCAL statement_timeout=2500')
             db.execute('SET LOCAL lock_timeout=2000')
             db.execute('SELECT set_config(%s,%s,true)',('search_path',schema+',public'))
@@ -65,5 +73,9 @@ class PgStore:
             yield Connection(db)
 
     def enqueue(self,db,operation_id):
-        from app.runtime.observe import current_traceparent
+        from app.runtime.observe import current_traceparent,active
         db.execute('SELECT authority.enqueue_job(?,?,?)',(operation_id,self.principal,current_traceparent()))
+        run=active.get()
+        remaining=run.remaining() if run else 18.0
+        db.execute("UPDATE jobs SET initiation_deadline=clock_timestamp()+make_interval(secs=>?) WHERE operation_id=?",
+                   (remaining,operation_id))

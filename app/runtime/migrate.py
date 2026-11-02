@@ -75,6 +75,43 @@ GRANT EXECUTE ON FUNCTION enqueue_job(TEXT,TEXT,TEXT) TO orange_app;
 GRANT EXECUTE ON FUNCTION claim_job(TEXT,TEXT) TO orange_worker;
 '''
 
+# V2 preserves existing operation meanings and keys while adding claim timing,
+# immutable behavior labels, and a truthful terminal state for exhausted recovery.
+UPGRADE_V2='''
+ALTER TABLE authority.jobs ADD COLUMN IF NOT EXISTS claimed_at TIMESTAMPTZ;
+ALTER TABLE authority.jobs ADD COLUMN IF NOT EXISTS finished_at TIMESTAMPTZ;
+ALTER TABLE authority.operations ADD COLUMN IF NOT EXISTS workflow_version TEXT NOT NULL DEFAULT 'g2-v1';
+ALTER TABLE authority.operations ADD COLUMN IF NOT EXISTS policy_version TEXT NOT NULL DEFAULT 'g3x-v1';
+CREATE OR REPLACE FUNCTION authority.claim_job(owner TEXT, target TEXT DEFAULT NULL) RETURNS SETOF authority.jobs
+LANGUAGE plpgsql SECURITY DEFINER SET search_path=authority,pg_temp AS $$
+BEGIN
+ WITH exhausted AS (
+  UPDATE jobs SET state='DEAD',generation=generation+1,lease_until=NULL,finished_at=clock_timestamp()
+  WHERE state IN ('READY','LEASED') AND (claims>=6 OR recovery_deadline<=clock_timestamp()) RETURNING operation_id
+ ) UPDATE operations o SET status='OUTCOME_UNKNOWN',last_error='recovery_budget_exhausted',
+ result_json=json_build_object('status','OUTCOME_UNKNOWN','operation_id',o.operation_id,
+ 'message','Status unverified; durable recovery budget exhausted. Manual reconciliation is required.')::text
+ WHERE o.operation_id IN (SELECT operation_id FROM exhausted) AND o.status IN ('PREPARED','EXECUTING','OUTCOME_UNKNOWN');
+ UPDATE workflows w SET status='OUTCOME_UNKNOWN' WHERE w.workflow_id IN
+ (SELECT o.workflow_id FROM operations o JOIN jobs j USING(operation_id)
+ WHERE j.state='DEAD' AND o.last_error='recovery_budget_exhausted') AND w.status IN ('EXECUTING','VERIFYING','OUTCOME_UNKNOWN');
+ RETURN QUERY UPDATE jobs j SET state='LEASED',worker=owner,generation=j.generation+1,claims=j.claims+1,
+ lease_until=clock_timestamp()+interval '10 seconds',claimed_at=COALESCE(j.claimed_at,clock_timestamp())
+ WHERE j.operation_id=(SELECT q.operation_id FROM jobs q
+ WHERE (target IS NULL OR q.operation_id=target) AND q.claims<6 AND q.recovery_deadline>clock_timestamp()
+ AND ((q.state='READY' AND (q.available_at<=clock_timestamp() OR target IS NOT NULL)) OR
+      (q.state='LEASED' AND q.lease_until<=clock_timestamp()))
+ ORDER BY (SELECT count(*) FROM jobs busy WHERE busy.user_id=q.user_id AND busy.state='LEASED' AND busy.lease_until>clock_timestamp()),
+ q.claims,q.created_at FOR UPDATE SKIP LOCKED LIMIT 1) RETURNING j.*;
+END $$;
+INSERT INTO authority.schema_versions(version) VALUES(2) ON CONFLICT DO NOTHING;
+'''
+
+UPGRADE_V3='''
+ALTER TABLE authority.memory_facts ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+INSERT INTO authority.schema_versions(version) VALUES(3) ON CONFLICT DO NOTHING;
+'''
+
 def migrate(database=None):
     with psycopg.connect(**dsn('postgres',database),autocommit=True) as db:
         for role,password in [('orange_app','local-app-only'),('orange_provider','local-provider-only'),
@@ -86,6 +123,8 @@ def migrate(database=None):
         db.execute('SET search_path=authority,public')
         db.execute(WORKFLOW_SCHEMA.split('CREATE TRIGGER')[0])
         db.execute(EXTRA)
+        db.execute(UPGRADE_V2)
+        db.execute(UPGRADE_V3)
         for table in ['workflows','approval_snapshots','operations','issued_cards','jobs','memory_facts','memory_events','trace_events']:
             db.execute(f'ALTER TABLE {table} ENABLE ROW LEVEL SECURITY')
             db.execute(f'DROP POLICY IF EXISTS user_scope ON {table}')
@@ -117,6 +156,6 @@ def migrate(database=None):
     if not target.exists():
         target.write_text(json.dumps({'session_secret':secrets.token_hex(32),'provider_secret':secrets.token_hex(32)}))
         target.chmod(0o600)
-    print(json.dumps({'migration':1,'authority_schema':'authority','independent_provider_schema':'provider','status':'applied'}))
+    print(json.dumps({'migration':[1,2,3],'authority_schema':'authority','independent_provider_schema':'provider','status':'applied'}))
 
 if __name__=='__main__': migrate()

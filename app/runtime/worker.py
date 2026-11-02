@@ -33,6 +33,7 @@ def perform(job,fault=None):
                     if fault=='after_provider' and name=='book':os._exit(32)
                     raise
                 if fault=='after_provider' and name in {'book','cancel','reschedule'}:os._exit(32)
+                if fault=='zombie' and name=='book':time.sleep(12)
                 return result
             c.provider._call=crashing
         try:
@@ -50,7 +51,7 @@ def perform(job,fault=None):
         with c.store.connect(write=True) as db:
             op=db.execute('SELECT * FROM operations WHERE operation_id=?',(oid,)).fetchone()
             retry=(result['status']=='OUTCOME_UNKNOWN' and op['attempts']<3 and job['claims']<6)
-            db.execute("UPDATE jobs SET state=?,available_at=clock_timestamp()+interval '1 second',lease_until=NULL "
+            db.execute("UPDATE jobs SET state=?,available_at=clock_timestamp()+interval '1 second',lease_until=NULL,finished_at=clock_timestamp() "
                        "WHERE operation_id=? AND generation=?",('READY' if retry else 'DEAD' if result['status']=='OUTCOME_UNKNOWN' else 'DONE',oid,generation))
         run.emit('run_exit',status=result['status'],exit_reason='pending' if retry else result['status'])
         return result

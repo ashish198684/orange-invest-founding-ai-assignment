@@ -26,7 +26,7 @@ from app.workflow import SafetyError
 ORIGIN='http://127.0.0.1:8080'
 class Distributed(unittest.TestCase):
     def setUp(self):
-        self.uid='trial-'+uuid.uuid4().hex[:12];self.events=[];self.cookie='';self.csrf=''
+        self.uid='trial-'+uuid.uuid4().hex[:12];self.events=[];self.cookie='';self.csrf='';self.extra_evidence={}
         salt=hashlib.sha256(self.uid.encode()).hexdigest()
         password=hashlib.scrypt(b'synthetic-test',salt=bytes.fromhex(salt),n=16384,r=8,p=1).hex()
         with psycopg.connect(**dsn('postgres')) as db:
@@ -52,11 +52,13 @@ class Distributed(unittest.TestCase):
         return response.code,data
     def draft(self):
         now=datetime.now(timezone.utc)
-        return {'service':'plumber','area':'Indiranagar','budget_inr':2000,
+        bucket=int(hashlib.sha256(self._testMethodName.encode()).hexdigest()[:4],16)%6
+        return {'service':['plumber','electrician','ac servicing'][bucket%3],
+                'area':['Indiranagar','Koramangala'][bucket//3],'budget_inr':2000,
                 'date_window':{'start':now.isoformat(),'end':(now+timedelta(days=8)).isoformat()}}
     def prepare(self,*,reserved=False):
         w=self.c.create_request(uuid.uuid4().hex,**self.draft())['workflow_id']
-        p=self.c.search(w)[0]
+        p=next(p for p in self.c.search(w) if p['free_slots'])
         a=self.c.prepare_booking(w,p['id'],p['free_slots'][0])
         if reserved:
             original=self.c.store.enqueue
@@ -87,12 +89,15 @@ class Distributed(unittest.TestCase):
                 tables[schema+'.'+table]=self.sql('SELECT * FROM '+schema+'.'+table+' WHERE user_id=%s',(self.uid,))
             (out/'sql_state.json').write_text(json.dumps(tables,default=str,indent=2)+'\n')
             (out/'http_observations.json').write_text(json.dumps(self.events,indent=2)+'\n')
+            (out/'correlation.json').write_text(json.dumps({'actor_hash':hashlib.sha256(self.uid.encode()).hexdigest(),**self.extra_evidence},indent=2)+'\n')
 
     def test_http_card_issuance_csrf_session_and_no_alternate_mutation(self):
         w,a=self.prepare()
         self.assertEqual(self.call('POST','/approvals/'+a['approval_id']+'/confirm',{})[0],403)
         _,card=self.call('GET','/approvals/'+a['approval_id'])
         self.assertEqual(card['snapshot'],a['snapshot'])
+        forged=json.loads(json.dumps(card));forged['snapshot']['price_amount']=1
+        self.assertEqual(self.call('POST','/approvals/'+a['approval_id']+'/confirm',forged)[0],403)
         self.assertEqual(self.call('POST','/approvals/'+a['approval_id']+'/confirm',card,csrf=False)[0],403)
         self.assertEqual(self.call('POST','/operations/forged/execute',{})[0],400)
         _,r=self.call('POST','/approvals/'+a['approval_id']+'/confirm',card,base='http://api2:8080')
@@ -118,7 +123,8 @@ class Distributed(unittest.TestCase):
 
     def test_exact_quote_budget_and_no_model_approval(self):
         self.fault(book_branch='book_success',quote_delta=300)
-        w,a=self.prepare();self.assertEqual(a['snapshot']['price_amount'],1200)
+        w,a=self.prepare()
+        self.assertEqual(a['snapshot']['price_amount'],self.c.provider.get_provider(a['snapshot']['provider_id'])['price']+300)
         with self.assertRaises(SafetyError):self.c.propose(w,{'approved':True})
         with self.assertRaises(SafetyError):self.c.chat(w,'yes')
         self.c.correct(w,budget_inr=900)
@@ -128,7 +134,7 @@ class Distributed(unittest.TestCase):
 
     def test_provider_commit_survives_rolled_back_authority_transaction(self):
         p=ProviderClient(self.uid)
-        option=p.search_providers('plumber','Indiranagar',self.draft()['date_window'])[0]
+        option=next(p for p in p.search_providers('plumber','Indiranagar',self.draft()['date_window']) if p['free_slots'])
         hold=p.hold_slot(option['id'],option['free_slots'][0]);key='boundary-'+uuid.uuid4().hex
         with self.assertRaises(RuntimeError):
             with PgStore(self.uid).connect(write=True) as db:
@@ -164,10 +170,28 @@ class Distributed(unittest.TestCase):
             self.assertEqual(result['status'],'NEEDS_REAPPROVAL')
             self.assertFalse(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,)))
 
+    def test_provider_process_dies_after_commit_restarted_workers_reconcile(self):
+        self.fault(book_branch='book_success',terminate_after_method='book')
+        w,a=self.prepare();oid=self.c.grant_approval(w,a['approval_id'])
+        deadline=time.monotonic()+25;observed=[]
+        while time.monotonic()<deadline:
+            _,result=self.call('GET','/operations/'+oid);observed.append(result.get('status'))
+            if result.get('status')=='BOOKED':break
+            time.sleep(.25)
+        self.assertEqual(result.get('status'),'BOOKED',observed)
+        self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))),1)
+
+    def test_response_loss_after_provider_commit_does_not_repeat_effect(self):
+        self.fault(book_branch='book_success',response_loss_method='book',delay=25)
+        w,a,oid=self.reserve();result=perform(claim(oid))
+        self.assertEqual(result['status'],'BOOKED')
+        self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))),1)
+
     def test_cancel_retry_and_reschedule_conflict_preserve_truth(self):
         w,a,oid=self.reserve();book=perform(claim(oid));bid=book['booking_id']
-        options=ProviderClient(self.uid).search_providers('plumber','Indiranagar',self.draft()['date_window'])
-        target=options[0]['free_slots'][0]
+        draft=self.draft()
+        options=ProviderClient(self.uid).search_providers(draft['service'],draft['area'],draft['date_window'])
+        target=next(p for p in options if p['id']==a['snapshot']['provider_id'])['free_slots'][0]
         self.fault(book_branch='book_success',reschedule_conflicts=[target])
         change=self.c.prepare_change(w,'reschedule',bid,new_slot=target)
         move=self.c.grant_approval(w,change['approval_id']);result=perform(claim(move))
@@ -243,13 +267,66 @@ class Distributed(unittest.TestCase):
             with self.assertRaises(BudgetExceeded):run.charge('model')
         run=Run(self.uid)
         with scope(run,'tool-cap'):
-            for _ in range(16):run.charge('tool')
+            for _ in range(16):ProviderClient(self.uid).get_provider('plumber-0-0')
             with self.assertRaises(BudgetExceeded):ProviderClient(self.uid).get_provider('plumber-0-0')
+            self.assertEqual(run.tools,16)
         self.fault(book_branch='book_success',hang_method='get_provider',delay=25)
         run=Run(self.uid,wall=.4);started=time.monotonic()
         with scope(run,'hung-call'):
             with self.assertRaises(ProviderTimeout):ProviderClient(self.uid).get_provider('plumber-0-0')
         self.assertLess(time.monotonic()-started,2)
+
+    def test_model_turn_cap_at_actual_interpreter_boundary(self):
+        from app.runtime.model import IsolatedModel
+        run=Run(self.uid)
+        with scope(run,'actual-model-cap'):
+            for _ in range(8):self.assertEqual(IsolatedModel().interpret('plumber',datetime.now(timezone.utc)),{'service':'plumber'})
+            with self.assertRaises(BudgetExceeded):IsolatedModel().interpret('plumber',datetime.now(timezone.utc))
+            self.assertEqual(run.models,8)
+
+    def test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement(self):
+        w,a,oid=self.reserve()
+        child=subprocess.Popen([sys.executable,'-m','app.runtime.worker','--once','--job',oid,'--fault','zombie'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        deadline=time.monotonic()+7
+        while time.monotonic()<deadline:
+            if self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],)):break
+            time.sleep(.1)
+        self.assertTrue(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],)))
+        with psycopg.connect(**dsn('postgres')) as db:
+            db.execute("UPDATE authority.jobs SET lease_until=clock_timestamp()-interval '1 second' WHERE operation_id=%s",(oid,))
+        replacement=claim(oid)
+        if replacement:perform(replacement)
+        _,err=child.communicate(timeout=18)
+        self.assertEqual(child.returncode,0,err.decode())
+        self.assertEqual(self.poll(oid)['status'],'BOOKED')
+        self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))),1)
+
+    def test_http_hung_provider_returns_within_20_seconds_without_booking(self):
+        w=self.c.create_request('hung-http',**self.draft())['workflow_id']
+        self.fault(book_branch='book_success',hang_method='get_provider',delay=25)
+        started=time.monotonic()
+        code,result=self.call('POST','/workflows/'+w+'/hold',{'provider_id':'plumber-0-0','slot':(datetime.now(timezone.utc)+timedelta(days=1)).isoformat()})
+        self.assertLess(time.monotonic()-started,20)
+        self.assertEqual(code,409)
+        self.assertNotEqual(result.get('status'),'BOOKED')
+        self.assertFalse(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,)))
+
+    def test_local_otel_context_propagates_api_queue_worker_provider(self):
+        import base64
+        w,a=self.prepare();_,card=self.call('GET','/approvals/'+a['approval_id'])
+        _,pending=self.call('POST','/approvals/'+a['approval_id']+'/confirm',card)
+        self.assertEqual(self.poll(pending['operation_id'])['status'],'BOOKED')
+        time.sleep(.3)
+        trace_id=pending['trace_id'];names=[]
+        for line in (Path(os.getenv('RUNTIME_STATE','data/runtime'))/'otel.jsonl').read_text().splitlines():
+            for resource in json.loads(line).get('resourceSpans',[]):
+                for library in resource.get('scopeSpans',[]):
+                    for span in library.get('spans',[]):
+                        if base64.b64decode(span['traceId']).hex()==trace_id:names.append(span['name'])
+        for required in ['api.POST.approvals','worker.execute','provider.book','provider.server.book']:
+            self.assertIn(required,names)
+        other,_=__import__('app.runtime.security',fromlist=['login']).login('bob','demo-bob')
+        self.assertEqual(self.call('GET','/traces/'+pending['run_id'],cookie='orange_session='+other)[0],403)
 
     def test_issued_card_expiry_session_expiry_and_cross_user_operations(self):
         w,a,oid=self.reserve()
@@ -261,7 +338,9 @@ class Distributed(unittest.TestCase):
 
     def test_untrusted_reviews_do_not_modify_intent_or_permissions(self):
         w,a=self.prepare();before=self.c.view(w)
-        reviews=self.c.details(a['snapshot']['provider_id'])['reviews']
+        draft=self.draft()
+        pid=ProviderClient(self.uid).search_providers(draft['service'],draft['area'],draft['date_window'])[0]['id']
+        reviews=self.c.details(pid)['reviews']
         self.assertTrue(any('SYSTEM' in r['text'] for r in reviews))
         self.assertTrue(all(r['trust']=='untrusted' for r in reviews))
         self.assertEqual(self.c.view(w),before)
@@ -271,5 +350,95 @@ class Distributed(unittest.TestCase):
         w,a,oid=self.reserve();result=perform(claim(oid))
         with self.assertRaises(SafetyError):self.c.prepare_change(w,'reschedule',result['booking_id'],
             new_slot=a['snapshot']['new_slot'],price_change_requested=True)
+
+    def test_expired_initiating_turn_cannot_start_first_booking_effect(self):
+        w,a,oid=self.reserve()
+        with psycopg.connect(**dsn('postgres')) as db:
+            db.execute("UPDATE authority.jobs SET initiation_deadline=now()-interval '1 second' WHERE operation_id=%s",(oid,))
+        result=perform(claim(oid))
+        self.assertEqual(result['status'],'NEEDS_REAPPROVAL')
+        self.assertFalse(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,)))
+
+    def test_poison_claim_bound_enters_unknown_deadletter(self):
+        w,a,oid=self.reserve()
+        with psycopg.connect(**dsn('postgres')) as db:
+            db.execute('UPDATE authority.jobs SET claims=6 WHERE operation_id=%s',(oid,))
+        self.assertIsNone(claim(oid))
+        row=self.sql('SELECT * FROM authority.jobs WHERE operation_id=%s',(oid,))[0]
+        self.assertEqual(row['state'],'DEAD')
+        self.assertEqual(self.poll(oid)['status'],'OUTCOME_UNKNOWN')
+        self.assertFalse(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,)))
+
+    def test_client_disconnect_replays_same_persisted_operation(self):
+        import http.client
+        w,a=self.prepare();_,card=self.call('GET','/approvals/'+a['approval_id'])
+        connection=http.client.HTTPConnection('api',8080,timeout=2)
+        connection.request('POST','/approvals/'+a['approval_id']+'/confirm',json.dumps(card),
+            {'Content-Type':'application/json','Origin':ORIGIN,'Cookie':self.cookie,'X-CSRF-Token':self.csrf})
+        deadline=time.monotonic()+5
+        while time.monotonic()<deadline:
+            rows=self.sql('SELECT operation_id FROM authority.operations WHERE approval_id=%s',(a['approval_id'],))
+            if rows:break
+            time.sleep(.05)
+        connection.close()  # the client intentionally never consumes the first response
+        self.assertTrue(rows)
+        _,replay=self.call('POST','/approvals/'+a['approval_id']+'/confirm',card,base='http://api2:8080')
+        self.assertEqual(replay['operation_id'],rows[0]['operation_id'])
+        self.assertEqual(self.poll(replay['operation_id'])['status'],'BOOKED')
+        self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE hold_id=%s',(a['snapshot']['hold_id'],))),1)
+
+    def test_expired_inference_cannot_be_confirmed_or_retrieved(self):
+        memory=Memory(self.uid)
+        memory.update('area','Indiranagar',event_id='inferred',provenance='inferred')
+        row=self.sql('SELECT * FROM authority.memory_facts WHERE user_id=%s',(self.uid,))[0]
+        self.assertIsNotNone(row['expires_at'])
+        with self.c.store.connect(write=True) as db:
+            db.execute("UPDATE memory_facts SET expires_at=clock_timestamp()-interval '1 second' WHERE user_id=?",(self.uid,))
+        self.assertEqual(memory.context(),{})
+        self.assertIsNone(memory.view()[0]['value_json'])
+        with self.assertRaises(ValueError):memory.update('area',None,event_id='late-confirm',expected_version=1,confirm=True)
+
+    def test_memory_forget_during_inflight_search_discards_stale_context(self):
+        memory=Memory(self.uid);memory.update('area','Indiranagar',event_id='remember')
+        w=self.c.create_request('inflight-memory',service='plumber',date_window=self.draft()['date_window'])['workflow_id']
+        original=self.c.provider.search_providers
+        def forget_during_rpc(*args):
+            memory.update('area',None,event_id='forget',expected_version=1,forget=True)
+            return original(*args)
+        self.c.provider.search_providers=forget_during_rpc
+        with self.assertRaises(SafetyError):self.c.search(w)
+        self.assertNotIn('area',self.c.view(w)['draft'])
+        self.assertFalse(self.sql('SELECT * FROM authority.operations WHERE user_id=%s',(self.uid,)))
+
+    def test_memory_forget_during_hold_cannot_publish_stale_approval(self):
+        memory=Memory(self.uid);memory.update('area','Indiranagar',event_id='remember')
+        w=self.c.create_request('inflight-hold',service='plumber',date_window=self.draft()['date_window'])['workflow_id']
+        p=next(p for p in self.c.search(w) if p['free_slots'])
+        original=self.c.provider.hold_slot
+        def forget_during_rpc(*args):
+            memory.update('area',None,event_id='forget',expected_version=1,forget=True)
+            return original(*args)
+        self.c.provider.hold_slot=forget_during_rpc
+        with self.assertRaises(SafetyError):self.c.prepare_booking(w,p['id'],p['free_slots'][0])
+        self.assertFalse(self.sql('SELECT * FROM authority.approval_snapshots WHERE user_id=%s',(self.uid,)))
+
+    def test_memory_forget_across_actual_api_replicas_and_worker_context(self):
+        self.assertEqual(self.call('POST','/memory',{'key':'area','value':'Indiranagar','event_id':'one'})[0],200)
+        self.assertEqual(self.call('GET','/context',base='http://api2:8080')[1]['area'],'Indiranagar')
+        self.assertEqual(self.call('POST','/memory',{'key':'area','value':None,'event_id':'forget','expected_version':1,'forget':True})[0],200)
+        self.assertNotIn('area',self.call('GET','/context',base='http://api2:8080')[1])
+        child=subprocess.run([sys.executable,'-c','import json,sys;from app.runtime.memory import Memory;print(json.dumps(Memory(sys.argv[1]).context()))',self.uid],capture_output=True,timeout=5)
+        self.assertEqual(child.returncode,0)
+        self.assertEqual(json.loads(child.stdout),{})
+
+    def test_http_timeout_after_success_receipt(self):
+        self.fault(book_branch='timeout_after_success')
+        w,a=self.prepare();_,card=self.call('GET','/approvals/'+a['approval_id'])
+        _,pending=self.call('POST','/approvals/'+a['approval_id']+'/confirm',card)
+        result=self.poll(pending['operation_id'])
+        self.assertEqual(result['status'],'BOOKED')
+        self.assertEqual(result['booking']['slot'],a['snapshot']['new_slot'])
+        self.extra_evidence={'trace_ids':[card['trace_id'],pending['trace_id']],
+                             'approved_snapshot':a,'operation_id':pending['operation_id'],'customer_result':result}
 
 if __name__=='__main__':unittest.main()

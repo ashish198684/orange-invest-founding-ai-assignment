@@ -3,6 +3,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 import hmac
 import json
 import time
+import os
 from app.provider_mock import ProviderMock,ProviderError,ScenarioConfig
 from app.runtime.pg import PgStore
 from app.runtime.provider_client import settings
@@ -34,9 +35,12 @@ class Handler(BaseHTTPRequestHandler):
             with scope(Run(uid),'provider.server.'+method,self.headers.get('traceparent')):
                 if fault.get('hang_method')==method: time.sleep(float(fault.get('delay',25)))
                 result=getattr(p,method)(*value['args'])
+                if fault.get('terminate_after_method')==method:os._exit(41)
                 if fault.get('response_loss_method')==method: time.sleep(float(fault.get('delay',25)))
                 self.answer(200,{'result':result})
         except ProviderError as exc:self.answer(exc.http_status,{'error':exc.code,'http_status':exc.http_status})
         except Exception:self.answer(500,{'error':'provider_unavailable','http_status':503})
 
-if __name__=='__main__':ThreadingHTTPServer(('0.0.0.0',8090),Handler).serve_forever()
+if __name__=='__main__':
+    ThreadingHTTPServer.request_queue_size=128
+    ThreadingHTTPServer(('0.0.0.0',8090),Handler).serve_forever()

@@ -49,7 +49,7 @@ class Run:
             'user_id_hash':hashlib.sha256(self.user_id.encode()).hexdigest(),
             'monotonic_offset_ms':(time.monotonic()-self.started)*1000,
             'model_id':'scripted','prompt_version':'scripted-v1','workflow_version':'g2-v1',
-            'policy_version':'g3x-v1','tool_contract_version':'employer-v1','schema_migration_version':1,
+            'policy_version':'g3x-v1','tool_contract_version':'employer-v1','schema_migration_version':3,
             'code_git_sha':build_sha(),'model_call_count':self.models,'tool_call_count':self.tools,
             'token_in':None,'token_out':None,'cost_usd':None,'event_type':event,
             'budget_remaining':{'wall_seconds':self.remaining(),'tools':16-self.tools,'models':8-self.models},

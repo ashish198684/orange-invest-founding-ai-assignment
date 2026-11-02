@@ -15,4 +15,6 @@ class Handler(BaseHTTPRequestHandler):
         with path.open('a') as f:f.write(json.dumps(MessageToDict(message))+'\n')
         self.send_response(200);self.send_header('Content-Length','0');self.end_headers()
     def do_GET(self):self.send_response(200);self.end_headers()
-if __name__=='__main__':ThreadingHTTPServer(('0.0.0.0',4318),Handler).serve_forever()
+if __name__=='__main__':
+    ThreadingHTTPServer.request_queue_size=256
+    ThreadingHTTPServer(('0.0.0.0',4318),Handler).serve_forever()

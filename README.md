@@ -1,56 +1,66 @@
-# Orange Invest - local deterministic booking foundation (G0-G2)
+﻿# Orange Invest — local deterministic booking core
 
-Implemented: eight fixed mock provider tools, durable SQLite provider state,
-seeded faults, and a deterministic workflow controller with explicit approval,
-stable logical requests, booking/cancel/reschedule and status reconciliation.
-G2 offers a typed Python API and small scripted language adapter. Memory, full
-execution budgets/tracing, browser UI and G4 agent evaluations are not implemented.
-The complete employer assignment is not ready for submission.
-No external providers, API services, credentials or payments are used.
+The G3X candidate runs PostgreSQL, two authenticated HTTP replicas, two durable
+workers, an independent mock provider service and a local OpenTelemetry receiver.
+Models propose constraints; persisted code controls approval and provider effects.
+The browser interface, Groq integration, employer end-to-end evaluations and final
+video are later gates. The complete assignment is **not ready for submission**.
 
-Python 3.11+ is sufficient for the current runtime and tests. From this directory,
-run these three commands (PowerShell or a normal terminal):
+Prerequisites: Docker Desktop with Linux containers and Docker Compose. From a
+clean checkout, the three primary commands are:
 
 ```text
-python scripts/check_contract.py
-python -m unittest discover -s tests -v
-python -m app.provider_mock
+docker compose up -d --build --wait
+docker compose exec -T api python -X utf8 scripts/g3x_checks.py --label my_check
+docker compose down
 ```
 
-The last command prints three synthetic plumber providers and available slots;
-it creates `data/provider.sqlite3` once and never resets existing state. It does
-not book anything or start a browser/server. Fixtures cover plumber, electrician
-and ac servicing in Indiranagar/Koramangala for seven days after DB creation.
-An older DB can correctly show no future slots. For a fresh isolated inspection,
-choose a new path: `python -m app.provider_mock --db data/another-demo.sqlite3`.
+Use a new label for each run; evidence is never overwritten. The second command
+checks the pinned source contract, all 65 original SQLite regressions and the real
+PostgreSQL/HTTP/process G3X tests. Image/dependency download is needed on first
+build. The stack binds only localhost: gateway 8080, API replicas 8081 and 8082.
+There is no browser UI yet; /health is the readiness endpoint. The Compose
+networks contain no real providers, payments, hosted telemetry or LLM calls.
 
-To explicitly erase only the synthetic provider state and reseed its calendar,
-run `python -m app.provider_mock reset-demo`. This is destructive to the demo
-provider database; it is never called on startup. Use `--db <path>` to select an
-isolated provider database.
+Synthetic accounts: alice / demo-alice, bob / demo-bob. These are public local
+test fixtures, not production credentials. POST /login with JSON username
+and password plus Origin http://127.0.0.1:8080 returns an HttpOnly SameSite session
+and CSRF token. Mutation requests require that cookie, Origin and X-CSRF-Token.
+GET /approvals/<id> issues an immutable session-bound card; explicit POST to
+/approvals/<id>/confirm queues the approved operation and returns pending with a
+stable operation ID. GET /operations/<id> reports authoritative verified outcome
+or truthful unknown. API issuance is not proof that a human saw a card; G4 must
+test actual rendering. HTTPS/OIDC and production identity are not claimed.
 
-`requirements.txt` pins optional pytest. In an environment with package access,
-`python -m pip install -r requirements.txt` then `python -m pytest -q` is an
-alternative test driver; pytest installation/execution was not verified here.
-The standard-library test command above runs entirely offline. The final
-three-command FastAPI interface will be added with G4; no nonexistent app.main
-or browser demo is advertised now.
+Named Docker volumes retain ledgers and receipts across shutdown/restart. Startup
+does not reset bookings, keys, approvals or user memory. Copy evidence from
+api:/state/receipts/<label> using Docker Compose's cp command. Runtime secrets
+are generated inside the runtime volume, never committed. Compose's local SQL
+passwords are synthetic fixtures; do not expose this configuration publicly.
 
-Tools are methods of `app.provider_mock.ProviderMock`. Construct with a file path
-and trusted `user_id`; fixed tool signatures remain unchanged. Date ranges use
-`{"start": "<aware ISO timestamp>", "end": "<aware ISO timestamp>"}` with an exclusive
-end; slots are normalized to IST. See [decisions](DECISIONS.md) for precise fixture,
-idempotency, timeout, identity and status interpretations. Constructor-only
-`ScenarioConfig` is for controlled tests, never user chat. Provider methods do
-not implement approvals; `WorkflowController` guards application write paths.
+Memory is user-scoped, provenance-tagged and versioned. Inferences require explicit
+confirmation and expire after one day; expired provisional values are suppressed
+on every read and nulled during the user's next memory mutation. Forget immediately
+nulls the operational value and retains only a versioned tombstone and event hash.
+Fresh retrieval plus revision checks discard in-flight stale search/hold results.
+There is no process memory cache or audit-to-context fallback. Explicit transaction
+approvals remain separate business records, not long-term preference retrieval.
 
-To generate a new receipt with exact output, exit code, source hashes and source
-snapshot, run `python scripts/run_checks.py --label my_g1_check` (a new label is
-required). Existing red and green receipts are preserved under
-`artifacts/receipts/`. They are provider evidence, not employer end-to-end traces
-or scripted-user evals.
+Sanitized traces retain hashes, counts, versions and statuses, never raw chat,
+passwords, keys, reviews or preference values. Local audit metadata/tombstones are
+retained until the operator removes the synthetic dataset; they cannot re-seed
+memory. Generated test artifacts contain synthetic fixture state. This is logical
+deletion/suppression, not forensic erasure of PostgreSQL MVCC pages or backups.
+Old backups are restricted local evidence and must not be restored operationally
+without reapplying deletion suppressions. No real personal data is permitted here.
 
-See [implementation plan](docs/implementation_plan.md) for all must-haves and
-six deliverables, and [actual progress](docs/actual_progress.md) for gate status,
-observed counts and evidence boundaries. The original PDF is preserved in
-`source/FoundingEngineer-Assignment.pdf`; `CANONICAL.md` governs later work.
+The original standard-library SQLite baseline remains runnable without Docker:
+python scripts/check_contract.py and python -m unittest discover -s tests -v.
+Its 65 tests are distinct from G3X conformance and G4's required user-agent evals.
+Exactly eight provider signatures remain unchanged; constructor-only faults are
+test infrastructure and are not customer-controlled routes.
+
+See [the authoritative canonical](CANONICAL.md), [decisions](DECISIONS.md),
+[G3X test map](docs/g3x_traceability.md), and source-bound receipts in
+artifacts/receipts/. Actual evidence determines gate status. Nothing here claims
+100× throughput, production high availability or completion of G4/G5.

@@ -25,4 +25,6 @@ class Handler(BaseHTTPRequestHandler):
             try:self.wfile.write(data)
             except Exception:pass
     do_GET=dispatch;do_POST=dispatch;do_PATCH=dispatch
-if __name__=='__main__':ThreadingHTTPServer(('0.0.0.0',8080),Handler).serve_forever()
+if __name__=='__main__':
+    ThreadingHTTPServer.request_queue_size=256
+    ThreadingHTTPServer(('0.0.0.0',8080),Handler).serve_forever()

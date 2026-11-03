@@ -1,0 +1,321 @@
+{
+  "gate": "G3X",
+  "status": "PASS",
+  "acceptance": "CTO review pending",
+  "canonical_id": "ORANGE-FOUNDINGAI-20261102-003",
+  "canonical_sha256": "c5c49bb79a9913012283fd79682f392fea27741f0428f5fc8edc3aa0643d325e",
+  "source_integrity_checks": 11,
+  "code_commit": "b3e8579dc3d41b016740fef5e81c481560c019dd",
+  "evidence_commit_before_closeout": "7d2007b60770182e0e8de267d193df181ae3c181",
+  "code_commits": [
+    "7d2007b60770182e0e8de267d193df181ae3c181 Close G3X with repeated load evidence, independent audit and canonical stop record",
+    "04d99f963bce5963b4232269ff9bea649e582365 Record first complete G3X release proof and measured capacity limits",
+    "736ba3a4eb73a223171fa1e33b7ab4c1019787ab Pin pooled-runtime source and retain second failed 100-request burst",
+    "b3e8579dc3d41b016740fef5e81c481560c019dd Reuse bounded PG connections and complete sanitized tool outcome traces",
+    "1dd5a2f57a367903d0d23a53db3ce242a6c1c9b6 Record concurrent-read regression and failed burst without hiding evidence",
+    "ee78b4d862324ff9e66d5ce0cae9955eff693741 Prevent nested PG slot starvation under concurrent memory reads",
+    "4acd3870fc13d71b1ca2bf4f11b5120b65e69def Preserve G3X red green privacy evidence and append verified canonical milestone",
+    "a6318d2dad919d6ba4fc7a02f5135dd94afd9f83 Enforce G3X privacy revisions and bounded recovery; add release rehearsals",
+    "0398d2821b80afad6f6bb1bcaf9956cd866688c3 Record verified G3X substrate milestone in the existing canonical journal",
+    "aeee0109e6d6bde9d2305afbab5d37611baaca0e Build isolated PostgreSQL G3X runtime and retain first integration red",
+    "a8a4e5ebd961aefaa8ba0e130c9e2a7cc6d8cf8e Freeze sponsor-authorized canonical V3 and preserved V1 V2 governance"
+  ],
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "started_at": "2026-11-03T02:49:21.783545+00:00",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "up",
+        "-d",
+        "--build",
+        "--wait"
+      ],
+      "started_at": "2026-11-03T02:49:21.848313+00:00",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "ps",
+        "--format",
+        "json"
+      ],
+      "started_at": "2026-11-03T02:50:25.433818+00:00",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-c",
+        "from app.runtime.observe import build_sha;print(build_sha())"
+      ],
+      "started_at": "2026-11-03T02:50:25.918376+00:00",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-X",
+        "utf8",
+        "scripts/check_contract.py"
+      ],
+      "started_at": "2026-11-03T02:50:27.827607+00:00",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "--format=%H %s",
+        "855e372f11e2329774fff9efe6060ece6035891d..HEAD"
+      ],
+      "started_at": "2026-11-03T02:50:28.394974+00:00",
+      "exit_code": 0
+    }
+  ],
+  "tests": {
+    "baseline_passed": 65,
+    "g3x_passed": 39,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "workload_runs": 2,
+  "workflows_per_run": 100,
+  "duplicate_confirmations_per_run": 100,
+  "provider_slot_violations": 0,
+  "logical_intent_violations": 0,
+  "approval_violations": 0,
+  "topology": [
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:55 +0530 IST",
+      "ExitCode": 0,
+      "Health": "healthy",
+      "ID": "9967817d007a",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.depends_on=provider:service_healthy:false,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.service=api,com.docker.compose.version=5.1.3,com.docker.compose.config-hash=f3187a2b4307de8bb5a9c27f8489dbc3af5a2dbebf836de27200199f50ad53ed,com.docker.compose.container-number=1,com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.replace=api-1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8080/tcp=127.0.0.1:8081",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-api-1",
+      "Names": "orange-invest-api-1",
+      "Networks": "orange-invest_default",
+      "Ports": "127.0.0.1:8081->8080/tcp",
+      "Project": "orange-invest",
+      "Publishers": [
+        {
+          "URL": "127.0.0.1",
+          "TargetPort": 8080,
+          "PublishedPort": 8081,
+          "Protocol": "tcp"
+        }
+      ],
+      "RunningFor": "30 seconds ago",
+      "Service": "api",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 13 seconds (healthy)"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:55 +0530 IST",
+      "ExitCode": 0,
+      "Health": "healthy",
+      "ID": "e5853f00e1c2",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.replace=api2-1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8080/tcp=127.0.0.1:8082,com.docker.compose.container-number=1,com.docker.compose.depends_on=provider:service_healthy:false,com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.service=api2,com.docker.compose.version=5.1.3,com.docker.compose.config-hash=c18ec1b4b41fd807d712d95debc7d8a90ba58422d0e5f7ad5c4b3ab93e1604b3",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-api2-1",
+      "Names": "orange-invest-api2-1",
+      "Networks": "orange-invest_default",
+      "Ports": "127.0.0.1:8082->8080/tcp",
+      "Project": "orange-invest",
+      "Publishers": [
+        {
+          "URL": "127.0.0.1",
+          "TargetPort": 8080,
+          "PublishedPort": 8082,
+          "Protocol": "tcp"
+        }
+      ],
+      "RunningFor": "30 seconds ago",
+      "Service": "api2",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 13 seconds (healthy)"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:20:02 +0530 IST",
+      "ExitCode": 0,
+      "Health": "healthy",
+      "ID": "5476edb46ec5",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.replace=gateway-1,com.docker.compose.version=5.1.3,com.docker.compose.config-hash=28e7cf0a79a342e0a43ab2edab12c4043262f765c473c652707bbec489c638b6,com.docker.compose.depends_on=api:service_healthy:false,api2:service_healthy:false,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.service=gateway,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8080/tcp=127.0.0.1:8080,com.docker.compose.container-number=1",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-gateway-1",
+      "Names": "orange-invest-gateway-1",
+      "Networks": "orange-invest_default",
+      "Ports": "127.0.0.1:8080->8080/tcp",
+      "Project": "orange-invest",
+      "Publishers": [
+        {
+          "URL": "127.0.0.1",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "Protocol": "tcp"
+        }
+      ],
+      "RunningFor": "23 seconds ago",
+      "Service": "gateway",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 4 seconds (healthy)"
+    },
+    {
+      "Command": "\"docker-entrypoint.s\u2026\"",
+      "CreatedAt": "2026-11-03 08:12:25 +0530 IST",
+      "ExitCode": 0,
+      "Health": "healthy",
+      "ID": "8f895a49aa0a",
+      "Image": "postgres:16.15@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d",
+      "Labels": "com.docker.compose.config-hash=16b78416a898baec48a06e527684dd82ef470fa219835dcca0bd6e0fbbbf5c32,com.docker.compose.image=sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d,com.docker.compose.oneoff=False,com.docker.compose.service=pg,com.docker.compose.version=5.1.3,desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-pg-1",
+      "Names": "orange-invest-pg-1",
+      "Networks": "orange-invest_default",
+      "Ports": "5432/tcp",
+      "Project": "orange-invest",
+      "Publishers": [
+        {
+          "URL": "",
+          "TargetPort": 5432,
+          "PublishedPort": 0,
+          "Protocol": "tcp"
+        }
+      ],
+      "RunningFor": "8 minutes ago",
+      "Service": "pg",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 7 minutes (healthy)"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:51 +0530 IST",
+      "ExitCode": 0,
+      "Health": "healthy",
+      "ID": "86cead38c946",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.replace=provider-1,com.docker.compose.service=provider,com.docker.compose.config-hash=7498c1e375fff8fbc515de3626b1b64ca99a4c8f94aba6c6aa92183775ed0d15,com.docker.compose.container-number=1,com.docker.compose.project=orange-invest,com.docker.compose.version=5.1.3,desktop.docker.io/ports.scheme=v2,com.docker.compose.depends_on=migrate:service_completed_successfully:false",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-provider-1",
+      "Names": "orange-invest-provider-1",
+      "Networks": "orange-invest_default",
+      "Ports": "",
+      "Project": "orange-invest",
+      "Publishers": [],
+      "RunningFor": "34 seconds ago",
+      "Service": "provider",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 17 seconds (healthy)"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:51 +0530 IST",
+      "ExitCode": 0,
+      "Health": "",
+      "ID": "2ffebc52117f",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.depends_on=migrate:service_completed_successfully:false,com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.replace=telemetry-1,com.docker.compose.service=telemetry,com.docker.compose.version=5.1.3,com.docker.compose.config-hash=c08013a77f92b8f94533885e58aa22f6b5f28c78183a761ece14ebf15066de86,com.docker.compose.container-number=1,com.docker.compose.project=orange-invest,desktop.docker.io/ports.scheme=v2",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-telemetry-1",
+      "Names": "orange-invest-telemetry-1",
+      "Networks": "orange-invest_default",
+      "Ports": "",
+      "Project": "orange-invest",
+      "Publishers": [],
+      "RunningFor": "34 seconds ago",
+      "Service": "telemetry",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 17 seconds"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:55 +0530 IST",
+      "ExitCode": 0,
+      "Health": "",
+      "ID": "567426e74b10",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.depends_on=provider:service_healthy:false,com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.version=5.1.3,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.replace=worker-1,com.docker.compose.service=worker,desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=5c3861a299bc683623f805b4c0bc7499db438bc9b5f9e554427ab11cc66bd8f0",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-worker-1",
+      "Names": "orange-invest-worker-1",
+      "Networks": "orange-invest_default",
+      "Ports": "",
+      "Project": "orange-invest",
+      "Publishers": [],
+      "RunningFor": "30 seconds ago",
+      "Service": "worker",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 13 seconds"
+    },
+    {
+      "Command": "\"python -m app.runti\u2026\"",
+      "CreatedAt": "2026-11-03 08:19:55 +0530 IST",
+      "ExitCode": 0,
+      "Health": "",
+      "ID": "fcf3b3fe96a4",
+      "Image": "orange-invest-g3x:local",
+      "Labels": "com.docker.compose.depends_on=provider:service_healthy:false,com.docker.compose.image=sha256:3b79226547e29b2f0391a6991c506db4c6052013ab3092e2944cb4adb283250b,com.docker.compose.oneoff=False,com.docker.compose.project=orange-invest,com.docker.compose.project.config_files=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\compose.yaml,com.docker.compose.replace=worker2-1,desktop.docker.io/ports.scheme=v2,com.docker.compose.container-number=1,com.docker.compose.project.working_dir=C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment,com.docker.compose.service=worker2,com.docker.compose.version=5.1.3,com.docker.compose.config-hash=5c3861a299bc683623f805b4c0bc7499db438bc9b5f9e554427ab11cc66bd8f0",
+      "LocalVolumes": "1",
+      "Mounts": "orange-invest_\u2026",
+      "Name": "orange-invest-worker2-1",
+      "Names": "orange-invest-worker2-1",
+      "Networks": "orange-invest_default",
+      "Ports": "",
+      "Project": "orange-invest",
+      "Publishers": [],
+      "RunningFor": "30 seconds ago",
+      "Service": "worker2",
+      "Size": "0B",
+      "State": "running",
+      "Status": "Up 13 seconds"
+    }
+  ],
+  "audit_receipt_sha256": "37308f1fab94c814e6efb9fb21ba90c08486643afed3c19c66b87e0d750f9559",
+  "stopped": true,
+  "later_gates": "G4/G5/Groq NOT STARTED",
+  "submission": "NO-GO",
+  "limits": "See docs/g3x_handoff.md and independent audit for slow journeys, honest unknowns, bounded best-effort OTLP, local demo auth and privacy/restore limits."
+}

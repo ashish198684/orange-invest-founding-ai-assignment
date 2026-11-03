@@ -41,7 +41,7 @@ Each experiment began with zero workflows/bookings in a fresh isolated volume. A
 
 100-workflow A: 68 BOOKED, 12 NEEDS_REAPPROVAL, 4 OUTCOME_UNKNOWN, 8 preapproval tool timeouts, 8 slot_unavailable. B: 74 BOOKED, 12 NEEDS_REAPPROVAL, 4 OUTCOME_UNKNOWN, 10 slot_unavailable. Each rejected 20 cross-user read/write attacks. Independent SQL found zero duplicate slots, duplicate logical intents, missing approvals or payload/quote mismatches. Each observed two workers and a sampled peak of four pending jobs. Each retained eight mutation retries; unknowns were reported without minting a fresh key.
 
-Separate duplicate experiments: 100 confirmations each, all HTTP 200, one operation and one verified booking. A p95/max 5.137/5.473 seconds; B 2.444/2.546 seconds. The 69 and 75 provider-booking rows in the two final snapshots include the extra duplicate experiment booking.
+Separate duplicate experiments: 100 confirmations each, all HTTP 200, one operation and one verified booking. A p95/max 5.137/5.473 seconds; B 2.444/2.545 seconds. The 69 and 75 provider-booking rows in the two final snapshots include the extra duplicate experiment booking.
 
 Docker reported 12 CPUs and approximately 8.12 GB RAM. Limits: PostgreSQL 2 CPU / 768 MiB; other services 1 CPU / 384 MiB each. Sampled 100-workflow API peaks were 231.2 MiB (A) and 203.3 MiB (B); PostgreSQL 135.3/138.4 MiB. Full per-service CPU/memory samples and derived peaks are in the raw resource files and audit. Process isolation/CPU contention and bounded preparation limit capacity. Two runs, shared hardware and one-item baselines cannot establish a production SLO or five-year scalability superiority.
 

@@ -1,0 +1,73 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "started_at": "2026-11-03T02:49:21.783545+00:00",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "started_at": "2026-11-03T02:49:21.848313+00:00",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "ps",
+      "--format",
+      "json"
+    ],
+    "started_at": "2026-11-03T02:50:25.433818+00:00",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-c",
+      "from app.runtime.observe import build_sha;print(build_sha())"
+    ],
+    "started_at": "2026-11-03T02:50:25.918376+00:00",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/check_contract.py"
+    ],
+    "started_at": "2026-11-03T02:50:27.827607+00:00",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "git",
+      "log",
+      "--format=%H %s",
+      "855e372f11e2329774fff9efe6060ece6035891d..HEAD"
+    ],
+    "started_at": "2026-11-03T02:50:28.394974+00:00",
+    "exit_code": 0
+  }
+]

@@ -6,7 +6,7 @@ Models propose constraints; persisted code controls approval and provider effect
 The browser shows actual quotes, separate approval cards, appointments, memory
 controls and live traces. Offline interpretation is the default; a separately
 selected Groq adapter proposes constraints without action authority. G4 evidence
-and CTO acceptance are separate. G5/video/submission are **not complete**.
+and CTO acceptance are separate. The employer-facing G5 package includes a real 3:49 browser recording and source-bound evidence; **email delivery is not yet confirmed**. The GitHub repository is private until reviewer access is explicitly arranged.
 
 Prerequisites: Docker Desktop with Linux containers and Docker Compose. From a
 clean checkout, the three primary commands are:
@@ -49,6 +49,12 @@ a seven-day calendar seeded once. Select a slot to see its actual hold quote;
 the separate approval button authorizes that exact action. Reload/reconnect uses
 the same workflow and operation. Appointment controls issue fresh cards for
 cancel/reschedule. Only verified provider readback produces success.
+
+## Employer submission — evidence and live recording
+
+All six requested deliverables are indexed in [SUBMISSION_INDEX](docs/submission/SUBMISSION_INDEX.md). The [two-page-equivalent design note](docs/submission/ARCHITECTURE_DESIGN_NOTE.md) explicitly covers the first 100× scaling bottlenecks and includes the real timeout-after-success trace excerpt. The [generated 28-scenario evaluation table](artifacts/evals/results.csv), [three real bugs](docs/submission/THREE_BUGS.md), [unaltered trace](artifacts/traces/timeout_after_success.jsonl) with [annotation](docs/submission/TIMEOUT_TRACE_ANNOTATION.md), and [authentic 3:49 Groq-powered Chromium walkthrough](artifacts/demo/g5_submission_demo_20261103b_groq_PASS.webm) are preserved. The video features real browser interactions with the same API/provider services and adjacent live trace. The browser-facing explanatory captions are marked as recording annotations.
+
+The GitHub submission repository starts **private**; the recipient needs an explicit collaborator invitation or sponsor-approved public visibility. This is a late-prepared package, **not proof that the employer has received it**. No remote deployment or production availability is claimed.
 
 ## Separate live Groq demonstration
 

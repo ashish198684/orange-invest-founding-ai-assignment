@@ -2,9 +2,9 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `G3X LOCAL ENGINEERING CTO-ACCEPTED WITH DOCUMENTED LIMITS; SUBMISSION NO-GO; G4/G5 NOT DISPATCHED`  
+**Status:** `G3X CTO-ACCEPTED; G4 PREPARED BUT NOT DISPATCHED; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
 **Date:** 2026-11-02 (Asia/Kolkata)
-**Current authoritative Codex directions:** Section L4 as amended by binding Section M2–M4; M takes precedence over conflicting V2 directions. All Codex instructions are in this canonical, not chat.  
+**Current authoritative Codex directions:** Section P4 prepares the NEXT manually dispatched G4 gate, governed by P1–P3, Sections M/L and original employer PDF; L4/M2–M4 remain historical G3X execution authority. All Codex instructions are in this canonical, not chat.  
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
@@ -833,3 +833,41 @@ This journal records executed evidence under the sponsor-authorized update polic
 **Next non-negotiable delivery gate:** Under employer PDF and canonical L3, G4 must provide actual local browser chat, visible immutable approval, memory controls and side-by-side live traces, and at least 15 offline reproducible scripted-user end-to-end evals with generated CSV/JSON and independent final-state checks. G5 must deliver the six employer artifacts, including an authentic 3–5-minute screen recording, timeout-after-success trace and design note. **Groq is optional; G4/G5 remain NO-GO until separately dispatched and evidenced.**
 
 **Historical preservation:** The prior complete canonical SHA-256 `c5c49bb79a9913012283fd79682f392fea27741f0428f5fc8edc3aa0643d325e` is archived byte-for-byte at `docs/canonical_history/CANONICAL_EXECUTION_c5c49bb79a9913012283fd79682f392fea27741f0428f5fc8edc3aa0643d325e_FROZEN.md`. Older employer and canonical pins must remain unchanged.
+## P. Sponsor correction — winning submission, Groq demonstration, and employer email deadline (2026-11-03)
+
+**Precedence:** This section is a binding sponsor-priority correction for future G4/G5 work and supersedes the strategic priority implied in Section O's statement that Groq is merely optional. The employer PDF still governs graded requirements, signatures and at-most-one nice-to-have. This section prepares the next engineering order; **it does NOT itself dispatch G4/G5, authorize Codex execution, or permit submission without the sponsor's manual command.** Section O remains an accurate historical statement of the employer's minimum requirements.
+
+### P1. Correct the acceptance target
+
+- The hiring email screenshot explicitly says: complete the assignment **by 3 November 2026, 2 PM**, and submit it **with the demo video and all other deliverables**. The email gives no timezone; use 14:00 IST as the conservative internal hard deadline. A code-only or video-later handoff is not compliant with the email.
+- The next evaluation is a discussion with Orange Invest's CTO, followed by a co-founder round if shortlisted. Optimize for technical defensibility **and** a credible end-user experience. Never claim this guarantees hiring or market superiority.
+- Our sponsor does not want the minimum viable scripted bot alone: demonstrate that a real Groq-hosted model can understand natural multi-turn home-service requests while deterministic authority prevents unapproved side effects. This is a **sponsor-prioritized demonstration objective**, not an employer-mandated external API.
+
+### P2. Groq as a bounded model-proposal adapter — no direct action authority
+
+- Target provider: Groq's OpenAI-compatible Chat Completions API, model `openai/gpt-oss-20b`, subject to **live key, available model and actual request success verification**. Official docs: https://console.groq.com/docs/structured-outputs and https://console.groq.com/docs/api-reference . Use server-side `GROQ_API_KEY` injected as environment/secret; never hardcode, send to browser, or record in trace/repo. Keep local-only API/provider application and employer's eight mocked tools unchanged.
+- Integrate via a versioned `IntentInterpreter`/model adapter *behind the current proposal-only interface*. The model may extract/update typed user intent, request missing facts and compose conversational text; it may NEVER execute provider write tools, grant approval, set authoritative user identity, infer booking success, or mutate memory without a separate validated user action.
+- Where compatible, use Groq `response_format` JSON Schema strict mode with `openai/gpt-oss-20b` for proposal extraction. This is nonstreaming structured output; do not falsely combine it with unsupported streaming/tool-use modes. Independently validate semantic constraints, budget, time windows, dates, allowed fields and revision consistency in application code. Treat refusals, malformed/error results, timeouts, rate limits and credential absence explicitly.
+- Preserve the **deterministic scripted/recorded model as the default for all offline reproducible evaluations and normal clean-checkout tests**. The live-Groq path is an separately enabled, real-integration demonstration and smoke test. Do not silently call a live API from offline evals or mislabel scripted output as a live Groq result.
+- Display honest mode/model and verification status in the browser. On live failure, report a model-unavailable state or a clearly labelled safe scripted fallback; preserve known context and approval/operation invariants. Remote model responses are untrusted proposals. Do not log private requests or raw hidden reasoning.
+
+### P3. Earn the competitive edge through demonstration, not feature inflation
+
+- **Non-negotiable first:** actual browser chat UI; visible immutable approval card with provider, exact hold quote, time and action; user-confirmed consent; side-by-side live activity trace; view/correct/forget user memory; safe booking, cancel/reschedule; truthful timeout-after-success reconciliation. The customer-facing UI must reflect actual HTTP/provider/SQL state, not mocked success animations.
+- **Grade proof:** at least **15**, target **28**, end-to-end scripted-user offline scenarios using the real API and browser-equivalent routes. Generate the employer eval CSV/JSON from executed tests and independently inspect SQL truth. Cover injection, changed quote/slot invalidating consent, timeout-after-success, slot conflict, repeat yes, correct/forget, restart mid-booking, execution caps. Keep existing 65+39 engineering regressions green.
+- **Model differentiation:** on the separately enabled live-Groq route, demonstrate (1) a complex natural-language service request with constraints; (2) a follow-up correcting exactly one fact while preserving the others; (3) the model proposing but **not** authorizing an action; (4) true quoted-price approval and provider status verification; (5) safe handling of an untrusted provider-review injection. Preserve a receipt with actual model ID, result, measured latency and token usage only if returned. This is a separate smoke/evaluation artifact, not proof of 100% reliability.
+- **What to SHOW the CTO:** a real failure recovered truthfully in the visible trace and provider state, architecture simplicity, consent records, stable idempotency, reproducible offline evals and evidence for three fixed real bugs. A live model plus deterministic safety is a stronger demonstration than a scripted demo alone, *provided the model integration really works*.
+- **Guardrails:** no second nice-to-have, autonomous swarm, cloud rollout, extra infrastructure, unvalidated throughput claim, real payments, real providers or unapproved Git push. Do not sacrifice the six employer deliverables to chase optional features.
+
+### P4. Sequence for the sponsor's NEXT manual Codex dispatch (G4 only)
+
+1. Read the full updated canonical and PDF; verify the new archive and source pins, clean repo, existing G3X receipts. Report any contradiction; do not overwrite evidence.
+2. Deliver a usable local browser with chat, immutable approval, current quote/slot, trace, status polling/reconnect and memory controls. Test the real browser against current API and retain screenshot/event evidence.
+3. Implement and execute >=15 actual offline scripted-user end-to-end scenarios, generate CSV/JSON and true DB/trace assertions; rerun all existing regressions. Do not block deterministic completion on internet or a Groq key.
+4. Implement the Groq proposal adapter with secure local configuration, isolated deadlines and strict/schema-validated extraction; perform a **separate** live smoke run with actual API/model evidence (when a key is legitimately available). Verify one multi-turn correction and one prompt-injection defense. The live model is not authorized to commit state.
+5. Reconcile browser screenshots, API events, provider SQL, approvals and traces; preserve failure receipts and fix with regression tests. Produce exact commands, exits, source SHA, mode, measured latency, known limitations and a short CTO handoff.
+6. **STOP AFTER G4.** Do not initiate G5, record or submit a fake video, expose keys or claim completed deliverables until sponsor dispatch and CTO inspection. If Groq is unavailable, explicitly disclose it; prioritize the email's required submission package rather than missing the deadline.
+
+**G5 remains independently sponsor-dispatched:** Max-two-page design note, generated eval table, three actual bug accounts, raw timeout-after-success trace with annotation, README with <=3 real commands, accessible repo and an **authentic 3–5-minute screen recording** showing actual chat and trace side by side, one booking and one live failure. This whole package is required by the emailed deadline, not after it.
+
+**Governance:** Prior complete canonical SHA-256 `33f46a8db52f1ae0745ab885e1c511d85d2615e21d558ba8749656deb67a70d8` frozen at `docs/canonical_history/CANONICAL_EXECUTION_33f46a8db52f1ae0745ab885e1c511d85d2615e21d558ba8749656deb67a70d8_FROZEN.md`. All previous PDFs, archives, receipts and historical hashes remain immutable.

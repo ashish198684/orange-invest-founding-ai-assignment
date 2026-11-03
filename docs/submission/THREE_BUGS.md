@@ -34,4 +34,10 @@ These are **observed failures**, not hypothetical examples. Red receipts are ret
 
 ## Additional model failure transparently retained
 
+### Later live review defect Send flicker during polling
+
+The older UI sent idle status polling through the same foreground pending-state helper as user actions. Eight unwanted disabled-state changes were reproduced in the [RED receipt](../../artifacts/receipts/g5_polling_red_20261103/receipt.json). Release `ac1493e` separates foreground pending state from background status-only refresh. The [release browser regression](../../artifacts/receipts/g5_release_live_browser_20261103/receipt.json) observed zero changes over 14.5 seconds, then completed an explicitly approved timeout-after-success booking. The separate alice `slot_taken` outcome was reconciled to zero bookings; improved copy explains that recorded conflict truthfully.
+
+### Model failures and grounding
+
 Strict Groq schema mode intermittently returned HTTP 400 `json_validate_failed` after omitting nullable fields; the v3 prompt explicitly specifies all fields and still validates independently. A real live model also paraphrased “morning,” causing the validator to discard its proposed limit. The code grounded it against explicit source phrases. See `artifacts/receipts/g4_groq_schema_diagnostic_20261103.json`, `g4_browser_live_candidate_20261103_screens`, 20 final adapter tests and the final live/model audit. This is **not** a claim of broad reliability or immunity to prompt injection.

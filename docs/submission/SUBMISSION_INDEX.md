@@ -4,6 +4,8 @@
 
 ## Start here
 
+**Current status:** accepted local release `ac1493e`; sponsor-approved public repository. The sponsor will record the current release manually in OBS. Its Loom/unlisted YouTube link and employer email are still pending. Use the [detailed 4:35 OBS script](OBS_RECORDING_SCRIPT.md) and [prepared email](EMPLOYER_EMAIL_DRAFT.md).
+
 - **Local run:** [README](../../README.md) — three tested commands for a fresh Docker Compose checkout.
 - **Technical design, two pages actually verified:** [ARCHITECTURE_DESIGN_NOTE.pdf](ARCHITECTURE_DESIGN_NOTE.pdf) ([Markdown source](ARCHITECTURE_DESIGN_NOTE.md)). Describes explicit state, signed/immutable approval, provider idempotency, timeout recovery, memory lifecycle, traces and a measured-gates plan for 100× demand.
 - **Generated evaluation table:** [results.csv](../../artifacts/evals/results.csv), [results.json](../../artifacts/evals/results.json). 28/28 deterministic HTTP scripted-user scenarios with independent SQL/trace assertions; not live-model evals.
@@ -11,7 +13,20 @@
 - **Unaltered timeout-after-success run:** [timeout_after_success.jsonl](../../artifacts/traces/timeout_after_success.jsonl), interpreted in [TIMEOUT_TRACE_ANNOTATION.md](TIMEOUT_TRACE_ANNOTATION.md) and excerpted in the design note.
 - **Authentic 3:49 screen recording (1440×900, VP8 WebM):** [Download the real browser walkthrough](../../artifacts/demo/g5_submission_demo_20261103b_groq_PASS.webm) and inspect [recording receipt / chapters](../../artifacts/demo/g5_submission_demo_20261103b_groq_receipt.json). No fake browser responses. Shows real Groq proposal, chat/trace side by side, exact approval, provider timeout recovered to one booking, reload, memory, reschedule, cancel and logout. Optional captions are explicitly marked *RECORDED DEMO ANNOTATION*. This file is hosted in GitHub, not yet on Loom or unlisted YouTube.
 
-## Source-bound engineering proof
+## Current accepted release proof
+
+Runtime code: `ac1493e05b5dffd3cf35431ae2e128130a96e0ea`. Manifest commit `f60085258b362ad7547083bdaee056a651de0394` binds 69 files. Documentation updates do not change application code.
+
+- [Current release receipt](../../artifacts/receipts/g5_direct_final_20261103/release_receipt.json): 65 original, 39 distributed, 28 offline E2E, 20 adapter and five additional security/trace checks passed.
+- [Release browser proof](../../artifacts/receipts/g5_release_live_browser_20261103/receipt.json): zero Send disabled-state transitions during 14.5 seconds of idle polling, followed by an exact approved booking and timeout-after-success recovery.
+- [Separate current Groq smoke](../../artifacts/receipts/g5_release_groq_20261103/receipt.json): three actual model responses with measured usage/latency.
+- [Current OBS prompt preflight](../../artifacts/receipts/g5_obs_preparation_20261103/request_preflight.json): real Groq, correct requested constraints and three providers; no booking attempted.
+- [Typed-argument raw timeout run](../../artifacts/traces/g5_timeout_after_success_typed.jsonl): a distinct retained worker execution, cross-referenced in the annotation.
+- [Publication secret/history scan](../../artifacts/receipts/g5_public_delivery_20261103/secret_review.json): reachable Git history, ZIP contents, tracked files and prepared delivery files; no actual key or scanned credential/private-key pattern found. Pattern scanning does not guarantee detection of every secret format.
+
+The legacy distributed/E2E receipts retain their true `UNCOMMITTED` execution labels. [Independent byte reconciliation](../../artifacts/receipts/g5_public_delivery_20261103/source_reconciliation.json) matches every recorded application file to `ac1493e`, including frontend files in the E2E snapshot. A separately listed PDF-renderer difference is auxiliary. Receipts are not rewritten and this is not a claim of a new regression run.
+
+## Historical G4 engineering proof
 
 - Final G4 receipt: [g4_final_20261103/receipt.json](../../artifacts/receipts/g4_final_20261103/receipt.json).
 - Full clean-checkout release: [g4_release_20261103e/receipt.json](../../artifacts/receipts/g4_release_20261103e/receipt.json).
@@ -20,7 +35,7 @@
 - Separate live Groq smoke: [live/receipt.json](../../artifacts/receipts/g4_release_20261103e/live/receipt.json).
 - Source business logic commit: `b6d4bb72e5108e691fe38d1dfc994cf7dae8771c` (BUILD_INFO locks 64 runtime files); final artifact packaging is committed subsequently.
 
-## Quantified results (scope matters)
+## Historical G4 quantified results
 
 | Evidence | Result |
 | --- | --- |
@@ -42,4 +57,4 @@
 
 **What is defensible?** Separate human approval and deterministic authority; immutable quote-bound consent; stable keys, status-first reconciliation and bounded recovery; versioned memory with forget guards; raw traces and independent provider DB results; preserved failing receipts and reproducible regression tests.
 
-**Submission access:** the GitHub repository is initially private under `ashish198684`. The employer must be invited by GitHub username, or the sponsor must explicitly authorize public visibility. A repository URL alone does not grant private access.
+**Submission access:** the sponsor explicitly authorised public visibility and the repository is now public. The authentic 3:49 WebM above records historical G4 source `b6d4bb7`, before the polling fix. It is not the new manual OBS recording. A current-release automatic capture stopped before provider selection after grounding rejected a service proposal; its failure is preserved and is not a passing demonstration. The exact shorter OBS prompt subsequently passed a real browser preflight. A current-release hosted video and actual employer email delivery remain pending.

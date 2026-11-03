@@ -2,9 +2,9 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `G5 ENGINEERING CTO-ACCEPTED; VERIFIED GROQ RELEASE; EMPLOYER SUBMISSION NO-GO (VIDEO, ACCESS, EMAIL PENDING)`
+**Status:** `G5 ENGINEERING CTO-ACCEPTED; PUBLIC REPOSITORY VERIFIED; EMPLOYER SUBMISSION NO-GO (MANUAL VIDEO AND EMAIL PENDING)`
 **Date:** 2026-11-03 (Asia/Kolkata)
-**Current authoritative directions:** Section U is the CTO G5 engineering acceptance and delivery boundary; older G4/Codex directions are historical. Original employer PDF remains first priority.
+**Current authoritative directions:** Section V governs current public delivery and manual OBS preparation; Section U remains the engineering acceptance. Original employer PDF has first priority.
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
@@ -977,3 +977,21 @@ This journal records executed evidence under the sponsor-authorized update polic
 **Outstanding employer delivery; explicit NO-GO.** The 3:49 browser WebM previously uploaded to GitHub is authentic, but GitHub's file view does not play it, and no Loom or unlisted YouTube URL has been verified. The sponsor's earlier OBS rehearsal did not demonstrate a completed booking and is NOT the submission recording. The employer has not been granted confirmed access to the private GitHub repo, and the late submission email has NOT been sent. The six file artifacts alone do not satisfy actual submission. These external delivery gates are not waived. No further source mutation is required by this release decision; further changes require new canonical evidence and sponsor authorization.
 
 **Authority:** The uploaded three-page employer assignment is first priority; this Section U supersedes stale G4/Codex waiting language solely for current execution status. All earlier canonical history is retained and is auditable in its frozen archives.
+
+## V. Sponsor approved public repository and manual OBS delivery
+
+**Sponsor direction on 3 November 2026:** explicitly authorised making `ashish198684/orange-invest-founding-ai-assignment` public and stated that the sponsor will record the video manually in OBS. No employer email send was authorised or performed by this continuation. The application code and provider contract remain unchanged.
+
+**Public access verified:** personal GitHub identity `ashish198684` was verified before the authorised visibility change. The GitHub CLI reported PUBLIC, and independent unauthenticated HTTP requests returned 200 for repository metadata (`private: false`) and README. Receipt: `artifacts/receipts/g5_public_delivery_20261103/publication.json`.
+
+**Publication review:** all 11,590 reachable Git objects, 10,102 Git blobs, 1,607 ZIP entries and 10,829 tracked/prepared files were checked for the actual ignored Groq key and selected credential/private-key patterns. No issue was found and .env is untracked. Exact scope and limitations are in `secret_review.json`; this is not a universal guarantee of secret detection.
+
+**Source reconciliation:** earlier distributed and E2E receipts are not relabelled; their original UNCOMMITTED fields remain. Independent comparison matches all 26 recorded application files in the distributed snapshot and all 29 including the frontend in the E2E snapshot to accepted source `ac1493e05b5dffd3cf35431ae2e128130a96e0ea`. A PDF formatter difference is separately listed as auxiliary. This is byte reconciliation, not a new regression execution. Receipt: `source_reconciliation.json` in the same evidence directory. BUILD_INFO still binds 69 accepted source files.
+
+**Manual recording prepared:** `docs/submission/OBS_RECORDING_SCRIPT.md` gives an approximately 4:35 real walkthrough with exact messages, narration, current UI actions, explicit quoted approval, configured timeout-after-success recovery, reconnect, memory and cancellation. Three fresh synthetic take accounts were created without resetting existing users or volumes. Their admin-only fixture uses timeout_after_success and quote_delta 37; the script requires disclosing this controlled mock scenario. A separate exact-prompt Groq browser preflight returned HTTP 200, correctly retained all constraints, and displayed three providers; it attempted no booking. Evidence: `artifacts/receipts/g5_obs_preparation_20261103/`.
+
+**New failure kept honest:** before the sponsor chose manual OBS, a current-source automatic capture stopped before provider selection. The actual verified Groq response had a service proposal removed by source grounding, leaving an incomplete plan. That attempt is FAIL and is retained as a small receipt/source snapshot in `g5_public_delivery_20261103`; its failed video remains local and unpublished. A subsequent shorter exact OBS prompt passed. No perfect language-understanding claim or code fix is inferred from the successful sample.
+
+**Remaining delivery gates:** the historical 3:49 WebM shows older G4 source and is not the new manual recording. The sponsor's current-release 3-5 minute OBS take, a verified playable Loom/unlisted YouTube URL and actual employer email delivery remain PENDING/NOT SENT. The prepared email contains an explicit video-link placeholder. Repository access is now public, but final employer submission remains NO-GO until the remaining required delivery is complete. The original conservative deadline has elapsed and is not rewritten.
+
+**Prior master:** `fb26e05511fc57551bbb19ff5becf3ef2fff10a25df65bfc57d62cad3ab486a0`, preserved byte-exact at `docs/canonical_history/CANONICAL_EXECUTION_fb26e05511fc57551bbb19ff5becf3ef2fff10a25df65bfc57d62cad3ab486a0_FROZEN.md`. All historical statements remain evidence of their respective time; this section supersedes the private-access delivery status only.

@@ -2,7 +2,7 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `SPONSOR-REQUESTED V3 FIVE-YEAR ARCHITECTURE REVIEW / G3X AWAITING MANUAL DISPATCH`  
+**Status:** `G3X LOCAL ENGINEERING CTO-ACCEPTED WITH DOCUMENTED LIMITS; SUBMISSION NO-GO; G4/G5 NOT DISPATCHED`  
 **Date:** 2026-11-02 (Asia/Kolkata)
 **Current authoritative Codex directions:** Section L4 as amended by binding Section M2–M4; M takes precedence over conflicting V2 directions. All Codex instructions are in this canonical, not chat.  
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
@@ -815,3 +815,21 @@ This journal records executed evidence under the sponsor-authorized update polic
 - **Source attribution:** `b3e8579dc3d41b016740fef5e81c481560c019dd`.
 - **Prior canonical SHA-256:** `197a32bb0dcaf51eee3c25845feb3de5214f1fb8a7e9e5b57e90ca0c35546669`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_197a32bb0dcaf51eee3c25845feb3de5214f1fb8a7e9e5b57e90ca0c35546669_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
 - **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.
+
+## O. CTO G3X acceptance adjudication — 2026-11-03
+
+**Decision:** ACCEPT G3X as a completed LOCAL ENGINEERING milestone, with measured limitations. **Employer submission remains NO-GO. G4 and G5 are NOT STARTED or dispatched.** This evidence review does not authorize Codex to execute any new gate, Groq integration, cloud deployment, push or submission. The human sponsor alone dispatches each subsequent gate under Sections L3/M4. All engineering instructions remain in THIS canonical; standalone CTO-order drafts remain non-authoritative.
+
+**Reviewed evidence:** Original employer PDF; current canonical; `docs/g3x_handoff.md`; `artifacts/receipts/g3x_final_20261103/receipt.json`; `artifacts/receipts/g3x_final_20261103/closeout.json`; and representative runtime source. This CTO inspected current source and stored execution records but has not rerun the entire test suite independently.
+
+**Earned facts:** Implementation `b3e8579dc3d41b016740fef5e81c481560c019dd`; clean-checkout test source `736ba3a4eb73a223171fa1e33b7ab4c1019787ab`; 65/65 SQLite regressions, 39/39 PostgreSQL/HTTP/process checks, zero skips/failures/errors; two fresh-state 100-active-workflow experiments with two real workers and zero reported approval/slot/logical-intent violations. Each separate 100-confirmation test coalesced to one operation and one booking. Provider process death, timeout-after-commit reconciliation, zombie fencing, in-flight memory forget, backup/restore and clean-checkout startup have retained passing evidence.
+
+**Measured limitations:** Workload A: 68 BOOKED, 12 NEEDS_REAPPROVAL, 4 OUTCOME_UNKNOWN, 8 preapproval timeouts and 8 unavailable slots. Workload B: 74 BOOKED, 12 NEEDS_REAPPROVAL, 4 OUTCOME_UNKNOWN and 10 unavailable slots. HTTP maximum 17.042/10.400 seconds, whereas full-workload journey p95 was 264.156/189.989 seconds. This proves a 100-workflow local concurrency workload, NOT 100x sustained throughput or a production latency SLO. Seeded fault outcomes must not be mislabeled universally as engineering errors.
+
+**Assumptions challenged:** Green backend tests are not browser proof; issued cards are not proof the customer saw them; two workers are not production high availability; stable idempotency does not mean one network invocation; operational memory suppression does not guarantee old backup erasure; best-effort OTLP export is not lossless; synthetic local credentials are not production IAM/TLS. Prior red cases revealed connection starvation, stale in-flight memory, poison-job exhaustion, wrong HTTP denial classification and missing timeout trace fields; preserved regression receipts support the fixes.
+
+**Defensible decisions:** Deterministic consent authority independent of model text; independent provider commit/readback; stable keys, worker fences and bounded retries; truthful unknown outcomes; source-linked SQL, JSONL and adversarial tests; modular composability without an unnecessary agent swarm. These are engineering choices consistent with AWS agent reliability/security design guidance and Anthropic simple workflow/evaluation principles, not external certification or universal optimality.
+
+**Next non-negotiable delivery gate:** Under employer PDF and canonical L3, G4 must provide actual local browser chat, visible immutable approval, memory controls and side-by-side live traces, and at least 15 offline reproducible scripted-user end-to-end evals with generated CSV/JSON and independent final-state checks. G5 must deliver the six employer artifacts, including an authentic 3–5-minute screen recording, timeout-after-success trace and design note. **Groq is optional; G4/G5 remain NO-GO until separately dispatched and evidenced.**
+
+**Historical preservation:** The prior complete canonical SHA-256 `c5c49bb79a9913012283fd79682f392fea27741f0428f5fc8edc3aa0643d325e` is archived byte-for-byte at `docs/canonical_history/CANONICAL_EXECUTION_c5c49bb79a9913012283fd79682f392fea27741f0428f5fc8edc3aa0643d325e_FROZEN.md`. Older employer and canonical pins must remain unchanged.

@@ -16,7 +16,7 @@ A model should **understand the request**, not possess authority to spend, book 
 
 **Untrusted text and memory:** provider reviews are displayed as untrusted and excluded from the Groq intent context. Semantic constraints are independently grounded in the latest request, including IST-relative dates, budgets and morning times. Memory is user-scoped, provenance/version-aware and explicitly correctable/forgettable; in-flight stale contexts are discarded on revision mismatch. Forget provides operational suppression/tombstones, **not** forensic deletion from backups.
 
-**Observability:** runs have trace IDs, span IDs, workflow/operation linkage, model version, token usage where returned, bounded execution budgets, sanitized payload shapes and errors. Raw secrets, history, reviews and personal preference values are not recorded. Exact provider and approval effects are independently reconciled with PostgreSQL.
+**Observability:** runs have trace IDs, span IDs, workflow/operation linkage, model version, token usage where returned, bounded execution budgets, sanitized payload shapes and errors. Raw secrets, history, reviews and personal preference values are not recorded. An unmodified E12 trace additionally records the booking tool's hashed hold/key arguments without raw identifiers; all eight method shapes have explicit redaction tests. Exact provider and approval effects are independently reconciled with PostgreSQL.
 
 ## Evidence, failure and tradeoffs
 

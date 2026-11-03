@@ -10,7 +10,7 @@ from app.provider_mock import ProviderError
 from app.runtime.controller import PgController
 from app.runtime.pg import PgStore
 from app.runtime.observe import Run,scope,BudgetExceeded
-from app.runtime.security import login,authenticate,check_csrf,hashed
+from app.runtime.security import login,authenticate,check_csrf,hashed,allowed_origin
 from app.runtime.memory import Memory
 from app.agent.groq import ModelUnavailable,MODEL
 
@@ -49,7 +49,7 @@ class Handler(BaseHTTPRequestHandler):
             if self.path=='/health':return self.answer(200,{'status':'api-ready'})
             if self.path=='/login' and self.command=='POST':
                 if set(value)!={'username','password'}:raise ValueError('invalid_login')
-                if self.headers.get('Origin') not in {'http://127.0.0.1:8080','http://127.0.0.1:8081','http://127.0.0.1:8082'}:raise PermissionError('origin_denied')
+                if not allowed_origin(self.headers.get('Origin')):raise PermissionError('origin_denied')
                 cookie,csrf=login(value['username'],value['password'])
                 return self.answer(200,{'csrf_token':csrf,'local_demo_only':True},cookie)
             session=authenticate(self.headers.get('Cookie',''));uid=session['user_id'];run.user_id=uid

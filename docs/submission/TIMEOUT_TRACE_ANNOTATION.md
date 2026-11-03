@@ -1,6 +1,6 @@
 # Timeout-after-success: annotated, unmodified worker trace
 
-**Source of truth:** [raw JSONL](../../artifacts/traces/timeout_after_success.jsonl). No entries have been edited or regenerated for this explanation.
+**Source of truth:** [original raw JSONL](../../artifacts/traces/timeout_after_success.jsonl). No entries have been edited or regenerated for this explanation. A separately captured, equally unmodified [G5 E12 typed-argument trace](../../artifacts/traces/g5_timeout_after_success_typed.jsonl) exposes the booking tool's redacted `hold_id_sha256` and `idempotency_key_sha256` fields; its [independent provenance receipt](../../artifacts/receipts/g5_typed_trace_proof_20261103.json) records the actual raw SHA-256 and 13 events. These are distinct source-bound executions; do not conflate their workflow IDs.
 
 **Exact tested source:** `b6d4bb72e5108e691fe38d1dfc994cf7dae8771c`. **Trace run:** `8a0de1ad493e499386d733192c360f43`, workflow `e37ef16999cd4d1fb898098967f6789f`; hashed operation `3bf4f6ae3c38b0d2941c9b12b7856b5ca516418c7b423ff83c15cc86b5de3291`. The idempotency key itself is not disclosed; its stable hash appears on the tool events.
 

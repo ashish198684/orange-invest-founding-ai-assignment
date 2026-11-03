@@ -5,7 +5,7 @@
 ## Start here
 
 - **Local run:** [README](../../README.md) — three tested commands for a fresh Docker Compose checkout.
-- **Technical design, maximum two pages:** [ARCHITECTURE_DESIGN_NOTE.md](ARCHITECTURE_DESIGN_NOTE.md). Describes explicit state, signed/immutable approval, provider idempotency, timeout recovery, memory lifecycle, traces and a measured-gates plan for 100× demand.
+- **Technical design, two pages actually verified:** [ARCHITECTURE_DESIGN_NOTE.pdf](ARCHITECTURE_DESIGN_NOTE.pdf) ([Markdown source](ARCHITECTURE_DESIGN_NOTE.md)). Describes explicit state, signed/immutable approval, provider idempotency, timeout recovery, memory lifecycle, traces and a measured-gates plan for 100× demand.
 - **Generated evaluation table:** [results.csv](../../artifacts/evals/results.csv), [results.json](../../artifacts/evals/results.json). 28/28 deterministic HTTP scripted-user scenarios with independent SQL/trace assertions; not live-model evals.
 - **Three real defects with red receipts and fixes:** [THREE_BUGS.md](THREE_BUGS.md).
 - **Unaltered timeout-after-success run:** [timeout_after_success.jsonl](../../artifacts/traces/timeout_after_success.jsonl), interpreted in [TIMEOUT_TRACE_ANNOTATION.md](TIMEOUT_TRACE_ANNOTATION.md) and excerpted in the design note.

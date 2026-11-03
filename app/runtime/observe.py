@@ -67,7 +67,7 @@ class Run:
             'budget_remaining':{'wall_seconds':self.remaining(),'tools':16-self.tools,'models':8-self.models},
             **{k:v for k,v in values.items() if k in allowed}}
         # Accept only explicit metadata, never arbitrary nested caller payloads.
-        for field,keys in [('sanitized_args',{'argument_count','payload_sha256'}),
+        for field,keys in [('sanitized_args',{'argument_count','payload_sha256','service','area','date_start_ist','date_end_ist','provider_id','slot_ist','hold_id_sha256','idempotency_key_sha256','user_id_sha256','booking_id_sha256'}),
                            ('sanitized_result',{'shape','count','field_count','status','quoted_price'})]:
             if isinstance(values.get(field),dict):record[field]={k:v for k,v in values[field].items() if k in keys}
         def redact(value):

@@ -931,3 +931,25 @@ This journal records executed evidence under the sponsor-authorized update polic
 **Remaining sponsor-controlled delivery:** Either authorize making the repo PUBLIC after reviewed confidentiality/privacy decision or provide named GitHub collaborator accounts for the private repo. Obtain an externally accessible recording link if the hiring team requires Loom/unlisted YouTube. Send the full late submission to the verified invitation sender `hr@orangeinvest.app` only through a user-authorized send workflow; confirm actual receipt/delivery separately. Until then employer submission status remains **NOT SENT / NOT ACCESSIBLE**, despite all artifacts being in the sponsor's private repo.
 
 **Archive:** The immediately preceding complete canonical is frozen byte-exact and pinned in `scripts/check_contract.py`; G4 history remains immutable.
+
+## T. Sponsor-authorized CTO direct engineering takeover — 2026-11-03
+
+**Authorization:** Sponsor explicitly instructed ChatGPT to finish the assignment directly because Codex usage is exhausted. This authorizes the bounded release corrections in T1 under the original employer PDF, which has first priority. Previous G4/G5 evidence remains historical and is never rewritten. The GitHub repository remains private until the sponsor separately approves access or public visibility.
+
+**Pre-change live evidence:** Synthetic user alice, workflow prefix b51ac1ee revision 5, operation prefix e2f31e23: booking FAILED, reason slot_taken, provider outcome slot_taken after one attempt, zero provider bookings for alice. This is a valid graded provider conflict; the existing generic error message hides the useful reason. The earlier G4 source passed 65 original + 39 distributed + 28 offline HTTP end-to-end + 20 adapter tests, but does not cover the newly observed browser polling flicker.
+
+**Pre-change UI defect:** app/web/app.js polls status every 3500ms through work(), which disables #send; CSS halves disabled-button opacity. Polling, not a user request, is causing the flicker. Preserve exact failure evidence and no-effect SQL before any changes.
+
+### T1. Mandatory direct-engineering release steps
+
+1. Capture the live slot_taken failure and independent zero-effect SQL in a durable sanitized receipt. Never reset or overwrite the active demo database.
+2. Reproduce the flicker with a RED Chromium browser test observing more than three 3500ms polls; then fix background polling without losing serialization, user input or approval integrity. Require GREEN real-browser and duplicate-action checks.
+3. Make provider failures comprehensible using the recorded reason (slot_taken, expired approval, etc.), without reporting a non-booking as success or exposing keys. Preserve exact provider contract and probabilities.
+4. Validate on a fresh isolated source-bound environment: original 65, distributed 39, E2E 28, adapter 20 and browser/SQL reconciliation. Rebuild the active demo only after tests pass, preserving its volumes.
+5. Verify the traces contain tool names, safely redacted structured arguments/results, latency and model tokens/cost when available. Preserve old trace bytes; introduce a new true trace and regression if needed.
+6. Verify the design note prints at most two pages. No claim of measured 100x performance. Link only actual evidence.
+7. Fix *future* Git commits to the verified ashish198684 account without rewriting historical commits. Keep repository private pending explicit sharing authorization. No force pushes.
+8. Produce a genuine 3–5-minute complete-booking-and-handled-failure video and host on unlisted YouTube or Loom only through an available authorized account. A file merely committed to GitHub is not a playable external video link. Verify actual employer email delivery separately.
+9. Append actual source, regression, provider SQL, browser, artifact, and delivery results to this canonical, archiving each prior version and updating SHA pins. Never report GO while an essential defect or deliverable remains unverified.
+
+**Operative status:** This direct-engineering order supersedes old wait-for-Codex references. Historical status is unchanged; acceptance is still pending actual new results.

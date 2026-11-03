@@ -2,6 +2,8 @@
 import hashlib
 import hmac
 import secrets
+import os
+from urllib.parse import urlsplit
 from datetime import datetime,timedelta,timezone
 from app.runtime.pg import PgStore
 from app.runtime.provider_client import settings
@@ -32,7 +34,20 @@ def authenticate(cookie):
         return dict(session)
     except (ValueError,KeyError,TypeError,CookieError):raise PermissionError('unauthenticated') from None
 
-def check_csrf(session,token,origin):
+def allowed_origin(origin):
+    """Exact local origin allowlist; optional extra origin is loopback-only for isolated tests."""
     allowed={'http://127.0.0.1:8080','http://127.0.0.1:8081','http://127.0.0.1:8082','http://localhost:8080'}
-    if origin not in allowed or not token or not hmac.compare_digest(session['csrf_hash'],hashed(token)):
+    if origin in allowed:return True
+    configured=os.getenv('ORANGE_ADDITIONAL_LOOPBACK_ORIGIN','')
+    if not configured or origin!=configured:return False
+    try:
+        parsed=urlsplit(configured)
+        return (parsed.scheme=='http' and parsed.hostname=='127.0.0.1'
+                and parsed.port is not None and 1024<=parsed.port<=65535
+                and not parsed.username and not parsed.password
+                and not parsed.path and not parsed.query and not parsed.fragment)
+    except ValueError:return False
+
+def check_csrf(session,token,origin):
+    if not allowed_origin(origin) or not token or not hmac.compare_digest(session['csrf_hash'],hashed(token)):
         raise PermissionError('csrf_denied')

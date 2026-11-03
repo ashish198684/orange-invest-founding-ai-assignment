@@ -1,6 +1,6 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const state = {user:null, csrf:sessionStorage.getItem('orange-csrf'), wid:null, logical:null, card:null, op:null, busy:false, memory:[], seen:new Set(), prices:{}};
+const state = {user:null, csrf:sessionStorage.getItem('orange-csrf'), wid:null, logical:null, card:null, op:null, busy:false, foregroundPending:0, memory:[], seen:new Set(), prices:{}};
 const money = n => n == null ? 'Price unavailable from provider contract' : new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
 const when = iso => iso ? new Intl.DateTimeFormat('en-IN',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Kolkata'}).format(new Date(iso))+' IST' : '—';
 function el(tag,text,cls){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;}
@@ -15,9 +15,29 @@ async function api(method,path,value){
  if(!response.ok){const error=new Error((data.message||'Request denied')+' ('+(data.error||response.status)+')');error.code=data.error;throw error;}
  $('connection').textContent='Connected';return data;
 }
-function work(fn){state.queue=(state.queue||Promise.resolve()).then(async()=>{state.busy=true;$('send').disabled=true;try{await fn();}catch(e){fail(e);}finally{state.busy=false;$('send').disabled=false;}});return state.queue;}
+function work(fn,{background=false}={}){
+ if(!background){state.foregroundPending++;$('send').disabled=true;}
+ state.queue=(state.queue||Promise.resolve()).then(async()=>{
+  state.busy=true;
+  try{await fn();}catch(e){fail(e);}finally{
+   state.busy=false;
+   if(!background){state.foregroundPending--; $('send').disabled=state.foregroundPending>0;}
+  }
+ });
+ return state.queue;
+}
 function rememberJourney(){sessionStorage.setItem('orange-journey-'+state.user,JSON.stringify({wid:state.wid,logical:state.logical,op:state.op}));}
 function clearCard(){state.card=null;$('approval').replaceChildren();$('approval').hidden=true;}
+const reapprovalMessages = Object.freeze({
+ slot_taken:'The provider reports this slot was taken. No booking was made. Select Find providers, choose another slot, and approve its new quote.',
+ hold_expired:'The provider hold expired before completion. Select Find providers, choose an available slot, and approve a fresh quote.',
+ approval_expired:'The approval expired before a provider action. Please review a new exact quote and approve again.',
+ provider_failed:'The provider did not complete the action. Review a fresh quote before trying again.'
+});
+function operationMessage(result){
+ if(result.status==='NEEDS_REAPPROVAL' && Object.prototype.hasOwnProperty.call(reapprovalMessages,result.reason)) return reapprovalMessages[result.reason];
+ return result.message||result.reason||'Provider outcome is not yet verified.';
+}
 function showDraft(w){$('status').textContent=w.status.replaceAll('_',' ');const d=w.draft;const node=$('draft');node.replaceChildren(el('strong','CURRENT PLAN · REVISION '+w.revision));node.append(el('span',[d.service,d.area,d.date_window?when(d.date_window.start)+' → '+when(d.date_window.end):null,d.budget_inr!=null?'Budget '+money(d.budget_inr):null].filter(Boolean).join(' · ')));if(d.preferences&&Object.keys(d.preferences).length)node.append(el('div',Object.entries(d.preferences).map(([k,v])=>k.replaceAll('_',' ')+': '+v).join(' · ')));node.hidden=false;}
 async function create(){if(!state.logical){state.logical=crypto.randomUUID();rememberJourney();}const w=await api('POST','/workflows',{logical_request_id:state.logical,draft:{}});state.wid=w.workflow_id;rememberJourney();return w;}
 function newRequest(){state.wid=null;state.logical=crypto.randomUUID();state.op=null;state.seen.clear();state.prices={};clearCard();$('providers').replaceChildren();$('draft').hidden=true;$('status').textContent='Ready';$('chat-log').replaceChildren();$('trace').replaceChildren(el('li','Your activity will appear here.','empty'));$('trace-raw').textContent='No run yet.';rememberJourney();say('What would you like to arrange? Your existing appointments stay in the list below.');$('message').focus();}
@@ -63,7 +83,7 @@ async function refreshJourney(announce=true){
  if(current){state.op=current.operation_id;rememberJourney();}
  if(w.status==='AWAITING_APPROVAL'&&w.current_approval_id){if(state.card?.approval_id!==w.current_approval_id)await loadCard(w.current_approval_id);}
  else clearCard();
- if(state.op){const result=await api('GET','/operations/'+state.op);$('status').textContent=result.status.replaceAll('_',' ');const signature=state.op+':'+result.status;if(!state.seen.has(signature)){state.seen.add(signature);say(result.message||result.reason||'Provider outcome is not yet verified.');if(['BOOKED','CANCELLED','RESCHEDULED'].includes(result.status))await bookings();}}
+ if(state.op){const result=await api('GET','/operations/'+state.op);$('status').textContent=result.status.replaceAll('_',' ');const signature=state.op+':'+result.status;if(!state.seen.has(signature)){state.seen.add(signature);say(operationMessage(result));if(['BOOKED','CANCELLED','RESCHEDULED'].includes(result.status))await bookings();}}
  else if(announce)say('Reconnected to the same request. Current state: '+w.status.replaceAll('_',' ')+'.');
  await activity();
 }
@@ -96,5 +116,5 @@ $('new-request').onclick=()=>work(newRequest);$('search').onclick=()=>work(searc
 $('interpreter').onchange=()=>{$('mode').textContent=$('interpreter').value==='groq'?'Groq · Awaiting live verification':'Scripted · Offline';notice($('interpreter').value==='groq'?'Live Groq interprets your next message. Approval remains a separate action.':'Offline scripted interpretation selected.');};
 $('memory-form').onsubmit=e=>{e.preventDefault();work(async()=>{const key=$('memory-key').value;const old=state.memory.find(r=>r.key===key);const value=key==='earliest_hour'?Number($('memory-value').value):$('memory-value').value;await api('POST','/memory',{key,value,expected_version:old?.version||0,event_id:crypto.randomUUID()});$('memory-value').value='';await memory();notice('Preference saved with your confirmation.');});};
 $('signout').onclick=()=>work(async()=>{await api('POST','/logout',{});sessionStorage.removeItem('orange-csrf');location.reload();});
-setInterval(()=>{if(state.user&&state.wid&&!state.busy)work(()=>refreshJourney(false));},3500);
+setInterval(()=>{if(state.user&&state.wid&&!state.busy&&state.foregroundPending===0)work(()=>refreshJourney(false),{background:true});},3500);
 if(state.csrf)work(async()=>{try{await enter(await api('GET','/session'));}catch{sessionStorage.removeItem('orange-csrf');state.csrf=null;}});

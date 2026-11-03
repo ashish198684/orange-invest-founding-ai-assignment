@@ -5,11 +5,56 @@ import time
 import subprocess
 import sys
 import os
+import re
+from datetime import datetime
 from pathlib import Path
 from threading import BoundedSemaphore
 from app.provider_mock import ProviderError,ProviderTimeout
 from app.runtime.observe import active,current_traceparent,tracer,BudgetExceeded
 _slots=BoundedSemaphore(3)
+
+def sanitized_tool_arguments(name,args):
+    """Typed, bounded tool-argument evidence; never emits raw user IDs or operation keys."""
+    from app.provider_mock.fixtures import IST
+    digest=lambda v: hashlib.sha256(str(v).encode()).hexdigest()
+    record={'argument_count':len(args),
+            'payload_sha256':hashlib.sha256(json.dumps(args,sort_keys=True).encode()).hexdigest()}
+    def local_time(value):
+        if not isinstance(value,str) or len(value)>40:return '[redacted]'
+        try:
+            stamp=datetime.fromisoformat(value)
+            return stamp.astimezone(IST).isoformat() if stamp.tzinfo is not None else '[redacted]'
+        except ValueError:return '[redacted]'
+    def mock_provider_id(value):
+        if isinstance(value,str) and re.fullmatch(r'(?:plumber|electrician|ac)[a-z0-9_-]{1,28}',value):
+            return value
+        return '[redacted]'
+    if name=='search_providers' and len(args)==3:
+        record['service']=args[0] if args[0] in ('plumber','electrician','ac servicing') else '[unsupported]'
+        record['area']=args[1] if args[1] in ('Indiranagar','Koramangala') else '[unsupported]'
+        window=args[2] if isinstance(args[2],dict) else {}
+        record['date_start_ist']=local_time(window.get('start'))
+        record['date_end_ist']=local_time(window.get('end'))
+    elif name=='get_provider' and len(args)==1:
+        record['provider_id']=mock_provider_id(args[0])
+    elif name=='list_bookings' and len(args)==1:
+        record['user_id_sha256']=digest(args[0])
+    elif name=='hold_slot' and len(args)==2:
+        record['provider_id']=mock_provider_id(args[0])
+        record['slot_ist']=local_time(args[1])
+    elif name=='book' and len(args)==2:
+        record['hold_id_sha256']=digest(args[0])
+        record['idempotency_key_sha256']=digest(args[1])
+    elif name=='get_booking_status' and len(args)==1:
+        record['idempotency_key_sha256']=digest(args[0])
+    elif name=='cancel' and len(args)==2:
+        record['booking_id_sha256']=digest(args[0])
+        record['idempotency_key_sha256']=digest(args[1])
+    elif name=='reschedule' and len(args)==3:
+        record['booking_id_sha256']=digest(args[0])
+        record['slot_ist']=local_time(args[1])
+        record['idempotency_key_sha256']=digest(args[2])
+    return record
 
 def settings():
     return json.loads((Path(os.getenv('RUNTIME_STATE','data/runtime'))/'runtime.json').read_text())
@@ -23,7 +68,7 @@ class ProviderClient:
         started=time.monotonic()
         key=hashlib.sha256(args[-1].encode()).hexdigest() if name in {'book','cancel','reschedule','get_booking_status'} else None
         if run:run.emit('provider_start',tool=name,idempotency_key_suffix_or_hash=key,
-                        sanitized_args={'argument_count':len(args),'payload_sha256':hashlib.sha256(json.dumps(args,sort_keys=True).encode()).hexdigest()})
+                        sanitized_args=sanitized_tool_arguments(name,args))
         try:
             result=self._rpc(name,args)
             summary={'shape':'list' if isinstance(result,list) else 'object','count':len(result) if isinstance(result,list) else None}

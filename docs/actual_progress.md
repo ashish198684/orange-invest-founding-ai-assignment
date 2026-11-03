@@ -1,3 +1,5 @@
+Current engineering evidence: [G3X handoff](g3x_handoff.md). G3X technical checks passed; CTO acceptance pending. G4/G5/Groq remain unstarted and submission remains NO-GO. The records below are historical.
+
 ﻿# Actual progress - G0/G1 only
 
 Observed on 2026-11-01 in `C:/Users/marke/Desktop/OrangeInvest-FoundingAI-Assignment`.

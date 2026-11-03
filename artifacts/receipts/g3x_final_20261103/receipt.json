@@ -1,0 +1,421 @@
+{
+  "gate": "G3X",
+  "status": "PASS",
+  "acceptance": "CTO adjudication pending",
+  "stopped_after": "G3X",
+  "canonical_id": "ORANGE-FOUNDINGAI-20261102-003",
+  "canonical_sha256_at_audit": "197a32bb0dcaf51eee3c25845feb3de5214f1fb8a7e9e5b57e90ca0c35546669",
+  "code_commit": "b3e8579dc3d41b016740fef5e81c481560c019dd",
+  "clean_checkout_commit": "736ba3a4eb73a223171fa1e33b7ab4c1019787ab",
+  "tests": {
+    "baseline": 65,
+    "g3x": 39,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "exits": 0
+  },
+  "loads": [
+    {
+      "seed": 20261101,
+      "initial_state": {
+        "workflows": 0,
+        "provider_bookings": 0
+      },
+      "logical_workflows": 1,
+      "simultaneously_persisted_active_workflows": 1,
+      "elapsed_seconds": 8.798430433031172,
+      "completed_workflows_per_second": 0.11365663542053912,
+      "http_latency": {
+        "p50_ms": 49.161510018166155,
+        "p95_ms": 105.63207702944055,
+        "max_ms": 3055.94537203433
+      },
+      "journey_latency": {
+        "p50_ms": 8770.088435034268,
+        "p95_ms": 8770.088435034268,
+        "max_ms": 8770.088435034268
+      },
+      "queue_wait": {
+        "p50_ms": 126.813,
+        "p95_ms": 126.813,
+        "max_ms": 126.813
+      },
+      "outcomes": {
+        "BOOKED": 1
+      },
+      "distinct_worker_processes_observed": 1,
+      "duplicate_confirmation_experiment": null,
+      "persisted_mutation_attempts": 1,
+      "retries": 0,
+      "unknown_operations": 0,
+      "approval_payload_mismatches": [],
+      "cross_user_read_write_attacks_rejected": 0,
+      "provider_slot_violations": [],
+      "logical_intent_violations": [],
+      "approval_violations": [],
+      "claims_boundary": "100x workload/concurrency factor; not 100x throughput, production HA or G4 agent evaluations.",
+      "evidence_directory": "artifacts/receipts/g3x_release_pooled_20261102/load_1",
+      "snapshot_bookings": 1,
+      "peak_pending_jobs": 1,
+      "sampled_resource_peaks": {
+        "api": {
+          "cpu_percent": 102.12,
+          "memory_mib": 109.4
+        },
+        "worker": {
+          "cpu_percent": 98.17,
+          "memory_mib": 54.81
+        },
+        "pg": {
+          "cpu_percent": 36.73,
+          "memory_mib": 47.95
+        },
+        "provider": {
+          "cpu_percent": 9.53,
+          "memory_mib": 33.75
+        },
+        "telemetry": {
+          "cpu_percent": 2.49,
+          "memory_mib": 13.12
+        },
+        "gateway": {
+          "cpu_percent": 42.17,
+          "memory_mib": 22.5
+        }
+      }
+    },
+    {
+      "seed": 20261101,
+      "initial_state": {
+        "workflows": 0,
+        "provider_bookings": 0
+      },
+      "logical_workflows": 100,
+      "simultaneously_persisted_active_workflows": 100,
+      "elapsed_seconds": 272.6501872279914,
+      "completed_workflows_per_second": 0.3667703331389225,
+      "http_latency": {
+        "p50_ms": 111.79048503981903,
+        "p95_ms": 6846.2572270073,
+        "max_ms": 17041.933482978493
+      },
+      "journey_latency": {
+        "p50_ms": 146630.0383809721,
+        "p95_ms": 264155.8412690065,
+        "max_ms": 272646.0793209844
+      },
+      "queue_wait": {
+        "p50_ms": 155.304,
+        "p95_ms": 1585.821,
+        "max_ms": 2883.848
+      },
+      "outcomes": {
+        "timeout": 8,
+        "slot_unavailable": 8,
+        "OUTCOME_UNKNOWN": 4,
+        "NEEDS_REAPPROVAL": 12,
+        "BOOKED": 68
+      },
+      "distinct_worker_processes_observed": 2,
+      "duplicate_confirmation_experiment": {
+        "requests": 100,
+        "distinct_operations": 1,
+        "bookings": 1,
+        "coalesced_confirmations": 99,
+        "final_status": "BOOKED",
+        "latency": {
+          "p50_ms": 3483.441621006932,
+          "p95_ms": 5136.631429020781,
+          "max_ms": 5472.6356089813635
+        }
+      },
+      "persisted_mutation_attempts": 93,
+      "retries": 8,
+      "unknown_operations": 4,
+      "approval_payload_mismatches": [],
+      "cross_user_read_write_attacks_rejected": 20,
+      "provider_slot_violations": [],
+      "logical_intent_violations": [],
+      "approval_violations": [],
+      "claims_boundary": "100x workload/concurrency factor; not 100x throughput, production HA or G4 agent evaluations.",
+      "evidence_directory": "artifacts/receipts/g3x_release_pooled_20261102/load_100",
+      "snapshot_bookings": 69,
+      "peak_pending_jobs": 4,
+      "sampled_resource_peaks": {
+        "api": {
+          "cpu_percent": 107.53,
+          "memory_mib": 231.2
+        },
+        "worker": {
+          "cpu_percent": 105.37,
+          "memory_mib": 74.01
+        },
+        "pg": {
+          "cpu_percent": 84.51,
+          "memory_mib": 135.3
+        },
+        "provider": {
+          "cpu_percent": 65.69,
+          "memory_mib": 43.78
+        },
+        "telemetry": {
+          "cpu_percent": 18.16,
+          "memory_mib": 14.12
+        },
+        "gateway": {
+          "cpu_percent": 65.0,
+          "memory_mib": 27.07
+        },
+        "api2": {
+          "cpu_percent": 108.63,
+          "memory_mib": 143.9
+        },
+        "worker2": {
+          "cpu_percent": 101.92,
+          "memory_mib": 73.95
+        }
+      }
+    },
+    {
+      "seed": 20261101,
+      "initial_state": {
+        "workflows": 0,
+        "provider_bookings": 0
+      },
+      "logical_workflows": 1,
+      "simultaneously_persisted_active_workflows": 1,
+      "elapsed_seconds": 4.702959711023141,
+      "completed_workflows_per_second": 0.21263205756496847,
+      "http_latency": {
+        "p50_ms": 29.56459898268804,
+        "p95_ms": 1074.5262380223721,
+        "max_ms": 1132.0040010032244
+      },
+      "journey_latency": {
+        "p50_ms": 4702.134946011938,
+        "p95_ms": 4702.134946011938,
+        "max_ms": 4702.134946011938
+      },
+      "queue_wait": {
+        "p50_ms": 49.785999999999994,
+        "p95_ms": 49.785999999999994,
+        "max_ms": 49.785999999999994
+      },
+      "outcomes": {
+        "BOOKED": 1
+      },
+      "distinct_worker_processes_observed": 1,
+      "duplicate_confirmation_experiment": null,
+      "persisted_mutation_attempts": 1,
+      "retries": 0,
+      "unknown_operations": 0,
+      "approval_payload_mismatches": [],
+      "cross_user_read_write_attacks_rejected": 0,
+      "provider_slot_violations": [],
+      "logical_intent_violations": [],
+      "approval_violations": [],
+      "claims_boundary": "100x workload/concurrency factor; not 100x throughput, production HA or G4 agent evaluations.",
+      "evidence_directory": "artifacts/receipts/g3x_repeat_load_20261103/repeat_1",
+      "snapshot_bookings": 1,
+      "peak_pending_jobs": 1,
+      "sampled_resource_peaks": {
+        "api": {
+          "cpu_percent": 104.21,
+          "memory_mib": 106.0
+        },
+        "worker": {
+          "cpu_percent": 3.29,
+          "memory_mib": 41.15
+        },
+        "pg": {
+          "cpu_percent": 14.16,
+          "memory_mib": 42.76
+        },
+        "provider": {
+          "cpu_percent": 15.57,
+          "memory_mib": 33.79
+        },
+        "telemetry": {
+          "cpu_percent": 1.24,
+          "memory_mib": 13.17
+        },
+        "gateway": {
+          "cpu_percent": 14.23,
+          "memory_mib": 22.5
+        }
+      }
+    },
+    {
+      "seed": 20261101,
+      "initial_state": {
+        "workflows": 0,
+        "provider_bookings": 0
+      },
+      "logical_workflows": 100,
+      "simultaneously_persisted_active_workflows": 100,
+      "elapsed_seconds": 194.82423734798795,
+      "completed_workflows_per_second": 0.5132831590218605,
+      "http_latency": {
+        "p50_ms": 99.2182600311935,
+        "p95_ms": 4510.717234981712,
+        "max_ms": 10400.00314405188
+      },
+      "journey_latency": {
+        "p50_ms": 113426.83220800245,
+        "p95_ms": 189988.86072996538,
+        "max_ms": 194811.79831095506
+      },
+      "queue_wait": {
+        "p50_ms": 203.50099999999998,
+        "p95_ms": 1738.033,
+        "max_ms": 2721.647
+      },
+      "outcomes": {
+        "BOOKED": 74,
+        "OUTCOME_UNKNOWN": 4,
+        "NEEDS_REAPPROVAL": 12,
+        "slot_unavailable": 10
+      },
+      "distinct_worker_processes_observed": 2,
+      "duplicate_confirmation_experiment": {
+        "requests": 100,
+        "distinct_operations": 1,
+        "bookings": 1,
+        "coalesced_confirmations": 99,
+        "final_status": "BOOKED",
+        "latency": {
+          "p50_ms": 2113.88383700978,
+          "p95_ms": 2444.148487003986,
+          "max_ms": 2545.3933569951914
+        }
+      },
+      "persisted_mutation_attempts": 99,
+      "retries": 8,
+      "unknown_operations": 4,
+      "approval_payload_mismatches": [],
+      "cross_user_read_write_attacks_rejected": 20,
+      "provider_slot_violations": [],
+      "logical_intent_violations": [],
+      "approval_violations": [],
+      "claims_boundary": "100x workload/concurrency factor; not 100x throughput, production HA or G4 agent evaluations.",
+      "evidence_directory": "artifacts/receipts/g3x_repeat_load_20261103/repeat_100",
+      "snapshot_bookings": 75,
+      "peak_pending_jobs": 4,
+      "sampled_resource_peaks": {
+        "api": {
+          "cpu_percent": 108.0,
+          "memory_mib": 203.3
+        },
+        "worker": {
+          "cpu_percent": 102.95,
+          "memory_mib": 72.85
+        },
+        "pg": {
+          "cpu_percent": 80.77,
+          "memory_mib": 138.4
+        },
+        "provider": {
+          "cpu_percent": 48.6,
+          "memory_mib": 38.0
+        },
+        "telemetry": {
+          "cpu_percent": 6.09,
+          "memory_mib": 14.39
+        },
+        "gateway": {
+          "cpu_percent": 43.63,
+          "memory_mib": 26.88
+        },
+        "api2": {
+          "cpu_percent": 107.95,
+          "memory_mib": 137.4
+        },
+        "worker2": {
+          "cpu_percent": 101.21,
+          "memory_mib": 74.08
+        }
+      }
+    }
+  ],
+  "trace_files": 207,
+  "trace_events": 705,
+  "exported_otel_spans": 644,
+  "inspected_cases": [
+    {
+      "case": "test_http_timeout_after_success_receipt",
+      "snapshot_sha256": "ea46cd5e53b48011c187aa441faa6fbb98c6948ff5bc69ed56c3d11d900f6f94",
+      "bookings": 1,
+      "jobs": [
+        [
+          "DONE",
+          1,
+          1
+        ]
+      ],
+      "memory_values": [],
+      "event_types": [
+        "approval_card_issued",
+        "approval_granted",
+        "job_claim",
+        "provider_result",
+        "provider_start",
+        "provider_timeout",
+        "request_start",
+        "run_exit",
+        "workflow_transition"
+      ],
+      "exit_reasons": [
+        "BOOKED",
+        "response"
+      ]
+    },
+    {
+      "case": "test_real_zombie_worker_after_committed_provider_cannot_overwrite_replacement",
+      "snapshot_sha256": "d5e6eab732ba6c2c4ee5f7012ad6ce23d2a652c5ba1d609fd1b4bc35bf36ca11",
+      "bookings": 1,
+      "jobs": [
+        [
+          "DONE",
+          2,
+          2
+        ]
+      ],
+      "memory_values": [],
+      "event_types": [
+        "job_claim",
+        "provider_result",
+        "provider_start",
+        "request_start",
+        "run_exit",
+        "workflow_transition"
+      ],
+      "exit_reasons": [
+        "BOOKED",
+        "response",
+        "stale_worker_fenced"
+      ]
+    },
+    {
+      "case": "test_memory_cross_replica_forget_stale_replay_and_privacy",
+      "snapshot_sha256": "6e2d985dc51d2cfa2d2da304c4f44a3013874faa5e9973fc8a925cf012662638",
+      "bookings": 0,
+      "jobs": [],
+      "memory_values": [
+        null
+      ],
+      "event_types": [],
+      "exit_reasons": []
+    }
+  ],
+  "historical_receipt_mutations": [],
+  "restore": "Same live provider booking after restored authority reconciliation and duplicate delivery; versions 1/2/3 reapplied. Empty disposable schema rebuild only, not a production downgrade.",
+  "limitations": [
+    "Two small single-machine measurements; no 100x throughput or production HA claim.",
+    "Long full-workload journey latency, preapproval tool timeouts and honest unknowns are retained.",
+    "OTLP export is bounded best-effort; an exporter timeout was observed. Local JSONL is the retained trace.",
+    "Synthetic local auth, no OIDC/TLS production security claim; API card issuance does not prove browser rendering.",
+    "Logical memory suppression is not forensic erasure of MVCC pages/backups. Old backups require deletion suppressions before operational restoration.",
+    "G4 browser/Groq/user-agent evaluations and G5 final deliverables/video are NOT STARTED. Submission remains NO-GO."
+  ]
+}

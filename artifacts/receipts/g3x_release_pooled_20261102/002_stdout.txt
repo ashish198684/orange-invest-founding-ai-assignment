@@ -1,0 +1,329 @@
+name: orange-invest
+services:
+  api:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    depends_on:
+      provider:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2)
+      timeout: 3s
+      interval: 3s
+      retries: 30
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8081"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  api2:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    depends_on:
+      provider:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2)
+      timeout: 3s
+      interval: 3s
+      retries: 30
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8082"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  gateway:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.gateway
+    depends_on:
+      api:
+        condition: service_healthy
+        required: true
+      api2:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=2)
+      timeout: 3s
+      interval: 3s
+      retries: 30
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8080"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  migrate:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.migrate
+    depends_on:
+      pg:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  pg:
+    cpus: 2
+    environment:
+      POSTGRES_DB: orange
+      POSTGRES_PASSWORD: local-bootstrap-only
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres -d orange
+      timeout: 2s
+      interval: 2s
+      retries: 30
+    image: postgres:16.15@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d
+    mem_limit: "805306368"
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  provider:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.provider_server
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health',timeout=2)
+      timeout: 3s
+      interval: 3s
+      retries: 30
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  telemetry:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.telemetry_sink
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  worker:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.worker
+    depends_on:
+      provider:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+  worker2:
+    build:
+      context: C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment
+      dockerfile: Dockerfile
+    cpus: 1
+    command:
+      - python
+      - -m
+      - app.runtime.worker
+    depends_on:
+      provider:
+        condition: service_healthy
+        required: true
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+      PGDATABASE: orange
+      PGHOST: pg
+      PROVIDER_URL: http://provider:8090
+      RUNTIME_STATE: /state
+    image: orange-invest-g3x:local
+    init: true
+    mem_limit: "402653184"
+    networks:
+      default: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: runtime
+        target: /state
+        volume: {}
+networks:
+  default:
+    name: orange-invest_default
+volumes:
+  pgdata:
+    name: orange-invest_pgdata
+  runtime:
+    name: orange-invest_runtime
+x-code:
+  build: .
+  cpus: 1
+  environment:
+    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://telemetry:4318/v1/traces
+    PGDATABASE: orange
+    PGHOST: pg
+    PROVIDER_URL: http://provider:8090
+    RUNTIME_STATE: /state
+  image: orange-invest-g3x:local
+  init: true
+  mem_limit: 384m
+  volumes:
+    - runtime:/state

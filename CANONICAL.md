@@ -799,3 +799,11 @@ This journal records executed evidence under the sponsor-authorized update polic
 - **Source attribution:** `ee78b4d862324ff9e66d5ce0cae9955eff693741`.
 - **Prior canonical SHA-256:** `cf6d10eed84b12c4776b6ea54b7cb3d0fe44b64ff52c8a8ecfd986b0ca158265`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_cf6d10eed84b12c4776b6ea54b7cb3d0fe44b64ff52c8a8ecfd986b0ca158265_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
 - **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.
+
+### Execution record 2026-11-03T02:34:27.803755+00:00
+
+- **Evidence:** `artifacts/receipts/g3x_release_pooled_20261102/receipt.json`, SHA-256 `582ccdcf44932b1fcd5a8f115803634c481fc54596c277e0610a1d0b5fc07513`.
+- **Observed:** Committed runtime b3e8579 passed 65/65 baseline and 39/39 G3X tests with zero skips, including clean-worktree three-command proof. Fresh 100-workflow run completed: 68 BOOKED, 12 NEEDS_REAPPROVAL, 4 OUTCOME_UNKNOWN, 8 preapproval timeout and 8 slot_unavailable. Two workers observed; 20 cross-user attacks rejected; SQL found zero slot, logical-intent or approval violations. Separate 100 confirmations produced one operation and one booking. HTTP max 17.042 seconds; full-workload journey p95 264.156 seconds, so no 100x throughput or latency-SLO claim. Native backup/restore against an independently live provider and disposable schema rebuild passed. Bounded OTLP export remains best-effort; durable JSONL and sanitized source attribution were inspected. A fresh-state repeated load measurement is next within G3X, with G4/G5/Groq still unauthorized.
+- **Source attribution:** `736ba3a4eb73a223171fa1e33b7ab4c1019787ab`.
+- **Prior canonical SHA-256:** `a819447f374770550e4228779a5f7b1b8e37f5e4f33f5bc0a2ddf3d7c0bb2684`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_a819447f374770550e4228779a5f7b1b8e37f5e4f33f5bc0a2ddf3d7c0bb2684_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G3X only; formal CTO adjudication pending. G4/G5/Groq are not authorized.

@@ -6,6 +6,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
+    'docs/canonical_history/CANONICAL_EXECUTION_2a93021fd8e3aed0d6c9cef3323716aec0308db3bc5b1cdaf37866a7ce9c7fb9_FROZEN.md': '2a93021fd8e3aed0d6c9cef3323716aec0308db3bc5b1cdaf37866a7ce9c7fb9',
     'docs/canonical_history/CANONICAL_EXECUTION_29afaa8839cfdcbb6965099e9135230b0a685232ea06141445acb3e96953c5dc_FROZEN.md': '29afaa8839cfdcbb6965099e9135230b0a685232ea06141445acb3e96953c5dc',
     'docs/canonical_history/CANONICAL_EXECUTION_cea69f53463d936b7e8cebd8b90d66371ae1a268370527d88a5be2886922f0b2_FROZEN.md': 'cea69f53463d936b7e8cebd8b90d66371ae1a268370527d88a5be2886922f0b2',
     'docs/canonical_history/CANONICAL_EXECUTION_fb47ac89af5d4a04cf200f855f27dfb574f57c577b05004d608cb910cf3bcecd_FROZEN.md': 'fb47ac89af5d4a04cf200f855f27dfb574f57c577b05004d608cb910cf3bcecd',
@@ -21,7 +22,7 @@ EXPECTED = {
     'docs/canonical_history/CANONICAL_EXECUTION_6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a_FROZEN.md': '6784499e9e0ac56d26eabac6d34036076890cdbda299da213de32dcd290cc98a',
     'source/FoundingEngineer-Assignment.pdf': 'dc74d7e214479744e998e8471e68104b7790c8845de7241c34c28dd2cfa2db7d',
     # Sponsor's versioned canonical: V3 current; V2 and V1 byte-preserved and independently pinned.
-    'CANONICAL.md': '2a93021fd8e3aed0d6c9cef3323716aec0308db3bc5b1cdaf37866a7ce9c7fb9',
+    'CANONICAL.md': 'fb26e05511fc57551bbb19ff5becf3ef2fff10a25df65bfc57d62cad3ab486a0',
     'docs/canonical_history/CANONICAL_ORANGE-FOUNDINGAI-20261102-002_FROZEN.md': '32be62a2ec8330328ef57ad5110cbe23a63a84e8f59908aa2355324796115153',
     'docs/canonical_history/CANONICAL_ORANGE-FOUNDINGAI-20261101-001_FROZEN.md': '2f057c7a626174dde3cc35c04a6c4082f2b55e8f49e2b92d2bda43703895b5e2',
     'AGENTS.md': '916ad72dc63ac8dda8c2c89f9966906891096de44ab4e88facecc3f51959d22b',

@@ -2,9 +2,9 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `G3X CTO-ACCEPTED; G4 ENGINEERING PASS / CTO ACCEPTANCE PENDING; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
+**Status:** `G5 ENGINEERING CTO-ACCEPTED; VERIFIED GROQ RELEASE; EMPLOYER SUBMISSION NO-GO (VIDEO, ACCESS, EMAIL PENDING)`
 **Date:** 2026-11-03 (Asia/Kolkata)
-**Current authoritative Codex directions:** Section P4 governs the sponsor-manually-dispatched G4 gate, governed by P1–P3, Sections M/L and original employer PDF; L4/M2–M4 remain historical G3X execution authority. All Codex instructions are in this canonical, not chat.  
+**Current authoritative directions:** Section U is the CTO G5 engineering acceptance and delivery boundary; older G4/Codex directions are historical. Original employer PDF remains first priority.
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
@@ -953,3 +953,27 @@ This journal records executed evidence under the sponsor-authorized update polic
 9. Append actual source, regression, provider SQL, browser, artifact, and delivery results to this canonical, archiving each prior version and updating SHA pins. Never report GO while an essential defect or deliverable remains unverified.
 
 **Operative status:** This direct-engineering order supersedes old wait-for-Codex references. Historical status is unchanged; acceptance is still pending actual new results.
+
+## U. CTO DIRECT G5 ENGINEERING ACCEPTANCE — 2026-11-03
+
+**Decision: G5 ENGINEERING CTO-ACCEPTED; EMPLOYER SUBMISSION NO-GO (DELIVERY PENDING).** This applies only to the local release and executed evidence. It does not establish production HA, general LLM accuracy, measured 100x throughput or employer acceptance.
+
+**Source and commit proof.** Release source commit `ac1493e05b5dffd3cf35431ae2e128130a96e0ea` is committed under verified personal Git author `Ashish Sharma <52492053+ashish198684@users.noreply.github.com>`. Build manifest commit `f60085258b362ad7547083bdaee056a651de0394` binds 69 committed code/config/test files. A new `orange-invest-g5:release` Docker image reported exactly the source commit, not UNCOMMITTED. Old MarketIQX-associated Git history has not been rewritten.
+
+**The real failed booking explained.** Actual operation `e2f31e23` for synthetic alice failed with recorded reason `slot_taken` after one provider call. Read-only SQL established **zero bookings** for this user. This is an allowed employer mock-provider failure, NOT proof of booking success or a double booking. Updated frontend explains slot-taken/expired approval/expired hold truthfully and requires a fresh quote and approval. Evidence: `artifacts/receipts/g5_direct_20261103/live_slot_taken_before_fix.json`.
+
+**Send flicker RED-to-GREEN.** Real Chromium detected eight disabled-state changes during idle 3500-ms status polling in the original UI. Revised `app/web/app.js` separates foreground pending state from background status-only refresh. Browser replays measured zero disabled transitions across 14.5 seconds, preserved usable chat, rendered untrusted reviews, enforced an exact approval card and reconciled an actual provider timeout-after-success into one booking. Red and green receipts are in `artifacts/receipts/g5_polling_red_20261103/`, `g5_polling_green_with_otel_20261103/`, and the release-deployed `g5_release_live_browser_20261103/`.
+
+**Fresh isolated tests against changed source.** Actual isolated test stack: 65/65 original SQLite and 39/39 distributed PG/HTTP/process tests, no failures/skips; 28/28 deterministic offline E2E simulated-user evaluations; 20/20 offline Groq adapter tests; 5/5 extra origin/CSRF and typed tool-argument privacy checks. An earlier full G3X run had one 18s subprocess wall-limit failure, which passed when isolated and passed again in the final full suite; the earlier red receipt is preserved. Final machine-readable source/evidence manifest: `artifacts/receipts/g5_direct_final_20261103/release_receipt.json`. These are local scenario results, not statistical promises.
+
+**Real Groq model smoke on the released application.** New release `scripts/g4_live_smoke.py --label g5_release_groq_20261103` returned PASS: HTTP-200 authentication/model catalog, three verified `openai/gpt-oss-20b` model turns with measured approx. 1609, 1434 and 857ms latency, real token usage and unknown/null cost. Real source stamp equals the release code commit. Groq proposes, and is not an approval or provider mutation authority. Receipt in `artifacts/receipts/g5_release_groq_20261103/receipt.json`.
+
+**Trace and two-page note.** The original timeout-after-success raw file is retained byte-for-byte. A separate 13-event E12 true worker run, `artifacts/traces/g5_timeout_after_success_typed.jsonl`, now supplies tool names and typed, safely hashed hold/idempotency args without raw private IDs (SHA-256 `b2910384233a3480150f5a185b0c694fbbf9111017e32931f84f3806cf92c0e8`). The original annotation cross-references the distinct run, not conflating them. The design note `docs/submission/ARCHITECTURE_DESIGN_NOTE.pdf` was rendered in Chromium to exactly **two A4 pages**, verified by a PDF parser and separate receipt. The 100x argument is a prospective scale design, not a measured achievement.
+
+**Active local deployment, no data deletion.** With `docker compose up -d --no-build --wait`, the existing demo `orange-g4-demo-b6d4bb72` moved to the new release image. All eight services became healthy and `http://127.0.0.1:8080/health` returned HTTP 200. Existing `orange-g4-demo-b6d4bb72_pgdata` and `orange-g4-demo-b6d4bb72_runtime` volumes were present before and after. A new live Chromium browser acceptance PASS was earned post-deployment.
+
+**Security and Git.** The scoped new-staged-files key scan passed on 30 changes, with no literal Groq key/private key block. Historical full-source scanning must not be claimed for changed sources until receipt exists. Future commits now attribute to `ashish198684` by verified GitHub noreply address; previous historical commits unchanged. Publish only reviewed source/evidence to the existing PERSONAL `ashish198684/orange-invest-founding-ai-assignment` repository, keep it PRIVATE until sponsor permits access/publication, and never stage `.env`, database volumes or old failed video drafts.
+
+**Outstanding employer delivery; explicit NO-GO.** The 3:49 browser WebM previously uploaded to GitHub is authentic, but GitHub's file view does not play it, and no Loom or unlisted YouTube URL has been verified. The sponsor's earlier OBS rehearsal did not demonstrate a completed booking and is NOT the submission recording. The employer has not been granted confirmed access to the private GitHub repo, and the late submission email has NOT been sent. The six file artifacts alone do not satisfy actual submission. These external delivery gates are not waived. No further source mutation is required by this release decision; further changes require new canonical evidence and sponsor authorization.
+
+**Authority:** The uploaded three-page employer assignment is first priority; this Section U supersedes stale G4/Codex waiting language solely for current execution status. All earlier canonical history is retained and is auditable in its frozen archives.

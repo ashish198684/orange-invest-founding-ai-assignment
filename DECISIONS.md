@@ -162,3 +162,5 @@
 G4 live replay correction: despite strict=true, Groq returned HTTP 400 json_validate_failed because preferences.technician was omitted. Two application smoke failures are preserved. Prompt v3 includes a complete no-change output template; schema and independent validation remain mandatory, no automatic retries or fallback are introduced. This is a measured integration limitation, not a guarantee of model reliability.
 
 The next live first turn correctly proposed noon for morning, but paraphrased evidence was rejected. Grounding now resolves only explicit source phrases 'a morning visit'/'mornings only' for a non-null morning proposal; the regression also rejects unsupported additions on unrelated turns. Final verification remains required.
+
+The complete Chromium journey reached verified cancellation and mobile layout, then logout failed because DELETE conflicted with retained issued-card session references. Logout now expires the session in SQL, preserving its audit references while immediately denying authentication; the browser replay verifies the login screen.

@@ -63,7 +63,7 @@ class Handler(BaseHTTPRequestHandler):
                     result={'username':uid,'mode':'scripted','model_id':'scripted','verification':'offline deterministic interpreter',
                             'groq_configured':bool(os.getenv('GROQ_API_KEY')),'groq_verified':False}
                 elif parts==['logout'] and self.command=='POST':
-                    with c.store.connect(write=True) as db:db.execute('DELETE FROM sessions WHERE session_hash=?',(session['session_hash'],))
+                    with c.store.connect(write=True) as db:db.execute('UPDATE sessions SET expires_at=clock_timestamp() WHERE session_hash=?',(session['session_hash'],))
                     result={'message':'Signed out.'}
                     cookie=''
                 elif parts==['workflows'] and self.command=='GET':

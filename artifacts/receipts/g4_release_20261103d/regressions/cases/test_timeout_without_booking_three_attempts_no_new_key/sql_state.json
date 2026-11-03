@@ -1,0 +1,93 @@
+{
+  "authority.workflows": [
+    {
+      "workflow_id": "8a35ab3650c940f4a3e2176e96fe7dc1",
+      "user_id": "trial-3994ce5c8637",
+      "logical_request_id": "3c52067f2e704732902058477bdcf232",
+      "initial_draft_json": "{\"area\":\"Indiranagar\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:49:25.166913+05:30\",\"start\":\"2026-11-03T13:49:25.166913+05:30\"},\"service\":\"electrician\"}",
+      "draft_json": "{\"area\":\"Indiranagar\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:49:25.166913+05:30\",\"start\":\"2026-11-03T13:49:25.166913+05:30\"},\"service\":\"electrician\"}",
+      "revision": 1,
+      "status": "OUTCOME_UNKNOWN",
+      "booking_id": null,
+      "current_approval_id": "bea33208963847eb9c2f7838cb114238",
+      "created_at": "2026-11-03T13:49:25.169374+05:30"
+    }
+  ],
+  "authority.approval_snapshots": [
+    {
+      "approval_id": "bea33208963847eb9c2f7838cb114238",
+      "workflow_id": "8a35ab3650c940f4a3e2176e96fe7dc1",
+      "user_id": "trial-3994ce5c8637",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:59:25.640973+05:30\",\"hold_id\":\"d9313410826a4b08bdcbe72499e5ff03\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-05T15:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"electrician-0-0\",\"revision\":1,\"user_id\":\"trial-3994ce5c8637\",\"workflow_id\":\"8a35ab3650c940f4a3e2176e96fe7dc1\"}",
+      "payload_fingerprint": "a874d1a356273e781e918746f2561156b755fffe7d04e57a960882ec6d6bd4fd",
+      "revision": 1,
+      "expires_at": "2026-11-03T13:59:25.640973+05:30",
+      "status": "GRANTED",
+      "approved_at": "2026-11-03T13:49:25.686679+05:30"
+    }
+  ],
+  "authority.operations": [
+    {
+      "operation_id": "27475e4b00834ca28f182e1909df1e6c",
+      "workflow_id": "8a35ab3650c940f4a3e2176e96fe7dc1",
+      "user_id": "trial-3994ce5c8637",
+      "action": "book",
+      "booking_id": null,
+      "idempotency_key": "operation-27475e4b00834ca28f182e1909df1e6c",
+      "approval_id": "bea33208963847eb9c2f7838cb114238",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:59:25.640973+05:30\",\"hold_id\":\"d9313410826a4b08bdcbe72499e5ff03\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-05T15:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"electrician-0-0\",\"revision\":1,\"user_id\":\"trial-3994ce5c8637\",\"workflow_id\":\"8a35ab3650c940f4a3e2176e96fe7dc1\"}",
+      "payload_fingerprint": "a874d1a356273e781e918746f2561156b755fffe7d04e57a960882ec6d6bd4fd",
+      "status": "OUTCOME_UNKNOWN",
+      "attempts": 3,
+      "last_error": "retry_cap_exhausted",
+      "result_json": "{\"booking\":null,\"booking_id\":null,\"message\":\"Status unverified; no success is claimed. No new booking key will be created.\",\"operation_id\":\"27475e4b00834ca28f182e1909df1e6c\",\"reason\":\"retry_cap_exhausted\",\"status\":\"OUTCOME_UNKNOWN\"}",
+      "verified_at": null,
+      "workflow_version": "g2-v1",
+      "policy_version": "g3x-v1"
+    }
+  ],
+  "authority.jobs": [
+    {
+      "operation_id": "27475e4b00834ca28f182e1909df1e6c",
+      "user_id": "trial-3994ce5c8637",
+      "state": "DEAD",
+      "generation": 1,
+      "claims": 1,
+      "worker": "60dbf62d748c-3b2cfb10",
+      "lease_until": null,
+      "available_at": "2026-11-03 08:19:26.975584+00:00",
+      "created_at": "2026-11-03 08:19:25.682008+00:00",
+      "initiation_deadline": "2026-11-03 08:19:43.690153+00:00",
+      "recovery_deadline": "2026-11-03 08:24:25.682008+00:00",
+      "traceparent": "",
+      "claimed_at": "2026-11-03 08:19:25.694766+00:00",
+      "finished_at": "2026-11-03 08:19:26.975585+00:00"
+    }
+  ],
+  "authority.memory_facts": [],
+  "authority.trace_events": [],
+  "provider.provider_holds": [
+    {
+      "id": "d9313410826a4b08bdcbe72499e5ff03",
+      "user_id": "trial-3994ce5c8637",
+      "provider_id": "electrician-0-0",
+      "slot": "2026-11-05T15:00:00+05:30",
+      "quoted_price": 900,
+      "expires_at": "2026-11-03T13:59:25.640973+05:30",
+      "status": "held"
+    }
+  ],
+  "provider.provider_bookings": [],
+  "provider.provider_operation_outcomes": [
+    {
+      "idempotency_key": "operation-27475e4b00834ca28f182e1909df1e6c",
+      "user_id": "trial-3994ce5c8637",
+      "action": "book",
+      "payload_hash": "18f5de38cc16514eefcf1ff69b93c518c6f632dd3ae762b2fea69497270afc66",
+      "response_json": null,
+      "error_code": "timeout_without_booking",
+      "attempts": 1,
+      "created_at": "2026-11-03T13:49:25.963977+05:30"
+    }
+  ]
+}

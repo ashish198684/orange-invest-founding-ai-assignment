@@ -1,0 +1,171 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 60.62090798513964,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 30.8482350083068,
+    "result": {
+      "workflow_id": "678ef987ef534860a4f31b8b4a6f6384",
+      "logical_request_id": "01050a6d60c74594a049e2df49106050",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "75ebb0c7ab9640e78d617b9b811a5bfd",
+      "trace_id": "a7491545780b943071e47f47ec56c03b"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/678ef987ef534860a4f31b8b4a6f6384/chat",
+    "status_code": 200,
+    "elapsed_ms": 599.245332996361,
+    "result": {
+      "workflow": {
+        "workflow_id": "678ef987ef534860a4f31b8b4a6f6384",
+        "logical_request_id": "01050a6d60c74594a049e2df49106050",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "plumber"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "802e9caccd0f47ec8197316f0a900405",
+      "trace_id": "af1ae4b916d423df79a2fc1539f9fddc"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/678ef987ef534860a4f31b8b4a6f6384/search",
+    "status_code": 200,
+    "elapsed_ms": 216.9465029728599,
+    "result": [
+      {
+        "id": "plumber-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "plumber-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "plumber-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 7
+        }
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/workflows/678ef987ef534860a4f31b8b4a6f6384",
+    "status_code": 200,
+    "elapsed_ms": 26.98224800406024,
+    "result": {
+      "workflow_id": "678ef987ef534860a4f31b8b4a6f6384",
+      "logical_request_id": "01050a6d60c74594a049e2df49106050",
+      "draft": {
+        "area": "Indiranagar",
+        "budget_inr": 900,
+        "date_window": {
+          "end": "2026-11-09T00:00:00+05:30",
+          "start": "2026-11-03T00:00:00+05:30"
+        },
+        "service": "plumber"
+      },
+      "revision": 2,
+      "status": "CHOOSING",
+      "booking_id": null,
+      "run_id": "c1846db6e5994845b59968db24d6c1f2",
+      "trace_id": "378960f124182f8212d5ef5e889af1ee"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/678ef987ef534860a4f31b8b4a6f6384/hold",
+    "status_code": 409,
+    "elapsed_ms": 233.71901200152934,
+    "result": {
+      "error": "budget_exceeded",
+      "message": "No unapproved action was performed."
+    }
+  }
+]

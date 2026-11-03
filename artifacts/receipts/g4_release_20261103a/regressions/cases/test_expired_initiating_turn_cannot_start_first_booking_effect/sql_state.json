@@ -1,0 +1,82 @@
+{
+  "authority.workflows": [
+    {
+      "workflow_id": "4c694dc3276d4c148611c8e2bd94ff33",
+      "user_id": "trial-14d43eaaace0",
+      "logical_request_id": "3d84766e80214011a1add97a31371e7e",
+      "initial_draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:20:16.083367+05:30\",\"start\":\"2026-11-03T13:20:16.083367+05:30\"},\"service\":\"ac servicing\"}",
+      "draft_json": "{\"area\":\"Koramangala\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:20:16.083367+05:30\",\"start\":\"2026-11-03T13:20:16.083367+05:30\"},\"service\":\"ac servicing\"}",
+      "revision": 1,
+      "status": "NEEDS_REAPPROVAL",
+      "booking_id": null,
+      "current_approval_id": "e6d4bb0e755e42ccb7436ee24b26e5be",
+      "created_at": "2026-11-03T13:20:16.087184+05:30"
+    }
+  ],
+  "authority.approval_snapshots": [
+    {
+      "approval_id": "e6d4bb0e755e42ccb7436ee24b26e5be",
+      "workflow_id": "4c694dc3276d4c148611c8e2bd94ff33",
+      "user_id": "trial-14d43eaaace0",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:30:16.754888+05:30\",\"hold_id\":\"590fcbdd75064bdf9b43d43ebd43cd6a\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"ac-servicing-1-0\",\"revision\":1,\"user_id\":\"trial-14d43eaaace0\",\"workflow_id\":\"4c694dc3276d4c148611c8e2bd94ff33\"}",
+      "payload_fingerprint": "ac51eca33715ddde0010879b5f93e89b268abe7e113d7b9802e4a2b09078e1ef",
+      "revision": 1,
+      "expires_at": "2026-11-03T13:30:16.754888+05:30",
+      "status": "GRANTED",
+      "approved_at": "2026-11-03T13:20:16.857189+05:30"
+    }
+  ],
+  "authority.operations": [
+    {
+      "operation_id": "654dedf91136460082c135653feeb786",
+      "workflow_id": "4c694dc3276d4c148611c8e2bd94ff33",
+      "user_id": "trial-14d43eaaace0",
+      "action": "book",
+      "booking_id": null,
+      "idempotency_key": "operation-654dedf91136460082c135653feeb786",
+      "approval_id": "e6d4bb0e755e42ccb7436ee24b26e5be",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:30:16.754888+05:30\",\"hold_id\":\"590fcbdd75064bdf9b43d43ebd43cd6a\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"ac-servicing-1-0\",\"revision\":1,\"user_id\":\"trial-14d43eaaace0\",\"workflow_id\":\"4c694dc3276d4c148611c8e2bd94ff33\"}",
+      "payload_fingerprint": "ac51eca33715ddde0010879b5f93e89b268abe7e113d7b9802e4a2b09078e1ef",
+      "status": "FAILED",
+      "attempts": 0,
+      "last_error": "initiating_run_expired",
+      "result_json": "{\"booking\":null,\"booking_id\":null,\"message\":\"Action was not completed. Obtain a new quote and approve again.\",\"operation_id\":\"654dedf91136460082c135653feeb786\",\"reason\":\"initiating_run_expired\",\"status\":\"NEEDS_REAPPROVAL\"}",
+      "verified_at": null,
+      "workflow_version": "g2-v1",
+      "policy_version": "g3x-v1"
+    }
+  ],
+  "authority.jobs": [
+    {
+      "operation_id": "654dedf91136460082c135653feeb786",
+      "user_id": "trial-14d43eaaace0",
+      "state": "DONE",
+      "generation": 1,
+      "claims": 1,
+      "worker": "1a37db13368d-3f2bf75d",
+      "lease_until": null,
+      "available_at": "2026-11-03 07:50:17.188922+00:00",
+      "created_at": "2026-11-03 07:50:16.833165+00:00",
+      "initiation_deadline": "2026-11-03 07:50:15.887873+00:00",
+      "recovery_deadline": "2026-11-03 07:55:16.833165+00:00",
+      "traceparent": "",
+      "claimed_at": "2026-11-03 07:50:16.901912+00:00",
+      "finished_at": "2026-11-03 07:50:17.188923+00:00"
+    }
+  ],
+  "authority.memory_facts": [],
+  "authority.trace_events": [],
+  "provider.provider_holds": [
+    {
+      "id": "590fcbdd75064bdf9b43d43ebd43cd6a",
+      "user_id": "trial-14d43eaaace0",
+      "provider_id": "ac-servicing-1-0",
+      "slot": "2026-11-04T09:00:00+05:30",
+      "quoted_price": 900,
+      "expires_at": "2026-11-03T13:30:16.754888+05:30",
+      "status": "held"
+    }
+  ],
+  "provider.provider_bookings": [],
+  "provider.provider_operation_outcomes": []
+}

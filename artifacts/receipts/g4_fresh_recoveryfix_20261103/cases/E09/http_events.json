@@ -1,0 +1,269 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 83.08959397254512,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 78.17805896047503,
+    "result": {
+      "workflow_id": "1d9111ed59b14eab935af12a7aa16418",
+      "logical_request_id": "3beab2b528fd4eafabb9ec4fbcb04561",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "5e7847bf2ea74d26b51b4dc40befb83d",
+      "trace_id": "6afd3dd10c09ae0e86494fe1416a3625"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/1d9111ed59b14eab935af12a7aa16418/chat",
+    "status_code": 200,
+    "elapsed_ms": 937.1190249803476,
+    "result": {
+      "workflow": {
+        "workflow_id": "1d9111ed59b14eab935af12a7aa16418",
+        "logical_request_id": "3beab2b528fd4eafabb9ec4fbcb04561",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "plumber"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "00821c0dfb6e4d13861de502ba474ea3",
+      "trace_id": "268767b44eee848e314961f1eecd66cf"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/1d9111ed59b14eab935af12a7aa16418/search",
+    "status_code": 200,
+    "elapsed_ms": 272.38218899583444,
+    "result": [
+      {
+        "id": "plumber-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "plumber-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "plumber-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 7
+        }
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/1d9111ed59b14eab935af12a7aa16418/hold",
+    "status_code": 200,
+    "elapsed_ms": 419.0296030137688,
+    "result": {
+      "approval_id": "8ed98fa5b78a4aa7a94bd4eaa028653f",
+      "snapshot": {
+        "user_id": "eval-E09-2476badc93",
+        "workflow_id": "1d9111ed59b14eab935af12a7aa16418",
+        "action": "book",
+        "booking_id": null,
+        "provider_id": "plumber-0-0",
+        "old_slot": null,
+        "new_slot": "2026-11-06T15:00:00+05:30",
+        "price_amount": 937,
+        "price_status": "hold_quote",
+        "original_price": null,
+        "new_price_status": "hold_quote",
+        "hold_id": "cc65c0233ddd441884fcffe7d237c6a2",
+        "revision": 2,
+        "expires_at": "2026-11-03T10:18:33.860799+05:30"
+      },
+      "fingerprint": "cda57a1367dacdde4c31e52be2492ca5b5c6ee10d0b2bf5f212321b819d8139a",
+      "status": "PENDING",
+      "run_id": "6fd8b379e2b546cb8019e5edd2d77cfc",
+      "trace_id": "b99184a96cb96a5454c9a15e7f75d0a0"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/approvals/8ed98fa5b78a4aa7a94bd4eaa028653f",
+    "status_code": 200,
+    "elapsed_ms": 42.54887899151072,
+    "result": {
+      "card_id": "a36b3f724a9649deac4dd1aa7cf2712b",
+      "approval_id": "8ed98fa5b78a4aa7a94bd4eaa028653f",
+      "snapshot": {
+        "action": "book",
+        "booking_id": null,
+        "expires_at": "2026-11-03T10:18:33.860799+05:30",
+        "hold_id": "cc65c0233ddd441884fcffe7d237c6a2",
+        "new_price_status": "hold_quote",
+        "new_slot": "2026-11-06T15:00:00+05:30",
+        "old_slot": null,
+        "original_price": null,
+        "price_amount": 937,
+        "price_status": "hold_quote",
+        "provider_id": "plumber-0-0",
+        "revision": 2,
+        "user_id": "eval-E09-2476badc93",
+        "workflow_id": "1d9111ed59b14eab935af12a7aa16418"
+      },
+      "fingerprint": "cda57a1367dacdde4c31e52be2492ca5b5c6ee10d0b2bf5f212321b819d8139a",
+      "revision": 2,
+      "evidence": "issued; not proof of human perception",
+      "run_id": "9dc26bc9e9c34e518c24d482bf59d377",
+      "trace_id": "c0e57a5b098bd5677f153f2ae1faa442"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/1d9111ed59b14eab935af12a7aa16418/hold",
+    "status_code": 200,
+    "elapsed_ms": 613.3173920097761,
+    "result": {
+      "approval_id": "15c28d9fa1bf4db78bbb5b1abb407884",
+      "snapshot": {
+        "user_id": "eval-E09-2476badc93",
+        "workflow_id": "1d9111ed59b14eab935af12a7aa16418",
+        "action": "book",
+        "booking_id": null,
+        "provider_id": "plumber-0-0",
+        "old_slot": null,
+        "new_slot": "2026-11-06T15:00:00+05:30",
+        "price_amount": 991,
+        "price_status": "hold_quote",
+        "original_price": null,
+        "new_price_status": "hold_quote",
+        "hold_id": "f8dd5540ef4d4935b5779295553c6755",
+        "revision": 3,
+        "expires_at": "2026-11-03T10:18:34.614422+05:30"
+      },
+      "fingerprint": "8abb54842a6e6bc55e0562486cfe3e608facdf3cd883a4bba3629cb2645afa1d",
+      "status": "PENDING",
+      "run_id": "cb2179a490ab41c7bcb5bd251b631a05",
+      "trace_id": "0dfd2a6bd3c7ed5318f083dd98b6ed78"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/approvals/8ed98fa5b78a4aa7a94bd4eaa028653f/confirm",
+    "status_code": 409,
+    "elapsed_ms": 25.63899802044034,
+    "result": {
+      "error": "approval_invalid",
+      "message": "No unapproved action was performed."
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/approvals/15c28d9fa1bf4db78bbb5b1abb407884",
+    "status_code": 200,
+    "elapsed_ms": 55.57604297064245,
+    "result": {
+      "card_id": "95d9d5db183d4b89a812e5b24c1594b9",
+      "approval_id": "15c28d9fa1bf4db78bbb5b1abb407884",
+      "snapshot": {
+        "action": "book",
+        "booking_id": null,
+        "expires_at": "2026-11-03T10:18:34.614422+05:30",
+        "hold_id": "f8dd5540ef4d4935b5779295553c6755",
+        "new_price_status": "hold_quote",
+        "new_slot": "2026-11-06T15:00:00+05:30",
+        "old_slot": null,
+        "original_price": null,
+        "price_amount": 991,
+        "price_status": "hold_quote",
+        "provider_id": "plumber-0-0",
+        "revision": 3,
+        "user_id": "eval-E09-2476badc93",
+        "workflow_id": "1d9111ed59b14eab935af12a7aa16418"
+      },
+      "fingerprint": "8abb54842a6e6bc55e0562486cfe3e608facdf3cd883a4bba3629cb2645afa1d",
+      "revision": 3,
+      "evidence": "issued; not proof of human perception",
+      "run_id": "b521bcdc3b44402aaea5f8da862614b9",
+      "trace_id": "5a6ec8660cb613c1bcd17def5acb4a3d"
+    }
+  }
+]

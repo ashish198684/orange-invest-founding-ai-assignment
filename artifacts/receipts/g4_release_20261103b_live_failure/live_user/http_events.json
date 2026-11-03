@@ -1,0 +1,90 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 56.79140903521329,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 24.493781966157258,
+    "result": {
+      "workflow_id": "618a0e71e8434bdf9054a935287f0f15",
+      "logical_request_id": "1f750b5f00554bdc928f819271fb9738",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "22658077fc3c452485b961d12b834c5d",
+      "trace_id": "ac6d4b28227d4b48a754989fd1bbe887"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/618a0e71e8434bdf9054a935287f0f15/chat",
+    "status_code": 200,
+    "elapsed_ms": 1083.8812689762563,
+    "result": {
+      "workflow": {
+        "workflow_id": "618a0e71e8434bdf9054a935287f0f15",
+        "logical_request_id": "1f750b5f00554bdc928f819271fb9738",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 1800,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "preferences": {
+            "earliest_hour": 10,
+            "latest_hour": 12
+          },
+          "service": "plumber"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Your plan is ready below. Review an available slot and its exact quote before approving.",
+      "action_proposal": "plan",
+      "model": {
+        "mode": "groq",
+        "action_proposal": "plan",
+        "model_id": "openai/gpt-oss-20b",
+        "prompt_version": "groq-intent-v2",
+        "latency_ms": 883.9215449988842,
+        "token_in": 786,
+        "token_out": 222,
+        "cost_usd": null,
+        "verified": true,
+        "normalizations": [
+          "date_window:calendar_resolved"
+        ]
+      },
+      "run_id": "68367b4d7e9641b99bf3c3c8f5bc8934",
+      "trace_id": "56975cb36d994b08ca72f2b0c53d5462"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/618a0e71e8434bdf9054a935287f0f15/chat",
+    "status_code": 503,
+    "elapsed_ms": 1613.5483219986781,
+    "result": {
+      "status": "MODEL_UNAVAILABLE",
+      "error": "model_request_rejected",
+      "message": "Groq is unavailable. Your plan was not changed. You can select Scripted for offline planning.",
+      "model": {
+        "mode": "groq",
+        "model_id": "openai/gpt-oss-20b",
+        "verified": false
+      }
+    }
+  }
+]

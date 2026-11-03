@@ -1,0 +1,139 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 78.29094701446593,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 35.91265104478225,
+    "result": {
+      "workflow_id": "d6bcf1012a7b4737a8cf7edb5afa5766",
+      "logical_request_id": "3df1be27fe294780acf0db6987cf1ec5",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "6a7c6adc65c94050bc1b941e9b166a01",
+      "trace_id": "bdc21e633c3529e7970a5fc9fe187d35"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/d6bcf1012a7b4737a8cf7edb5afa5766/chat",
+    "status_code": 200,
+    "elapsed_ms": 912.4169800197706,
+    "result": {
+      "workflow": {
+        "workflow_id": "d6bcf1012a7b4737a8cf7edb5afa5766",
+        "logical_request_id": "3df1be27fe294780acf0db6987cf1ec5",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "ac servicing"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "3606c9116d7f4000acc805468aaa999b",
+      "trace_id": "e689aa34d90210ec58765637cf7d19ee"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/d6bcf1012a7b4737a8cf7edb5afa5766/search",
+    "status_code": 200,
+    "elapsed_ms": 1136.7790270014666,
+    "result": [
+      {
+        "id": "ac-servicing-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "ac servicing",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "ac-servicing-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [
+          "2026-11-03T11:00:00+05:30",
+          "2026-11-03T15:00:00+05:30",
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "ac servicing",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "ac-servicing-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-03T11:00:00+05:30",
+          "2026-11-03T15:00:00+05:30",
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "ac servicing",
+          "experience_years": 7
+        }
+      }
+    ]
+  }
+]

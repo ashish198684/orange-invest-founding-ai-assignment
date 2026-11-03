@@ -1,0 +1,16 @@
+{
+  "status": "OBSERVED_FAILURE_AND_DIAGNOSIS",
+  "code_commit": "5290e9301ff4de91d0ccb14623192ee21d5238ce",
+  "actual_live_requests": true,
+  "observed_error": {
+    "http_status": 400,
+    "code": "json_validate_failed",
+    "type": "invalid_request_error",
+    "message": "Generated JSON does not match the expected schema. Please adjust your prompt. See 'failed_generation' for more details. Error: jsonschema: '/preferences' does not validate with /properties/preferences/required: missing properties: 'technician'"
+  },
+  "bounded_diagnostic_samples": [400, 200, 200],
+  "raw_generation_or_key_recorded": false,
+  "application_behavior": "503 MODEL_UNAVAILABLE; plan unchanged; no automatic retry or provider effect",
+  "correction": "Prompt v3 supplies all required nullable fields in a complete no-change template. Independent schema and semantic validation remain enforced.",
+  "limitation": "A successful later sample does not erase failed requests or establish model reliability."
+}

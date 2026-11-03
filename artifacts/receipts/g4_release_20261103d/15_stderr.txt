@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\scripts\g4_browser.py", line 68, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\scripts\g4_browser.py", line 61, in main
+    page.get_by_role('button',name='Sign out',exact=True).click();expect(page.locator('#login-panel')).to_be_visible(timeout=10000)
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\sync_api\_generated.py", line 20523, in to_be_visible
+    self._sync(self._impl_obj.to_be_visible(visible=visible, timeout=timeout))
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_assertions.py", line 765, in to_be_visible
+    await self._expect_impl(
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_assertions.py", line 85, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: hidden 
+Call log:
+  - Expect "to_be_visible" with timeout 10000ms
+  - waiting for locator("#login-panel")
+    13 × locator resolved to <section hidden="" class="login" id="login-panel">…</section>
+       - unexpected value "hidden"
+

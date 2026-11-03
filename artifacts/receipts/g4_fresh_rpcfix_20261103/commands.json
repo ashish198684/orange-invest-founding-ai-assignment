@@ -1,0 +1,99 @@
+[
+  {
+    "command": [
+      "docker",
+      "compose",
+      "down"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 23.0,
+    "timestamp": "2026-11-03T04:26:10.375511+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-rpcfix-20261103",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 75.375,
+    "timestamp": "2026-11-03T04:27:25.752651+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-rpcfix-20261103",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g3x_checks.py",
+      "--label",
+      "g4_fresh_rpcfix_20261103_regressions"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 166.6720000000205,
+    "timestamp": "2026-11-03T04:30:12.436589+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-rpcfix-20261103",
+      "cp",
+      "api:/state/receipts/g4_fresh_rpcfix_20261103_regressions",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_fresh_rpcfix_20261103\\regressions"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.7809999999590218,
+    "timestamp": "2026-11-03T04:30:14.218820+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-rpcfix-20261103",
+      "cp",
+      "api:/state/receipts/g4_fresh_rpcfix_20261103_evals",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_fresh_rpcfix_20261103\\cases"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 0.3130000000819564,
+    "timestamp": "2026-11-03T04:30:14.531401+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-rpcfix-20261103",
+      "down"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 18.983999999938533,
+    "timestamp": "2026-11-03T04:30:33.512958+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "up",
+      "-d",
+      "--wait"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 41.48400000017136,
+    "timestamp": "2026-11-03T04:31:14.997424+00:00"
+  }
+]

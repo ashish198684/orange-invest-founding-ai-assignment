@@ -1,0 +1,162 @@
+E01 PASS
+E02 PASS
+E03 PASS
+E04 PASS
+E05 PASS
+E06 PASS
+E07 PASS
+E08 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 138, in e09
+    def e09(u):invalidated(u,'price')
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 133, in invalidated
+    u.fault(quote_delta=91);a2,_=u.hold(w,p,a['snapshot']['new_slot'])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 72, in hold
+    a=self.call('POST','/workflows/'+w+'/hold',{'provider_id':p['id'],'slot':slot or p['free_slots'][0]});return a,p
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 55, in call
+    assert r.code==expected,(path,r.code,data,expected)
+           ^^^^^^^^^^^^^^^^
+AssertionError: ('/workflows/d7b4a14db3ce4f618bfa73ae03a63869/hold', 409, {'error': 'slot_unavailable', 'message': 'No unapproved action was performed.'}, 200)
+
+E09 FAIL
+E10 PASS
+E11 PASS
+E12 PASS
+E13 PASS
+E14 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 158, in e15
+    w,_=u.natural();a,p=u.hold(w);card=u.card(a);u.admin("UPDATE provider.provider_holds SET expires_at=%s WHERE hold_id=%s",((CLOCK-timedelta(hours=1)).isoformat(),a['snapshot']['hold_id']));oid=u.confirm(card);u.worker(oid);assert u.result(oid)['status']=='NEEDS_REAPPROVAL';u.no_effect()
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 60, in admin
+    with psycopg.connect(**dsn('postgres')) as db:db.execute(q,args)
+                                                  ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/psycopg/connection.py", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column "hold_id" does not exist
+LINE 1: ...E provider.provider_holds SET expires_at=$1 WHERE hold_id=$2
+                                                             ^
+
+E15 FAIL
+E16 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 164, in e17
+    u.admin("UPDATE authority.jobs SET lease_until=clock_timestamp()-interval '1 second' WHERE operation_id=%s",(oid,));u.worker(oid);assert u.result(oid)['status']=='BOOKED'
+                                                                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+E17 FAIL
+E18 PASS
+E19 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 181, in e20
+    def e20(u):change(u,action='cancel')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/psycopg/connection.py", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column "booking_id" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+
+E20 FAIL
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 182, in e21
+    def e21(u):change(u,conflict=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/psycopg/connection.py", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column "booking_id" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+
+E21 FAIL
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 183, in e22
+    def e22(u):change(u)
+               ^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/psycopg/connection.py", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column "booking_id" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+
+E22 FAIL
+E23 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 188, in e24
+    u.call('POST','/memory',{'key':'earliest_hour','value':10,'event_id':'infer','provenance':'inferred'});assert u.call('GET','/context')=={};w,_=u.natural();assert 'earliest_hour' not in u.call('GET','/workflows/'+w)['draft'].get('preferences',{});u.no_effect()
+                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+E24 FAIL
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 191, in e25
+    u.call('POST','/memory',{'key':'area','value':None,'event_id':'forget','expected_version':2,'forget':True});assert u.call('GET','/context')=={};assert u.call('GET','/memory')[0]['value_json'] is None;w=u.create({'service':'plumber'});assert 'area' not in u.call('GET','/workflows/'+w)['draft'];u.no_effect()
+                                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+E25 FAIL
+E26 PASS
+E27 PASS
+E28 PASS
+{
+  "mode": "scripted-offline",
+  "tests": 28,
+  "passed": 20,
+  "failed": 8,
+  "skipped": 0,
+  "clock": "2026-11-03T03:40:58.169607+00:00",
+  "seed": 4,
+  "status": "FAIL",
+  "command": [
+    "scripts/g4_evals.py",
+    "--label",
+    "g4_evals_first_20261103_cases"
+  ],
+  "semantics": "Private loopback HTTP server uses production Handler and injected clock/queue scheduling. Real independent provider RPC/SQL and real worker subprocesses. No external API."
+}

@@ -1,0 +1,56 @@
+E01 PASS
+E02 PASS
+E03 PASS
+E04 PASS
+E05 PASS
+E06 PASS
+E07 PASS
+E08 PASS
+E09 PASS
+E10 PASS
+E11 PASS
+E12 PASS
+E13 PASS
+E14 PASS
+E15 PASS
+E16 PASS
+E17 PASS
+E18 PASS
+E19 PASS
+Traceback (most recent call last):
+  File "/orange/scripts/g4_evals.py", line 233, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 192, in e20
+    def e20(u):change(u,action='cancel')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/orange/scripts/g4_evals.py", line 186, in change
+    w,a,oid,r=u.book();assert r['status']=='BOOKED';bid=r['booking_id'];p=next(x for x in u.search(w) if x['id']==a['snapshot']['provider_id']);slot=next(s for s in p['free_slots'] if s!=a['snapshot']['new_slot'])
+                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration
+
+E20 FAIL
+E21 PASS
+E22 PASS
+E23 PASS
+E24 PASS
+E25 PASS
+E26 PASS
+E27 PASS
+E28 PASS
+{
+  "mode": "scripted-offline",
+  "tests": 28,
+  "passed": 27,
+  "failed": 1,
+  "skipped": 0,
+  "clock": "2026-11-03T03:55:34.518098+00:00",
+  "seed": 4,
+  "status": "FAIL",
+  "command": [
+    "scripts/g4_evals.py",
+    "--label",
+    "g4_offline_stable_20261103_cases"
+  ],
+  "semantics": "Private loopback HTTP server uses production Handler and injected clock/queue scheduling. Real independent provider RPC/SQL and real worker subprocesses. No external API."
+}

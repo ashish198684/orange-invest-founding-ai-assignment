@@ -2,8 +2,8 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `G3X CTO-ACCEPTED; G4 SPONSOR-DISPATCHED / RUNNING; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
-**Date:** 2026-11-02 (Asia/Kolkata)
+**Status:** `G3X CTO-ACCEPTED; G4 ENGINEERING PASS / CTO ACCEPTANCE PENDING; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
+**Date:** 2026-11-03 (Asia/Kolkata)
 **Current authoritative Codex directions:** Section P4 governs the sponsor-manually-dispatched G4 gate, governed by P1–P3, Sections M/L and original employer PDF; L4/M2–M4 remain historical G3X execution authority. All Codex instructions are in this canonical, not chat.  
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
@@ -886,4 +886,12 @@ This journal records executed evidence under the sponsor-authorized update polic
 - **Observed:** Fresh deterministic baseline passed: 65 SQLite regressions, 39 G3X checks and 28 scripted-user HTTP evaluations, zero failures/skips, following preserved RPC startup and provider-restart recovery defects. Fifteen separate offline Groq adapter defenses passed. Real Groq authentication/catalog returned HTTP 200 with the target listed; three actual openai/gpt-oss-20b structured turns passed complex request, one-fact correction and plan-only intent. Measured model-request latencies were 1127.493, 631.319 and 978.089 ms with returned token usage; cost remains null. Separate card-bound consent followed by timeout-after-success produced one independently inspected provider booking and one granted operation. Malicious reviews are read as untrusted and excluded from model extraction context; this is not model immunity. Final frozen-source clean checkout, extended browser reconciliation and final receipt remain pending. G4 RUNNING; stop before G5.
 - **Source attribution:** `UNCOMMITTED`.
 - **Prior canonical SHA-256:** `43f4058cea8da3ccddb2bcd0ac6bfb11af26c27163f3c690c543a23831fdda54`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_43f4058cea8da3ccddb2bcd0ac6bfb11af26c27163f3c690c543a23831fdda54_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G4 only under sponsor-dispatched Section P4; CTO acceptance pending. G5, push and submission remain unauthorized.
+
+### G4 execution record 2026-11-03T08:36:46.597622+00:00
+
+- **Evidence:** `artifacts/receipts/g4_final_20261103/receipt.json`, SHA-256 `afb7a9371e65932d81f67c169ee2cb413cb0c1395b182d57a19c5e269e1f40de`.
+- **Observed:** Final clean-checkout source b6d4bb72e5108e691fe38d1dfc994cf7dae8771c passed 65 SQLite regressions, 39 distributed checks, 28 real HTTP scripted-user evaluations and 20 offline adapter defenses with zero skips. Separate real Groq authentication/model catalog and three structured multi-turn completions passed. Actual Chromium live chat, correction, exact quote approval, timeout recovery, reconnect, memory correction/forget, reschedule, cancellation, mobile layout and logout passed. Independent read-only SQL and raw traces reconcile exact granted fingerprints, one effect, booking/change outcomes, model identity/usage and OpenTelemetry spans. Earlier browser, timing, memory-race, schema and grounding failures remain preserved. No key found in source/evidence. G4 ENGINEERING PASS; CTO ACCEPTANCE PENDING. The 14:00 IST submission deadline elapsed during verification; no submission was made. STOPPED AT G4; G5, push and submission not started.
+- **Source attribution:** `b6d4bb72e5108e691fe38d1dfc994cf7dae8771c`.
+- **Prior canonical SHA-256:** `1e02c7e22b257dd165259e0e03ae4972e3cc974c9b7ac7853b5f93c8876941b4`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_1e02c7e22b257dd165259e0e03ae4972e3cc974c9b7ac7853b5f93c8876941b4_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
 - **Gate boundary:** G4 only under sponsor-dispatched Section P4; CTO acceptance pending. G5, push and submission remain unauthorized.

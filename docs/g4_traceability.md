@@ -31,8 +31,9 @@ errors and an interrupted stack rebuild are also retained; they are not hidden
 or represented as successful application runs.
 
 The separately enabled Groq adapter uses actual `openai/gpt-oss-20b` strict
-structured output. Version 2 grounds changed fields in the latest request and
-resolves supported relative dates in IST. Nineteen offline adapter tests cover
+structured output. Version 3 includes a complete nullable-output template;
+changed fields are grounded in the latest request, with supported relative dates
+resolved in IST. Twenty offline adapter tests cover
 protocol failures, deadlines, semantic validation and concurrent memory changes.
 The separate live and browser receipts identify actual model identity, returned
 usage and measured latency. A configured key alone does not prove connectivity.

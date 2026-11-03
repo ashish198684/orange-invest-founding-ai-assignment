@@ -1,0 +1,119 @@
+[
+  {
+    "command": [
+      "docker",
+      "compose",
+      "down"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 17.219000000040978,
+    "timestamp": "2026-11-03T04:34:26.827829+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 72.5,
+    "timestamp": "2026-11-03T04:35:39.324905+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g3x_checks.py",
+      "--label",
+      "g4_fresh_recoveryfix_20261103_regressions"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 141.375,
+    "timestamp": "2026-11-03T04:38:00.714041+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "cp",
+      "api:/state/receipts/g4_fresh_recoveryfix_20261103_regressions",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_fresh_recoveryfix_20261103\\regressions"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.6100000001024455,
+    "timestamp": "2026-11-03T04:38:03.331852+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g4_evals.py",
+      "--label",
+      "g4_fresh_recoveryfix_20261103_evals"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 121.31199999991804,
+    "timestamp": "2026-11-03T04:40:04.648584+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "cp",
+      "api:/state/receipts/g4_fresh_recoveryfix_20261103_evals",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_fresh_recoveryfix_20261103\\cases"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.7339999999385327,
+    "timestamp": "2026-11-03T04:40:06.399252+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-g4-fresh-recoveryfix-20261103",
+      "down"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 28.0,
+    "timestamp": "2026-11-03T04:40:34.400021+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "up",
+      "-d",
+      "--wait"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 43.59400000004098,
+    "timestamp": "2026-11-03T04:41:17.995208+00:00"
+  }
+]

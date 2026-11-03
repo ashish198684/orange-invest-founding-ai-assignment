@@ -1,0 +1,65 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 61.28745595924556,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 27.132770977914333,
+    "result": {
+      "workflow_id": "e95b55f3f6404a2cbb3a9e06b7f80682",
+      "logical_request_id": "3f7068aa299742bf8aaa548c4d47d5db",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "819e81851b0c49f9ba56cb8cb190d913",
+      "trace_id": "261fb5a2cb630fc5558926b9a7dfcc23"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/e95b55f3f6404a2cbb3a9e06b7f80682/chat",
+    "status_code": 200,
+    "elapsed_ms": 746.7048250255175,
+    "result": {
+      "workflow": {
+        "workflow_id": "e95b55f3f6404a2cbb3a9e06b7f80682",
+        "logical_request_id": "3f7068aa299742bf8aaa548c4d47d5db",
+        "draft": {
+          "area": "Koramangala",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "electrician"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "1f745f9aae4246f8a146a33fad06feed",
+      "trace_id": "9d2a164c87dfa866d0836f36dc02777d"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/e95b55f3f6404a2cbb3a9e06b7f80682/hold",
+    "status_code": 409,
+    "elapsed_ms": 5065.459372010082,
+    "result": {
+      "error": "timeout",
+      "message": "No unapproved action was performed."
+    }
+  }
+]

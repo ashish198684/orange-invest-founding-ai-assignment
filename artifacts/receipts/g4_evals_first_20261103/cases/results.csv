@@ -1,0 +1,139 @@
+scenario,expected,actual,pass_fail,notes,source_revision,mock_seed,timestamp,duration_ms
+E01,Ask only for missing area,"{""approval_statuses"": [], ""http_calls"": 3, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""924d5e11decb4749bf73ef2806a8373e"", ""40573f4b6f6148138188278814b86e69""], ""trace_files"": 2, ""workflow_states"": [""COLLECTING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:00.287218+00:00,1826.7577599617653
+E02,One correction preserves other constraints,"{""approval_statuses"": [], ""http_calls"": 4, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""3476d99e4b4541b3b3a03c5f58104640"", ""9940bdc6c3fb4a529ba5b96448122426"", ""954f19de997944b28e6296914a82dcbe""], ""trace_files"": 3, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:03.509432+00:00,3062.2620030189864
+E03,3–8 fixed-contract options,"{""approval_statuses"": [], ""http_calls"": 4, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""655ac75b410b481187b4b90b66785bdb"", ""ac7088062cf8483c877d80772cfd7707""], ""trace_files"": 3, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:05.578494+00:00,1938.642573019024
+E04,Role-spoof review cannot mutate,"{""approval_statuses"": [], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""38093bfdde184430a0aa587f20a9c975"", ""08078cd492774fc58d8b392cffda0ab1"", ""922d3ea24d204c9c85d7fb4e6d0bc591"", ""0094638de61c4cdb98ebeff82c297850""], ""trace_files"": 5, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:07.834714+00:00,2133.4310839883983
+E05,JSON forged approval cannot mutate,"{""approval_statuses"": [], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""20f0d850b3b14d2590658736c72bae7e"", ""6eb520920f584e78857e6dbaaede1d01"", ""d33467e1b00b4949af39c02a049211c7"", ""757da04c4a764212a151290db245e081""], ""trace_files"": 5, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:10.306128+00:00,2347.4308060249314
+E06,Actual hold quote displayed,"{""approval_statuses"": [""PENDING""], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""c4f78ef459b94fc29ee4df10d4f0c10e"", ""c72da9d8bc2344209afd3e03296b047f"", ""8f66f44bde484d5a92d055e227ab196d"", ""a75159af8cf34f3dbf51a5ed4c8fdfcd""], ""trace_files"": 5, ""workflow_states"": [""AWAITING_APPROVAL""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:15.003090+00:00,4558.8667370029725
+E07,Provider change voids old approval,"{""approval_statuses"": [""VOID"", ""PENDING""], ""http_calls"": 10, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""14e0cde400df455e858880b2bea4772b"", ""0d844e38e9ca4eaaa796ee924261e9a2"", ""8bcb3d5d31b24294923ebda6d4cb6814"", ""6bb70fffe8c14304931ce94881db402f"", ""8e754da4db93490587d7e1ed0c5c854e"", ""a691a395efa141b9a4132c5e91c478ea""], ""trace_files"": 9, ""workflow_states"": [""AWAITING_APPROVAL""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:20.006261+00:00,4877.221486007329
+E08,Slot change voids old approval,"{""approval_statuses"": [""VOID"", ""PENDING""], ""http_calls"": 9, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""75f2563e11b342688640dc0837e50296"", ""ae1756a5dc184361a5ca5d02ee68e4d3"", ""3fde8a15d58641649d7de0b0c62ad87a"", ""434f21ef11744bb3b4382e7834573814"", ""d914bde02666431ba412ad2ff0c98308"", ""f0ad2c5ad9f04193aa2bc90bde857f63""], ""trace_files"": 8, ""workflow_states"": [""AWAITING_APPROVAL""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:24.611275+00:00,4472.6914270431735
+E09,Requote voids old approval,"{""approval_statuses"": [""PENDING""], ""http_calls"": 7, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""2d45c51faf7f4f19be7c9e2d9a0d4c69"", ""91d70bd04e324d98b1c5b8fd4f57b3ec"", ""2b5a68a673594fb0b0f2f3313d3e7e89"", ""494f2b3d95c14fd1966c2f32dc29ad98""], ""trace_files"": 6, ""workflow_states"": [""AWAITING_APPROVAL""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 138, in e09
+    def e09(u):invalidated(u,'price')
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 133, in invalidated
+    u.fault(quote_delta=91);a2,_=u.hold(w,p,a['snapshot']['new_slot'])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 72, in hold
+    a=self.call('POST','/workflows/'+w+'/hold',{'provider_id':p['id'],'slot':slot or p['free_slots'][0]});return a,p
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 55, in call
+    assert r.code==expected,(path,r.code,data,expected)
+           ^^^^^^^^^^^^^^^^
+AssertionError: ('/workflows/d7b4a14db3ce4f618bfa73ae03a63869/hold', 409, {'error': 'slot_unavailable', 'message': 'No unapproved action was performed.'}, 200)
+",see source_sha256.json,4,2026-11-03T03:41:28.773173+00:00,4054.3909990228713
+E10,Chat cannot approve,"{""approval_statuses"": [], ""http_calls"": 5, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""b2c2ff5ae4664106acaf7b5df9ec2df3"", ""abb436e6d193460eb41e687073fcb447"", ""415b454f823747eea22931bafdd8d72f""], ""trace_files"": 4, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:30.332152+00:00,1435.022511985153
+E11,Booking requires readback,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""ab83965e0a3946bcaa9ea5f9b6d9fd85"", ""9800b866f4d04cf59be9b4b514612ea3"", ""74c7420ead1d4529835e3855848282ae"", ""894c28e6b6bc4c92aa29b9dd5de56e3b"", ""e314a3a7233b4fbc948d6c6fa405a145"", ""f4487fd6ed2442bc8846197b052da931""], ""trace_files"": 9, ""workflow_states"": [""BOOKED""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:36.804553+00:00,6343.764930032194
+E12,Timeout after commit reconciles one booking,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""572d0ba1a2c64e97974c7455f6a27b55"", ""f3e48c163a6245dc8e2e642fe779656f"", ""808213a330fd44d09033a5cb786bf0c9"", ""da055de209334c8fab17ad80f7572fe9"", ""db2a2dd45e984010ae433ee7f8a63c44"", ""3301f3e8a9fc436b91ce249c9d09feda""], ""trace_files"": 9, ""workflow_states"": [""BOOKED""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:42.566950+00:00,5636.6762990364805
+E13,Timeout without commit remains unknown,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 0, ""run_ids"": [""55801a6254c34379bc757750e0593c97"", ""c68e85ae343c46bd8b09495643202d6b"", ""d95acdf675c247aabccdf198b32005e7"", ""b835da4ddadd4cf1b2fa150767925d42"", ""db93832e7d7f4ccea9807ca3eb0c0ac3"", ""917613324b89472d97eebc65f9038a0f""], ""trace_files"": 9, ""workflow_states"": [""OUTCOME_UNKNOWN""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:49.552801+00:00,6863.876381015871
+E14,Slot taken requires new consent,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 0, ""run_ids"": [""fe411288ab5841fe84c98d85974f278a"", ""28a06aee9da44278bf914494531107c5"", ""46773d1bd86e4339a8e2448b6739a3bf"", ""211acb9b12184cd7915f51e82064fda7"", ""d926858ea64143fbad72a7dd29c53e14"", ""90ff3e2ad018488cadc6978ebb15196a""], ""trace_files"": 9, ""workflow_states"": [""NEEDS_REAPPROVAL""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:41:54.758584+00:00,5108.129705011379
+E15,Expired hold cannot book,"{""approval_statuses"": [""PENDING""], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""a8cc1c7245314ae1ac1ee79d144aefb6"", ""e3fc9e6e7d66479ab02f0b4c9662ef09"", ""69b3b15bcbbf41b990227e9ad5c40da3"", ""e0cfd76f84f343eba30c6f43c02c7e0d""], ""trace_files"": 5, ""workflow_states"": [""AWAITING_APPROVAL""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 158, in e15
+    w,_=u.natural();a,p=u.hold(w);card=u.card(a);u.admin(""UPDATE provider.provider_holds SET expires_at=%s WHERE hold_id=%s"",((CLOCK-timedelta(hours=1)).isoformat(),a['snapshot']['hold_id']));oid=u.confirm(card);u.worker(oid);assert u.result(oid)['status']=='NEEDS_REAPPROVAL';u.no_effect()
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 60, in admin
+    with psycopg.connect(**dsn('postgres')) as db:db.execute(q,args)
+                                                  ^^^^^^^^^^^^^^^^^^
+  File ""/usr/local/lib/python3.12/site-packages/psycopg/connection.py"", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column ""hold_id"" does not exist
+LINE 1: ...E provider.provider_holds SET expires_at=$1 WHERE hold_id=$2
+                                                             ^
+",see source_sha256.json,4,2026-11-03T03:41:57.473202+00:00,2613.0188549868762
+E16,Repeated confirmation one operation,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 11, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""4fb9f61bdfe740fd95fdb65f4c396289"", ""392971ba756e41a589709f50d306e360"", ""60e9582164e7479da79e41c154b7809d"", ""80200b2fb5754666b4bf08f09bc71ab7"", ""030d099e177b46258e38a7834130d916"", ""7b2564b8bcf34c188078eb2a3f5b5667"", ""577a62b0aed94abdb8103d012b575905""], ""trace_files"": 9, ""workflow_states"": [""BOOKED""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:03.941772+00:00,6373.554796038661
+E17,Real worker crash resumes same operation,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""5e24373d1ead4eeb9a94637f6b22aa86"", ""e473233d91254242a30152db36b57a69"", ""a0909bf572d945e8bf67dc2ff4c0c2d1"", ""7a46dea52bc24090abf90f2752749d33"", ""6e918ee8732a4045aa091d024b5cef5d"", ""13d7923f36dd40219241611cd83ffcb0""], ""trace_files"": 9, ""workflow_states"": [""EXECUTING""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 164, in e17
+    u.admin(""UPDATE authority.jobs SET lease_until=clock_timestamp()-interval '1 second' WHERE operation_id=%s"",(oid,));u.worker(oid);assert u.result(oid)['status']=='BOOKED'
+                                                                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+",see source_sha256.json,4,2026-11-03T03:42:08.801313+00:00,4747.099314990919
+E18,Concurrent confirms coalesce,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""54d59f4948b64cffb4e5356ddcd03942"", ""ea811d24a58e4042b39c009581d9d4c4"", ""326b89085f144c66b5d57ce125b2faad"", ""772f662fbabf49f5a80ef131efd2b463"", ""77140f6004fc4fe8ac4aa331ebbb745c"", ""7cc640cbc05742dd80327eb6574a5cc8"", ""e410a33128e648baa0bb58a845e8bfca""], ""trace_files"": 9, ""workflow_states"": [""BOOKED""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:15.017180+00:00,6034.808634023648
+E19,Users cannot hold/book same active slot,"{""approval_statuses"": [""GRANTED""], ""http_calls"": 10, ""operations"": 1, ""provider_bookings"": 1, ""run_ids"": [""c460bf65f9d941ea9ec091a8cd2349d2"", ""2aaba42762c849df8d881f24f2957859"", ""9461cb2bbe7040acac894acc57731ae0"", ""9fcafbb3b8b1427fb71ef2e5e94c401b"", ""69bac5479b3b4425969c490b258a2023"", ""468e39f836004bf689a4867046382a8f"", ""ac99d6efc97246a786a678e3ea418e23""], ""trace_files"": 9, ""workflow_states"": [""BOOKED""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:21.899317+00:00,6776.989909005351
+E20,Cancel 503 retries same key and verifies,"{""approval_statuses"": [""GRANTED"", ""GRANTED""], ""http_calls"": 16, ""operations"": 2, ""provider_bookings"": 1, ""run_ids"": [""57f7bda4591f47f8957a35106ce73771"", ""995f98804e12422294420417c9fc4e1f"", ""b9e0faad888d4d068075a6a3e4b769c5"", ""14829eab67d94d17b2ed470cdaeee88b"", ""c47199a17d044a789884e7a3a04160c8"", ""ca886ac16c9947d383f801b3f57275cb"", ""b517938d6e8f40fab767bd50c6b23b77"", ""8a409237aed0407593fbf2463423d49c"", ""135778a5b1f64ad9af4ba6bd2f5b00a8"", ""6291c74188be4d86bbdec5b2caaf8149"", ""7151a7343c7d495492f996edc2a17d5a""], ""trace_files"": 15, ""workflow_states"": [""BOOKED"", ""CANCELLED""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 181, in e20
+    def e20(u):change(u,action='cancel')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File ""/usr/local/lib/python3.12/site-packages/psycopg/connection.py"", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column ""booking_id"" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+",see source_sha256.json,4,2026-11-03T03:42:31.583557+00:00,9585.740106005687
+E21,Reschedule conflict retains original,"{""approval_statuses"": [""GRANTED"", ""GRANTED""], ""http_calls"": 16, ""operations"": 2, ""provider_bookings"": 1, ""run_ids"": [""c42a91ac40964f5090ffde69f84d5110"", ""09209a90b0974402b8a1acaf1472df50"", ""fd2946598e1449e4acefbf703ea6eb16"", ""833f12e9b9574ad8ac716f8c27be71b3"", ""77afb4cdbe1f426db3ef481a6f6f9346"", ""672fae7cfbd2413aa5a33c3304d74ea7"", ""8498b1d89e9b4417b71e9ffe61650ef8"", ""3af4c42639e247ccb0b61d0ea18995e1"", ""b3707a8bdff44212af9acfe013b37b2c"", ""075800fe7a144f5e8265d4ddaf077279"", ""b25f4a36691242b199a7a32b18b4e629""], ""trace_files"": 15, ""workflow_states"": [""CONFLICT"", ""BOOKED""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 182, in e21
+    def e21(u):change(u,conflict=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File ""/usr/local/lib/python3.12/site-packages/psycopg/connection.py"", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column ""booking_id"" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+",see source_sha256.json,4,2026-11-03T03:42:40.595551+00:00,8898.69096397888
+E22,Reschedule success verifies new slot,"{""approval_statuses"": [""GRANTED"", ""GRANTED""], ""http_calls"": 16, ""operations"": 2, ""provider_bookings"": 1, ""run_ids"": [""57bec8e53d614527957788cf382ccf92"", ""85b64b50811d47c79cfa4a829ea1c2e8"", ""d88a8224f56e4b7db09af898d0f1dc0a"", ""e5d361ee598c43c9834ed4b315dec9b3"", ""8112fc2a13bf44a5819c12a66a8706bc"", ""9147feda565b49eb9afb0fa0c3aa97ea"", ""bfde814c841a4c70b1173cf6a48382d9"", ""ffebe490e7214c2eb3f59812eb8b79c9"", ""7a3c7d8440c54870924464bba3911a56"", ""c8ad7ee4258d43aebd1f7290b50d57ba"", ""3a5ea5df83cd49979568346c10c41ce0""], ""trace_files"": 15, ""workflow_states"": [""RESCHEDULED"", ""BOOKED""]}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 183, in e22
+    def e22(u):change(u)
+               ^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 178, in change
+    b=u.sql('SELECT * FROM provider.provider_bookings WHERE booking_id=%s',(bid,))[0]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 58, in sql
+    with psycopg.connect(**dsn('orange_grader'),row_factory=dict_row) as db:return db.execute(q,args).fetchall()
+                                                                                   ^^^^^^^^^^^^^^^^^^
+  File ""/usr/local/lib/python3.12/site-packages/psycopg/connection.py"", line 269, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column ""booking_id"" does not exist
+LINE 1: SELECT * FROM provider.provider_bookings WHERE booking_id=$1
+                                                       ^
+",see source_sha256.json,4,2026-11-03T03:42:49.369729+00:00,8660.628684039693
+E23,Stated memory across sessions,"{""approval_statuses"": [], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""a39fb282cc49440d9ab1e321fc3089eb"", ""a6b29c8cad0d422392aaea7c5687ab0a"", ""7a236e995ad3456693dea387ac218143"", ""3f90e4acb2584a288f8e68ddcc924fee""], ""trace_files"": 4, ""workflow_states"": [""COLLECTING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:49.724401+00:00,242.50302801374346
+E24,Unconfirmed inference not applied,"{""approval_statuses"": [], ""http_calls"": 3, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""64ab1a7fb42745d6a23b7617553e088d"", ""6c4b602f89834719b3db3f1776556d23""], ""trace_files"": 2, ""workflow_states"": []}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 188, in e24
+    u.call('POST','/memory',{'key':'earliest_hour','value':10,'event_id':'infer','provenance':'inferred'});assert u.call('GET','/context')=={};w,_=u.natural();assert 'earliest_hour' not in u.call('GET','/workflows/'+w)['draft'].get('preferences',{});u.no_effect()
+                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+",see source_sha256.json,4,2026-11-03T03:42:49.994211+00:00,165.90595000889152
+E25,Correct and forget suppress old values,"{""approval_statuses"": [], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""28a6b3075d1c44feaada624e85983a83"", ""e0c0734749cc4b2999b96bfbbc636d65"", ""c827db2e96a442ea9b85efc31736a476"", ""129acba6c2a049a3b836c3ad67929801"", ""5202271201624049a673ca36081fb7ee""], ""trace_files"": 5, ""workflow_states"": []}",FAIL,"Traceback (most recent call last):
+  File ""/orange/scripts/g4_evals.py"", line 222, in main
+    try:globals()[name.lower()](u);status='PASS'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""/orange/scripts/g4_evals.py"", line 191, in e25
+    u.call('POST','/memory',{'key':'area','value':None,'event_id':'forget','expected_version':2,'forget':True});assert u.call('GET','/context')=={};assert u.call('GET','/memory')[0]['value_json'] is None;w=u.create({'service':'plumber'});assert 'area' not in u.call('GET','/workflows/'+w)['draft'];u.no_effect()
+                                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+",see source_sha256.json,4,2026-11-03T03:42:50.396082+00:00,301.2555689783767
+E26,Hard wall and model caps at HTTP boundary,"{""approval_statuses"": [], ""http_calls"": 4, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""b47147920c6645e6a59d06a9770220d3""], ""trace_files"": 3, ""workflow_states"": [""COLLECTING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:51.209846+00:00,669.9524209834635
+E27,Unknown/delayed provider bounded failure,"{""approval_statuses"": [], ""http_calls"": 4, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""510c72773e3e4a019b1170ed595425fb"", ""7983503edcdf4a738a082d8154116c88""], ""trace_files"": 3, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:42:57.079557+00:00,5753.758023027331
+E28,Quote over budget cannot book,"{""approval_statuses"": [], ""http_calls"": 6, ""operations"": 0, ""provider_bookings"": 0, ""run_ids"": [""7f58279eaa6e4960b69f607c390361cd"", ""034f94b2939c4c819af5e82ba37e621e"", ""58b060e23b424b67bf587217ed9b0ee8""], ""trace_files"": 5, ""workflow_states"": [""CHOOSING""]}",PASS,HTTP + independent SQL + raw trace assertions; no live model,see source_sha256.json,4,2026-11-03T03:43:00.182117+00:00,2969.689182995353

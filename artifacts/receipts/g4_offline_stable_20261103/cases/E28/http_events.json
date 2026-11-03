@@ -1,0 +1,145 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 55.15867500798777,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 57.28746298700571,
+    "result": {
+      "workflow_id": "85e3cebf026646859f2c74c68e06596c",
+      "logical_request_id": "02d5312ff81f452eb062f39680f851e5",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "0ca5efa34d9e4d7aaf90dc6534ac6ee9",
+      "trace_id": "37c56aa64fc9bf97f8a05bf026a43b15"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/85e3cebf026646859f2c74c68e06596c/chat",
+    "status_code": 200,
+    "elapsed_ms": 635.6465889839455,
+    "result": {
+      "workflow": {
+        "workflow_id": "85e3cebf026646859f2c74c68e06596c",
+        "logical_request_id": "02d5312ff81f452eb062f39680f851e5",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "plumber"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "75950aadbb514349a2d4110521fd123b",
+      "trace_id": "7acb4fa141139dd971ecf8ecd4e29742"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/85e3cebf026646859f2c74c68e06596c/search",
+    "status_code": 200,
+    "elapsed_ms": 938.2372150430456,
+    "result": [
+      {
+        "id": "plumber-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "plumber-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "plumber-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "plumber",
+          "experience_years": 7
+        }
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/workflows/85e3cebf026646859f2c74c68e06596c",
+    "status_code": 200,
+    "elapsed_ms": 41.157074039801955,
+    "result": {
+      "workflow_id": "85e3cebf026646859f2c74c68e06596c",
+      "logical_request_id": "02d5312ff81f452eb062f39680f851e5",
+      "draft": {
+        "area": "Indiranagar",
+        "budget_inr": 1500,
+        "date_window": {
+          "end": "2026-11-09T00:00:00+05:30",
+          "start": "2026-11-03T00:00:00+05:30"
+        },
+        "service": "plumber"
+      },
+      "revision": 2,
+      "status": "CHOOSING",
+      "booking_id": null,
+      "run_id": "745b1878194745e4bb70220258400c5b",
+      "trace_id": "3d4a0bc57498605731af20924df58671"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/85e3cebf026646859f2c74c68e06596c/hold",
+    "status_code": 409,
+    "elapsed_ms": 1453.148310945835,
+    "result": {
+      "error": "budget_exceeded",
+      "message": "No unapproved action was performed."
+    }
+  }
+]

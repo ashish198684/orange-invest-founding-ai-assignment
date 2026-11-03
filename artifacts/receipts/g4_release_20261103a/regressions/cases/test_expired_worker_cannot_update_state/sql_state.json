@@ -1,0 +1,104 @@
+{
+  "authority.workflows": [
+    {
+      "workflow_id": "975e67aa584a48309bdacd47d1518275",
+      "user_id": "trial-4ee9dcb0195e",
+      "logical_request_id": "eb308ac509ab47f388bb2ac1c5b4ae4b",
+      "initial_draft_json": "{\"area\":\"Indiranagar\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:20:17.688992+05:30\",\"start\":\"2026-11-03T13:20:17.688992+05:30\"},\"service\":\"plumber\"}",
+      "draft_json": "{\"area\":\"Indiranagar\",\"budget_inr\":2000,\"date_window\":{\"end\":\"2026-11-11T13:20:17.688992+05:30\",\"start\":\"2026-11-03T13:20:17.688992+05:30\"},\"service\":\"plumber\"}",
+      "revision": 1,
+      "status": "BOOKED",
+      "booking_id": "bb80ade572f74c8183bcc9acc3ff26ca",
+      "current_approval_id": "ba80098ba0bd4492ad97d6882b4cc695",
+      "created_at": "2026-11-03T13:20:17.694096+05:30"
+    }
+  ],
+  "authority.approval_snapshots": [
+    {
+      "approval_id": "ba80098ba0bd4492ad97d6882b4cc695",
+      "workflow_id": "975e67aa584a48309bdacd47d1518275",
+      "user_id": "trial-4ee9dcb0195e",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:30:18.268145+05:30\",\"hold_id\":\"be5c0b62c52d4956aaf7e692328d7b20\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"plumber-0-0\",\"revision\":1,\"user_id\":\"trial-4ee9dcb0195e\",\"workflow_id\":\"975e67aa584a48309bdacd47d1518275\"}",
+      "payload_fingerprint": "b73dfeadbe0f555f018425df20d6158da361c0045ceb7fabdbaff2b6ad7c7304",
+      "revision": 1,
+      "expires_at": "2026-11-03T13:30:18.268145+05:30",
+      "status": "GRANTED",
+      "approved_at": "2026-11-03T13:20:18.324691+05:30"
+    }
+  ],
+  "authority.operations": [
+    {
+      "operation_id": "b612a71c63f140269aba115584823f48",
+      "workflow_id": "975e67aa584a48309bdacd47d1518275",
+      "user_id": "trial-4ee9dcb0195e",
+      "action": "book",
+      "booking_id": null,
+      "idempotency_key": "operation-b612a71c63f140269aba115584823f48",
+      "approval_id": "ba80098ba0bd4492ad97d6882b4cc695",
+      "snapshot_json": "{\"action\":\"book\",\"booking_id\":null,\"expires_at\":\"2026-11-03T13:30:18.268145+05:30\",\"hold_id\":\"be5c0b62c52d4956aaf7e692328d7b20\",\"new_price_status\":\"hold_quote\",\"new_slot\":\"2026-11-04T09:00:00+05:30\",\"old_slot\":null,\"original_price\":null,\"price_amount\":900,\"price_status\":\"hold_quote\",\"provider_id\":\"plumber-0-0\",\"revision\":1,\"user_id\":\"trial-4ee9dcb0195e\",\"workflow_id\":\"975e67aa584a48309bdacd47d1518275\"}",
+      "payload_fingerprint": "b73dfeadbe0f555f018425df20d6158da361c0045ceb7fabdbaff2b6ad7c7304",
+      "status": "COMMITTED",
+      "attempts": 1,
+      "last_error": null,
+      "result_json": "{\"booking\":{\"id\":\"bb80ade572f74c8183bcc9acc3ff26ca\",\"provider\":\"plumber-0-0\",\"service\":\"plumber\",\"slot\":\"2026-11-04T09:00:00+05:30\",\"status\":\"booked\"},\"booking_id\":\"bb80ade572f74c8183bcc9acc3ff26ca\",\"message\":\"Booking verified with the provider.\",\"operation_id\":\"b612a71c63f140269aba115584823f48\",\"reason\":null,\"status\":\"BOOKED\"}",
+      "verified_at": "2026-11-03T13:20:19.176994+05:30",
+      "workflow_version": "g2-v1",
+      "policy_version": "g3x-v1"
+    }
+  ],
+  "authority.jobs": [
+    {
+      "operation_id": "b612a71c63f140269aba115584823f48",
+      "user_id": "trial-4ee9dcb0195e",
+      "state": "DONE",
+      "generation": 2,
+      "claims": 2,
+      "worker": "1a37db13368d-d9d735a4",
+      "lease_until": null,
+      "available_at": "2026-11-03 07:50:19.189446+00:00",
+      "created_at": "2026-11-03 07:50:18.316333+00:00",
+      "initiation_deadline": "2026-11-03 07:50:36.330188+00:00",
+      "recovery_deadline": "2026-11-03 07:55:18.316333+00:00",
+      "traceparent": "",
+      "claimed_at": "2026-11-03 07:50:18.333799+00:00",
+      "finished_at": "2026-11-03 07:50:19.189447+00:00"
+    }
+  ],
+  "authority.memory_facts": [],
+  "authority.trace_events": [],
+  "provider.provider_holds": [
+    {
+      "id": "be5c0b62c52d4956aaf7e692328d7b20",
+      "user_id": "trial-4ee9dcb0195e",
+      "provider_id": "plumber-0-0",
+      "slot": "2026-11-04T09:00:00+05:30",
+      "quoted_price": 900,
+      "expires_at": "2026-11-03T13:30:18.268145+05:30",
+      "status": "consumed"
+    }
+  ],
+  "provider.provider_bookings": [
+    {
+      "id": "bb80ade572f74c8183bcc9acc3ff26ca",
+      "user_id": "trial-4ee9dcb0195e",
+      "provider_id": "plumber-0-0",
+      "service": "plumber",
+      "slot": "2026-11-04T09:00:00+05:30",
+      "status": "booked",
+      "hold_id": "be5c0b62c52d4956aaf7e692328d7b20",
+      "quoted_price": 900
+    }
+  ],
+  "provider.provider_operation_outcomes": [
+    {
+      "idempotency_key": "operation-b612a71c63f140269aba115584823f48",
+      "user_id": "trial-4ee9dcb0195e",
+      "action": "book",
+      "payload_hash": "4d553da31e02deee8d57ea2813d3084f9a62c895612ea74bcc9e0856c405893a",
+      "response_json": "{\"booking_id\":\"bb80ade572f74c8183bcc9acc3ff26ca\"}",
+      "error_code": null,
+      "attempts": 1,
+      "created_at": "2026-11-03T13:20:18.758393+05:30"
+    }
+  ]
+}

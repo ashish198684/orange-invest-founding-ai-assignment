@@ -1,0 +1,93 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 63.1717590149492,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 34.75766000337899,
+    "result": {
+      "workflow_id": "f918a4e3fec441dd9b564f04732e51e8",
+      "logical_request_id": "3cf02bf7f9244959af670f171bab99b0",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "d06dc99381b1471687598a4f633c77ae",
+      "trace_id": "9f71646825692794e720e8c74cdb4d0c"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/f918a4e3fec441dd9b564f04732e51e8/chat",
+    "status_code": 200,
+    "elapsed_ms": 593.197836948093,
+    "result": {
+      "workflow": {
+        "workflow_id": "f918a4e3fec441dd9b564f04732e51e8",
+        "logical_request_id": "3cf02bf7f9244959af670f171bab99b0",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "electrician"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "74af0d2c1e52447fbd3f77e4ff556a07",
+      "trace_id": "4c78062c4eabd5d26732978db9677b94"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/f918a4e3fec441dd9b564f04732e51e8/chat",
+    "status_code": 409,
+    "elapsed_ms": 14.577116002328694,
+    "result": {
+      "error": "approval_required",
+      "message": "No unapproved action was performed."
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/f918a4e3fec441dd9b564f04732e51e8/chat",
+    "status_code": 200,
+    "elapsed_ms": 935.1254060165957,
+    "result": {
+      "workflow": {
+        "workflow_id": "f918a4e3fec441dd9b564f04732e51e8",
+        "logical_request_id": "3cf02bf7f9244959af670f171bab99b0",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "electrician"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "ec10ebfdaebe4c95b53c9495848fa55d",
+      "trace_id": "bb5a0029923818e446e04074a793db63"
+    }
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "gate": "G4 separate live Groq smoke",
+  "code_commit": "5290e9301ff4de91d0ccb14623192ee21d5238ce",
+  "target_model": "openai/gpt-oss-20b",
+  "status": "FAIL",
+  "live_api_called": true,
+  "timestamp": "2026-11-03T07:57:31.079200+00:00",
+  "authentication_and_model_catalog": {
+    "http_status": 200,
+    "target_listed": true
+  },
+  "error": "AssertionError: ('/workflows/618a0e71e8434bdf9054a935287f0f15/chat', 503, {'status': 'MODEL_UNAVAILABLE', 'error': 'model_request_rejected', 'message': 'Groq is unavailable. Your plan was not changed. You can select Scripted for offline planning.', 'model': {'mode': 'groq', 'model_id': 'openai/gpt-oss-20b', 'verified': False}}, 200)",
+  "independent_sql_summary": {
+    "provider_bookings": 0,
+    "operations": 0,
+    "approval_statuses": [],
+    "workflow_states": [
+      "CHOOSING"
+    ],
+    "trace_files": 3,
+    "http_calls": 4,
+    "run_ids": [
+      "22658077fc3c452485b961d12b834c5d",
+      "68367b4d7e9641b99bf3c3c8f5bc8934"
+    ]
+  },
+  "source_sha256": {
+    "app/storage.py": "4f6dcaa4b7832e589f975e9c8eee5a5ef40bcc67680de9dfc90dd0943d06798d",
+    "app/__init__.py": "d983fae5c189eb2593dfb08bc5143cea5ac57b12dfd695fd599c13d49041b376",
+    "app/workflow.py": "ce34653c8b35394e96cd63ad616432276916118ac81391fbacf6c2548d77e8af",
+    "app/agent/__init__.py": "f266a1c9291b1a714e900d85f45518dcd78be3ea7a4c5064bed3b08254576cec",
+    "app/agent/scripted.py": "2db1065b55bfa32b6f58da9cc1ebac10cb119aac474d99aba7f2c5d443719c8a",
+    "app/agent/groq.py": "d3f292dc1588212224b21b0cbaf7ad9a9f44bc5809bff3ccf4746d0606f959e6",
+    "app/provider_mock/scenario_engine.py": "6adba126dd1c7966d2caadd00209f8420fec820d7a440bc72c73a5460c456633",
+    "app/provider_mock/__main__.py": "0e50f9ca57a4b25604a726b55994523cbb15c414c8a5ee3a8b735faaef7a4c7b",
+    "app/provider_mock/tools.py": "17034458d23d48772d3ceb1a1d81b79e484edc81fb72e7be5c035463f882c87c",
+    "app/provider_mock/fixtures.py": "ef21c97717aa7a8efccef9d130360f6901fe34e003774e8e279822b452dc1c7c",
+    "app/provider_mock/__init__.py": "4ded9d322a05db2a1990dd3818047f700a34a86ce697d3521003bee1257fc99f",
+    "app/runtime/model.py": "35152d1bd7cd052da526b819270bad8a962ded80c7e8bcb4a4e401b4e45334fa",
+    "app/runtime/rpc_transport.py": "0784d84e780cfb6a088ba9e46bd39238c9d07a322e04792a0f958a3aff030c5b",
+    "app/runtime/observe.py": "8cea405641e90d4961430dc9d4a64b7a3e6e8a0942b6984cef80970f7458d6a6",
+    "app/runtime/memory.py": "31def8fd1cf548eec2b6f178fe5dad0f65f9c0effafb201d14afea9267f7603d",
+    "app/runtime/provider_server.py": "87f633418a4092700c1e7db0e281931efbca2312e1170db870a6e66b1750aa10",
+    "app/runtime/telemetry_sink.py": "223ac3812ffdd28638cb7ad5a1b3f88fadbdc29625deb9635577b51cf1ce544d",
+    "app/runtime/http_api.py": "ae16151b0514aae240086ca027939d12555392bde208a8d0851439b8975ba990",
+    "app/runtime/provider_client.py": "f985dbd7c35cbc56873490c84bd8385c4246499b1e31c1dc4d83f26382cdc36f",
+    "app/runtime/pg.py": "fe2b4567c35324d045f6487379ceba875992e5c4ed5027630284f2f36c137345",
+    "app/runtime/__init__.py": "e55d288a6f22b56129c191e450d355c76b8babf694e0ad5a9327610028a08b7c",
+    "app/runtime/gateway.py": "14c6f50a0b949e0142bc7f509c6b2f8820a35fe5e7d9707041b3f3fcf52e5631",
+    "app/runtime/worker.py": "7684a46a23ed8e682730816e4e8cf4cf1805600a9c7175267db641ece6fe9b11",
+    "app/runtime/controller.py": "db8b9a0fba4a3cd53ccd14915ae2fa36f16be854b9b1734b748d44fbd1a9fd03",
+    "app/runtime/migrate.py": "d06b48629bc6a88db32b096e380b12df1fe3678e0f8b9b4c958a048691f9491b",
+    "app/runtime/security.py": "57ac73cce1d585d3f463e186a16cdf5e92cdc82f673150f2624a3386920cb290",
+    "app/web/app.js": "58e1a30bb494babb819512c6acf888a8333f1668af950f568463ac8bdcd45c1e",
+    "app/web/styles.css": "a824d512980ae0d8dc31f253f0cb1fb319638ecefe363e376157bedafa5d0042",
+    "app/web/index.html": "32a0725bb351fb4ccfdc4fab012770f81ddd5a3611b34f1b7b85be0821a607eb",
+    "scripts/g4_live_smoke.py": "9f3222b87a695568177291050b12a6f4fd7c153bfb012178287c5ea10a450692"
+  }
+}

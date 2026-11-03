@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED_FAILURE_CAUSE",
+  "failed_source_commit": "567165bcae9da1d7e345f2e770103b862baa485c",
+  "source_of_observation": "Preserved raw handler_error for hashed synthetic browser-f4e19570 in orange-g4-demo-567165bc_runtime",
+  "event_type": "handler_error",
+  "error_class": "InsufficientPrivilege",
+  "cause": "orange_app has SELECT/INSERT/UPDATE grants but no DELETE grant; logout attempted DELETE FROM sessions",
+  "correction": "Expire the session using the permitted UPDATE; retain audit references and existing role restrictions",
+  "verified_fix_receipt": "artifacts/receipts/g4_logout_verified_20261103.json",
+  "earlier_inference_corrected": "An initial foreign-key-conflict hypothesis was superseded by the actual sanitized error class."
+}

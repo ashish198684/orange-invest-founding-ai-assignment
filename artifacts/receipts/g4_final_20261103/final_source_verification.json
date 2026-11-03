@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "source_commit": "b6d4bb72e5108e691fe38d1dfc994cf7dae8771c",
+  "hash_checks_per_replica": 16,
+  "replicas": 2,
+  "health_http_status": 200,
+  "commands": [
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-b6d4bb72",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-X",
+        "utf8",
+        "scripts/check_contract.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-b6d4bb72",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-c",
+        "from app.runtime.observe import build_sha; print(build_sha())"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-b6d4bb72",
+        "exec",
+        "-T",
+        "api2",
+        "python",
+        "-X",
+        "utf8",
+        "scripts/check_contract.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-b6d4bb72",
+        "exec",
+        "-T",
+        "api2",
+        "python",
+        "-c",
+        "from app.runtime.observe import build_sha; print(build_sha())"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "runtime_changed_after_replay": false,
+  "governance_sync": "Current canonical, verifier and new preserved archive only; excluded from runtime source fingerprint"
+}

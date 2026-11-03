@@ -1,0 +1,446 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 109.83923199819401,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 40.20862199831754,
+    "result": {
+      "workflow_id": "6597d3b9082c477698d46ce6d08013c9",
+      "logical_request_id": "9ea1adad826444cc9fecc7f59f6f1d56",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "01da4f1558564514b47b831c2d50c2f8",
+      "trace_id": "ef7f16971187fd89ac0b8759ae3123b6"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/6597d3b9082c477698d46ce6d08013c9/chat",
+    "status_code": 200,
+    "elapsed_ms": 1335.6989289750345,
+    "result": {
+      "workflow": {
+        "workflow_id": "6597d3b9082c477698d46ce6d08013c9",
+        "logical_request_id": "9ea1adad826444cc9fecc7f59f6f1d56",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 2000,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "service": "electrician"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Constraints recorded. Consequential actions require an exact approval card.",
+      "run_id": "19637a2928ab4b1499d41e6f174e5eb7",
+      "trace_id": "1387ee932fb40c8fd7bc386e38532836"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/6597d3b9082c477698d46ce6d08013c9/search",
+    "status_code": 200,
+    "elapsed_ms": 397.4446149659343,
+    "result": [
+      {
+        "id": "electrician-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "electrician-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "electrician-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 7
+        }
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/6597d3b9082c477698d46ce6d08013c9/hold",
+    "status_code": 200,
+    "elapsed_ms": 483.4269220009446,
+    "result": {
+      "approval_id": "fefa0214cd21485da00d93c55797b25b",
+      "snapshot": {
+        "user_id": "eval-E22-46622c0dbe",
+        "workflow_id": "6597d3b9082c477698d46ce6d08013c9",
+        "action": "book",
+        "booking_id": null,
+        "provider_id": "electrician-0-0",
+        "old_slot": null,
+        "new_slot": "2026-11-07T15:00:00+05:30",
+        "price_amount": 937,
+        "price_status": "hold_quote",
+        "original_price": null,
+        "new_price_status": "hold_quote",
+        "hold_id": "1b5ca053842a4a2eb860007b599d9255",
+        "revision": 2,
+        "expires_at": "2026-11-03T14:11:49.143669+05:30"
+      },
+      "fingerprint": "20bba9069ff7cf0274caf6dda0316c1b4321a1276a9262d63c15e68b6d6e68a2",
+      "status": "PENDING",
+      "run_id": "bf105016904c42948d4f3d90536ae695",
+      "trace_id": "441ceba7e48d4544be9fb333606dfdb5"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/approvals/fefa0214cd21485da00d93c55797b25b",
+    "status_code": 200,
+    "elapsed_ms": 47.70514398114756,
+    "result": {
+      "card_id": "3fb0e02cef714fad9cc98226004670fa",
+      "approval_id": "fefa0214cd21485da00d93c55797b25b",
+      "snapshot": {
+        "action": "book",
+        "booking_id": null,
+        "expires_at": "2026-11-03T14:11:49.143669+05:30",
+        "hold_id": "1b5ca053842a4a2eb860007b599d9255",
+        "new_price_status": "hold_quote",
+        "new_slot": "2026-11-07T15:00:00+05:30",
+        "old_slot": null,
+        "original_price": null,
+        "price_amount": 937,
+        "price_status": "hold_quote",
+        "provider_id": "electrician-0-0",
+        "revision": 2,
+        "user_id": "eval-E22-46622c0dbe",
+        "workflow_id": "6597d3b9082c477698d46ce6d08013c9"
+      },
+      "fingerprint": "20bba9069ff7cf0274caf6dda0316c1b4321a1276a9262d63c15e68b6d6e68a2",
+      "revision": 2,
+      "evidence": "issued; not proof of human perception",
+      "run_id": "cf80e011d2544908bdd9f2c3e8305106",
+      "trace_id": "cd91b19b17ead65fc079effdcf992e67"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/approvals/fefa0214cd21485da00d93c55797b25b/confirm",
+    "status_code": 200,
+    "elapsed_ms": 81.55703003285453,
+    "result": {
+      "status": "PENDING_VERIFICATION",
+      "operation_id": "5187fa3fed4c4e52a62c497636bd03ed",
+      "message": "Approval recorded. Provider outcome is not yet verified.",
+      "run_id": "104a29374dd044668a18bf86f8a765d8",
+      "trace_id": "9fd890257f539b328ab801d1f0195c2d"
+    }
+  },
+  {
+    "worker_command": [
+      "/usr/local/bin/python",
+      "-m",
+      "app.runtime.worker",
+      "--once",
+      "--job",
+      "5187fa3fed4c4e52a62c497636bd03ed"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "method": "GET",
+    "path": "/operations/5187fa3fed4c4e52a62c497636bd03ed",
+    "status_code": 200,
+    "elapsed_ms": 35.45437502907589,
+    "result": {
+      "booking": {
+        "id": "916b99efde0c44a7ae3345e357a482ca",
+        "provider": "electrician-0-0",
+        "service": "electrician",
+        "slot": "2026-11-07T15:00:00+05:30",
+        "status": "booked"
+      },
+      "booking_id": "916b99efde0c44a7ae3345e357a482ca",
+      "message": "Booking verified with the provider.",
+      "operation_id": "5187fa3fed4c4e52a62c497636bd03ed",
+      "reason": null,
+      "status": "BOOKED",
+      "run_id": "2946d30d15384cd0a792ef9cbcc492cb",
+      "trace_id": "701ff6b4e4260fa753b89dc4069d7297"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/6597d3b9082c477698d46ce6d08013c9/search",
+    "status_code": 200,
+    "elapsed_ms": 357.02805494656786,
+    "result": [
+      {
+        "id": "electrician-0-0",
+        "price": 900,
+        "rating": 4.2,
+        "free_slots": [
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-0",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 3
+        }
+      },
+      {
+        "id": "electrician-0-1",
+        "price": 1200,
+        "rating": 4.4,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-1",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 5
+        }
+      },
+      {
+        "id": "electrician-0-2",
+        "price": 1500,
+        "rating": 4.6,
+        "free_slots": [
+          "2026-11-04T09:00:00+05:30",
+          "2026-11-04T11:00:00+05:30",
+          "2026-11-04T15:00:00+05:30",
+          "2026-11-05T09:00:00+05:30",
+          "2026-11-05T11:00:00+05:30",
+          "2026-11-05T15:00:00+05:30",
+          "2026-11-06T09:00:00+05:30",
+          "2026-11-06T11:00:00+05:30",
+          "2026-11-06T15:00:00+05:30",
+          "2026-11-07T09:00:00+05:30",
+          "2026-11-07T11:00:00+05:30",
+          "2026-11-07T15:00:00+05:30",
+          "2026-11-08T09:00:00+05:30",
+          "2026-11-08T11:00:00+05:30",
+          "2026-11-08T15:00:00+05:30"
+        ],
+        "attributes": {
+          "technician": "Tech 0-2",
+          "area": "Indiranagar",
+          "service": "electrician",
+          "experience_years": 7
+        }
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 72.54011300392449,
+    "result": {
+      "workflow_id": "1db55b76eba74230bb92624862a9d3dd",
+      "logical_request_id": "a96b8950c2ae47008c55a5975da1d99f",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "a4dd2a4d6f0f463786569cb06ef48245",
+      "trace_id": "9399e0c319a5e82e4ffb47d73a2fed44"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/1db55b76eba74230bb92624862a9d3dd/change",
+    "status_code": 200,
+    "elapsed_ms": 659.078023978509,
+    "result": {
+      "approval_id": "daa6ce57fe8a4a66bccbb97db9cc6a57",
+      "snapshot": {
+        "user_id": "eval-E22-46622c0dbe",
+        "workflow_id": "1db55b76eba74230bb92624862a9d3dd",
+        "action": "reschedule",
+        "booking_id": "916b99efde0c44a7ae3345e357a482ca",
+        "provider_id": "electrician-0-0",
+        "old_slot": "2026-11-07T15:00:00+05:30",
+        "new_slot": "2026-11-08T09:00:00+05:30",
+        "price_amount": 937,
+        "price_status": "original_booking_price",
+        "original_price": 937,
+        "new_price_status": "unavailable_no_fee_mock",
+        "hold_id": null,
+        "revision": 1,
+        "expires_at": "2026-11-03T14:10:40.578966+05:30"
+      },
+      "fingerprint": "3e63f6e64168048ee7db3c2cb95633e43936b1894c366f3cb3cfa72d25782aeb",
+      "status": "PENDING",
+      "run_id": "99c7b9a708714ceaafbac0ee94db2cc1",
+      "trace_id": "c0791868719d07efcff396f4b8119f67"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/approvals/daa6ce57fe8a4a66bccbb97db9cc6a57",
+    "status_code": 200,
+    "elapsed_ms": 48.53200196521357,
+    "result": {
+      "card_id": "9efc7759cf7e4d4099e6da0dcc1e9511",
+      "approval_id": "daa6ce57fe8a4a66bccbb97db9cc6a57",
+      "snapshot": {
+        "action": "reschedule",
+        "booking_id": "916b99efde0c44a7ae3345e357a482ca",
+        "expires_at": "2026-11-03T14:10:40.578966+05:30",
+        "hold_id": null,
+        "new_price_status": "unavailable_no_fee_mock",
+        "new_slot": "2026-11-08T09:00:00+05:30",
+        "old_slot": "2026-11-07T15:00:00+05:30",
+        "original_price": 937,
+        "price_amount": 937,
+        "price_status": "original_booking_price",
+        "provider_id": "electrician-0-0",
+        "revision": 1,
+        "user_id": "eval-E22-46622c0dbe",
+        "workflow_id": "1db55b76eba74230bb92624862a9d3dd"
+      },
+      "fingerprint": "3e63f6e64168048ee7db3c2cb95633e43936b1894c366f3cb3cfa72d25782aeb",
+      "revision": 1,
+      "evidence": "issued; not proof of human perception",
+      "run_id": "76a7edfb3376433795a858f7013c8ed5",
+      "trace_id": "285e29382a71dd677d129772e2266b66"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/approvals/daa6ce57fe8a4a66bccbb97db9cc6a57/confirm",
+    "status_code": 200,
+    "elapsed_ms": 71.07847201405093,
+    "result": {
+      "status": "PENDING_VERIFICATION",
+      "operation_id": "b019876734fe448ca2b50863a66ad81a",
+      "message": "Approval recorded. Provider outcome is not yet verified.",
+      "run_id": "34678464764344aaa38018d087380410",
+      "trace_id": "d8a9fb569caa619829dbc5d43b834361"
+    }
+  },
+  {
+    "worker_command": [
+      "/usr/local/bin/python",
+      "-m",
+      "app.runtime.worker",
+      "--once",
+      "--job",
+      "b019876734fe448ca2b50863a66ad81a"
+    ],
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "method": "GET",
+    "path": "/operations/b019876734fe448ca2b50863a66ad81a",
+    "status_code": 200,
+    "elapsed_ms": 76.8795830081217,
+    "result": {
+      "booking": {
+        "id": "916b99efde0c44a7ae3345e357a482ca",
+        "provider": "electrician-0-0",
+        "service": "electrician",
+        "slot": "2026-11-08T09:00:00+05:30",
+        "status": "booked"
+      },
+      "booking_id": "916b99efde0c44a7ae3345e357a482ca",
+      "message": "New appointment slot verified with the provider.",
+      "operation_id": "b019876734fe448ca2b50863a66ad81a",
+      "reason": null,
+      "status": "RESCHEDULED",
+      "run_id": "71571edb0ece4d0ba7ad673ff7200694",
+      "trace_id": "6e82203ab7eed22ce601a6c5c1d2e171"
+    }
+  }
+]

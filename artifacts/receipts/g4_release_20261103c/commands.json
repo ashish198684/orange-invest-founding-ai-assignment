@@ -1,0 +1,226 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 0.0470000000204891,
+    "timestamp": "2026-11-03T08:02:09.408411+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-demo-5290e930",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 8.5,
+    "timestamp": "2026-11-03T08:02:17.904144+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 0.2970000000204891,
+    "timestamp": "2026-11-03T08:02:18.203671+00:00"
+  },
+  {
+    "command": [
+      "git",
+      "worktree",
+      "add",
+      "--detach",
+      "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+      "2896d9e97872075c78adabdf3b3a3e8f6bae218c"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 8.125,
+    "timestamp": "2026-11-03T08:02:26.336617+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "up",
+      "-d",
+      "--build",
+      "--wait"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 57.15599999995902,
+    "timestamp": "2026-11-03T08:03:23.484784+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g4_checks.py",
+      "--label",
+      "g4_release_20261103c_clean",
+      "--require-committed"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 230.81200000015087,
+    "timestamp": "2026-11-03T08:07:14.304588+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "cp",
+      "api:/state/receipts/g4_release_20261103c_clean",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103c\\offline"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 6.077999999979511,
+    "timestamp": "2026-11-03T08:07:20.385944+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "cp",
+      "api:/state/receipts/g4_release_20261103c_clean_regressions",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103c\\regressions"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 4.828999999910593,
+    "timestamp": "2026-11-03T08:07:25.200543+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "cp",
+      "api:/state/receipts/g4_release_20261103c_clean_evals",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103c\\evals"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 5.75,
+    "timestamp": "2026-11-03T08:07:30.963608+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "cp",
+      "api:/state/evals/g4_release_20261103c_clean",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103c\\generated"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 0.9060000001918525,
+    "timestamp": "2026-11-03T08:07:31.874619+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 11.093999999808148,
+    "timestamp": "2026-11-03T08:07:42.972738+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-demo-6339f9b3",
+      "up",
+      "-d",
+      "--wait"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 30.110000000102445,
+    "timestamp": "2026-11-03T08:08:13.082507+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-demo-6339f9b3",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g4_live_smoke.py",
+      "--label",
+      "g4_release_20261103c_live"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 1,
+    "elapsed_seconds": 5.125,
+    "timestamp": "2026-11-03T08:08:18.214582+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-demo-6339f9b3",
+      "cp",
+      "api:/state/receipts/g4_release_20261103c_live",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103c\\live"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 0.3130000000819564,
+    "timestamp": "2026-11-03T08:08:18.534690+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "--project-name",
+      "orange-g4-proof-77dcbf25",
+      "down"
+    ],
+    "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-77dcbf25",
+    "exit_code": 0,
+    "elapsed_seconds": 0.2970000000204891,
+    "timestamp": "2026-11-03T08:08:18.837316+00:00"
+  }
+]

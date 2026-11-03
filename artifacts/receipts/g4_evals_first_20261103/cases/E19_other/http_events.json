@@ -1,0 +1,45 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 44.527689984533936,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 23.230216989759356,
+    "result": {
+      "workflow_id": "08c908d98d76464f8a04ca2711e72bb7",
+      "logical_request_id": "9fc83b3f0afb494595bca257b212e8f8",
+      "draft": {
+        "area": "Indiranagar",
+        "budget_inr": 2000,
+        "date_window": {
+          "end": "2026-11-09T00:00:00+05:30",
+          "start": "2026-11-03T00:00:00+05:30"
+        },
+        "service": "plumber"
+      },
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "58106e31e35842b9a296f65246ed38fe",
+      "trace_id": "96646c16f66ad85d192aecdebc7b1db1"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/08c908d98d76464f8a04ca2711e72bb7/hold",
+    "status_code": 409,
+    "elapsed_ms": 931.246803025715,
+    "result": {
+      "error": "slot_unavailable",
+      "message": "No unapproved action was performed."
+    }
+  }
+]

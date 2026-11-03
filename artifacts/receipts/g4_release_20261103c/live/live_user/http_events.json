@@ -1,0 +1,74 @@
+[
+  {
+    "method": "POST",
+    "path": "/login",
+    "status_code": 200,
+    "elapsed_ms": 122.84850497962907,
+    "result": {
+      "authenticated": true
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows",
+    "status_code": 200,
+    "elapsed_ms": 154.29966896772385,
+    "result": {
+      "workflow_id": "7e762b43c1ea4c379ca6a3a5b3c2b7c9",
+      "logical_request_id": "6a1e69ce0451436caa914e8759408f1b",
+      "draft": {},
+      "revision": 0,
+      "status": "COLLECTING",
+      "booking_id": null,
+      "run_id": "1d4167f86412455fb3f658f88b8786c6",
+      "trace_id": "8619a186327d56b68879d70a57e57f91"
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/workflows/7e762b43c1ea4c379ca6a3a5b3c2b7c9/chat",
+    "status_code": 200,
+    "elapsed_ms": 1548.0518489493988,
+    "result": {
+      "workflow": {
+        "workflow_id": "7e762b43c1ea4c379ca6a3a5b3c2b7c9",
+        "logical_request_id": "6a1e69ce0451436caa914e8759408f1b",
+        "draft": {
+          "area": "Indiranagar",
+          "budget_inr": 1800,
+          "date_window": {
+            "end": "2026-11-09T00:00:00+05:30",
+            "start": "2026-11-03T00:00:00+05:30"
+          },
+          "preferences": {
+            "earliest_hour": 10
+          },
+          "service": "plumber"
+        },
+        "revision": 1,
+        "status": "CHOOSING",
+        "booking_id": null
+      },
+      "question": null,
+      "message": "Your plan is ready below. Review an available slot and its exact quote before approving.",
+      "action_proposal": "plan",
+      "model": {
+        "mode": "groq",
+        "action_proposal": "plan",
+        "model_id": "openai/gpt-oss-20b",
+        "prompt_version": "groq-intent-v3",
+        "latency_ms": 1259.438582987059,
+        "token_in": 914,
+        "token_out": 298,
+        "cost_usd": null,
+        "verified": true,
+        "normalizations": [
+          "date_window:calendar_resolved",
+          "latest_hour:unsupported_removed"
+        ]
+      },
+      "run_id": "d50dfd7e672848f3bc6b9af36de21bad",
+      "trace_id": "6f89559130016385ea74890ae2173729"
+    }
+  }
+]

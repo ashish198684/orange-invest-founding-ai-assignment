@@ -1,0 +1,168 @@
+{
+  "gate": "G4 separate live Groq smoke",
+  "code_commit": "UNCOMMITTED",
+  "target_model": "openai/gpt-oss-20b",
+  "status": "PASS",
+  "live_api_called": true,
+  "timestamp": "2026-11-03T04:59:52.005795+00:00",
+  "authentication_and_model_catalog": {
+    "http_status": 200,
+    "target_listed": true
+  },
+  "model_turns": [
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v1",
+      "latency_ms": 1127.4926360347308,
+      "token_in": 608,
+      "token_out": 268,
+      "cost_usd": null,
+      "verified": true
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v1",
+      "latency_ms": 631.318703002762,
+      "token_in": 678,
+      "token_out": 126,
+      "cost_usd": null,
+      "verified": true
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "show_bookings",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v1",
+      "latency_ms": 978.0888480017893,
+      "token_in": 683,
+      "token_out": 114,
+      "cost_usd": null,
+      "verified": true
+    }
+  ],
+  "workflow_id": "2522a41dab4c4ecaa0ac277568035fb8",
+  "operation_id": "233aa00c01804223b35b95b06292c227",
+  "approval": {
+    "card_id": "8a7ea3dc99074bb5bf76e976f998acf3",
+    "approval_id": "093bafa1b12547f49b1b226c00dd44df",
+    "snapshot": {
+      "action": "book",
+      "booking_id": null,
+      "expires_at": "2026-11-03T10:39:58.982503+05:30",
+      "hold_id": "9bc0159952394e62ba8ad5bcde706ba9",
+      "new_price_status": "hold_quote",
+      "new_slot": "2026-11-05T11:00:00+05:30",
+      "old_slot": null,
+      "original_price": null,
+      "price_amount": 1237,
+      "price_status": "hold_quote",
+      "provider_id": "plumber-1-1",
+      "revision": 3,
+      "user_id": "eval-live_user-4303f7bb3b",
+      "workflow_id": "2522a41dab4c4ecaa0ac277568035fb8"
+    },
+    "fingerprint": "17cf7c0c94d8b46c1c8cff4477d6b228ad07ab979e3f2317c888296d0199ff93",
+    "revision": 3,
+    "evidence": "issued; not proof of human perception",
+    "run_id": "d24a4d26c65143feb59616d6c2a73c35",
+    "trace_id": "48e967c5ad020056d24a324ab5ce1d0c"
+  },
+  "provider_result": {
+    "booking": {
+      "id": "c08ac78dc61343a088b7803e0e774379",
+      "provider": "plumber-1-1",
+      "service": "plumber",
+      "slot": "2026-11-05T11:00:00+05:30",
+      "status": "booked"
+    },
+    "booking_id": "c08ac78dc61343a088b7803e0e774379",
+    "message": "Booking verified with the provider.",
+    "operation_id": "233aa00c01804223b35b95b06292c227",
+    "reason": null,
+    "status": "BOOKED",
+    "run_id": "b4edd8bd9c444c17a23a7f4d6a129be2",
+    "trace_id": "0d54384ebe76aaf044c64c1bc46b076b"
+  },
+  "assertions": [
+    "real catalog authentication",
+    "real strict structured completions",
+    "complex request with spelled-out budget",
+    "one-fact correction retains other constraints",
+    "model proposal is not consent",
+    "real quote approved separately",
+    "timeout-after-success reconciles one booking",
+    "malicious reviews read as untrusted and excluded from extractor context"
+  ],
+  "limitations": "Separate integration smoke, not a live reliability score. Reviews are excluded from the intent extractor by construction; this is not a claim of model immunity to arbitrary injected context.",
+  "independent_sql_summary": {
+    "provider_bookings": 1,
+    "operations": 1,
+    "approval_statuses": [
+      "GRANTED"
+    ],
+    "workflow_states": [
+      "BOOKED"
+    ],
+    "trace_files": 24,
+    "http_calls": 24,
+    "run_ids": [
+      "aa6c9d1b2b6c452cb25e8c4b92ae3040",
+      "1b87fb99ff3c4f73943e78aa31dc565c",
+      "52acce4b2efe458dacdd6435f4d982af",
+      "e7b26e01dbab47f7bcda390d5448e534",
+      "68a52a92c799411dbf09bdfb9cb3ad5f",
+      "d24a4d26c65143feb59616d6c2a73c35",
+      "0612add66a3d4870a8dd2dce8b268d6e",
+      "36e8465e9e9b4ef080734df1efac81c2",
+      "f65c9f519ab9446ba3fcba945d36c9a9",
+      "0e72ea16bb43443cae98777f315e0c1b",
+      "faae5583c2ea4d6c8fe6e9f969b0e5d5",
+      "e5b799454f374a009505a5009e480e57",
+      "8470d10647fb45c792f0f8d53336bc82",
+      "e5e5aa593b564d3ab89097c82c32b742",
+      "49b0be38b3a347caa95fb03361f279f8",
+      "3faa5ae2767e4385bd7759bf5bca31df",
+      "582248715ba249b58455b0a549bd5b29",
+      "29b821396b754e88ae2de799be41588e",
+      "0a5e74d950ba4dbcb23b16b4205ccc05",
+      "7a845059a67b40e0946478f7f15b549b",
+      "b4edd8bd9c444c17a23a7f4d6a129be2"
+    ]
+  },
+  "source_sha256": {
+    "app/storage.py": "4f6dcaa4b7832e589f975e9c8eee5a5ef40bcc67680de9dfc90dd0943d06798d",
+    "app/__init__.py": "d983fae5c189eb2593dfb08bc5143cea5ac57b12dfd695fd599c13d49041b376",
+    "app/workflow.py": "ce34653c8b35394e96cd63ad616432276916118ac81391fbacf6c2548d77e8af",
+    "app/agent/__init__.py": "f266a1c9291b1a714e900d85f45518dcd78be3ea7a4c5064bed3b08254576cec",
+    "app/agent/scripted.py": "2db1065b55bfa32b6f58da9cc1ebac10cb119aac474d99aba7f2c5d443719c8a",
+    "app/agent/groq.py": "a449a415ab975f23f8a8b98cece1ad368a8db6c52046831c0020f687bb9357b2",
+    "app/provider_mock/scenario_engine.py": "6adba126dd1c7966d2caadd00209f8420fec820d7a440bc72c73a5460c456633",
+    "app/provider_mock/__main__.py": "0e50f9ca57a4b25604a726b55994523cbb15c414c8a5ee3a8b735faaef7a4c7b",
+    "app/provider_mock/tools.py": "17034458d23d48772d3ceb1a1d81b79e484edc81fb72e7be5c035463f882c87c",
+    "app/provider_mock/fixtures.py": "ef21c97717aa7a8efccef9d130360f6901fe34e003774e8e279822b452dc1c7c",
+    "app/provider_mock/__init__.py": "4ded9d322a05db2a1990dd3818047f700a34a86ce697d3521003bee1257fc99f",
+    "app/runtime/model.py": "35152d1bd7cd052da526b819270bad8a962ded80c7e8bcb4a4e401b4e45334fa",
+    "app/runtime/rpc_transport.py": "0784d84e780cfb6a088ba9e46bd39238c9d07a322e04792a0f958a3aff030c5b",
+    "app/runtime/observe.py": "8cea405641e90d4961430dc9d4a64b7a3e6e8a0942b6984cef80970f7458d6a6",
+    "app/runtime/memory.py": "31def8fd1cf548eec2b6f178fe5dad0f65f9c0effafb201d14afea9267f7603d",
+    "app/runtime/provider_server.py": "87f633418a4092700c1e7db0e281931efbca2312e1170db870a6e66b1750aa10",
+    "app/runtime/telemetry_sink.py": "223ac3812ffdd28638cb7ad5a1b3f88fadbdc29625deb9635577b51cf1ce544d",
+    "app/runtime/http_api.py": "c862ca98944760cc6e4160c2efe237eceac367987ccf4bc865ec586a0f38913c",
+    "app/runtime/provider_client.py": "f985dbd7c35cbc56873490c84bd8385c4246499b1e31c1dc4d83f26382cdc36f",
+    "app/runtime/pg.py": "fe2b4567c35324d045f6487379ceba875992e5c4ed5027630284f2f36c137345",
+    "app/runtime/__init__.py": "e55d288a6f22b56129c191e450d355c76b8babf694e0ad5a9327610028a08b7c",
+    "app/runtime/gateway.py": "14c6f50a0b949e0142bc7f509c6b2f8820a35fe5e7d9707041b3f3fcf52e5631",
+    "app/runtime/worker.py": "7684a46a23ed8e682730816e4e8cf4cf1805600a9c7175267db641ece6fe9b11",
+    "app/runtime/controller.py": "2c7937534d7e69c738632107a552d8e024ebe45ac994acf043cf781e208165c3",
+    "app/runtime/migrate.py": "d06b48629bc6a88db32b096e380b12df1fe3678e0f8b9b4c958a048691f9491b",
+    "app/runtime/security.py": "57ac73cce1d585d3f463e186a16cdf5e92cdc82f673150f2624a3386920cb290",
+    "app/web/app.js": "6650f29f21c4bf21fa036448a04c7b6846273cbc377e9f409a6df449961b5666",
+    "app/web/styles.css": "d81893500042feae47719862864368468be0ffa79fde27335b4c2f4207fc64fa",
+    "app/web/index.html": "32a0725bb351fb4ccfdc4fab012770f81ddd5a3611b34f1b7b85be0821a607eb",
+    "scripts/g4_live_smoke.py": "9f3222b87a695568177291050b12a6f4fd7c153bfb012178287c5ea10a450692"
+  }
+}

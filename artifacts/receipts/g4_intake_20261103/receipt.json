@@ -1,0 +1,41 @@
+[
+  {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "scripts/check_contract.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0
+  }
+]

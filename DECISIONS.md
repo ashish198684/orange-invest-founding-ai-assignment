@@ -163,4 +163,4 @@ G4 live replay correction: despite strict=true, Groq returned HTTP 400 json_vali
 
 The next live first turn correctly proposed noon for morning, but paraphrased evidence was rejected. Grounding now resolves only explicit source phrases 'a morning visit'/'mornings only' for a non-null morning proposal; the regression also rejects unsupported additions on unrelated turns. Final verification remains required.
 
-The complete Chromium journey reached verified cancellation and mobile layout, then logout failed because DELETE conflicted with retained issued-card session references. Logout now expires the session in SQL, preserving its audit references while immediately denying authentication; the browser replay verifies the login screen.
+The complete Chromium journey reached verified cancellation and mobile layout, then logout failed: the preserved handler_error is InsufficientPrivilege, because the intentionally restricted application role has SELECT/INSERT/UPDATE authority but no DELETE grant. Logout now expires the session in SQL, preserving its audit references while immediately denying authentication; the browser replay verifies the login screen.

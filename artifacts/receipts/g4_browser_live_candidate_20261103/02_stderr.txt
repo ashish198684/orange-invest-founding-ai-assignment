@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\scripts\g4_browser.py", line 67, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Users\marke\Desktop\OrangeInvest-FoundingAI-Assignment\scripts\g4_browser.py", line 33, in main
+    page.locator('.slots button').first.click();expect(page.locator('.approval-card')).to_be_visible(timeout=15000)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\sync_api\_generated.py", line 15631, in click
+    self._sync(
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_locator.py", line 162, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_frame.py", line 566, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\marke\AppData\Local\Programs\Python\Python312\Lib\site-packages\playwright\_impl\_connection.py", line 559, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".slots button").first
+

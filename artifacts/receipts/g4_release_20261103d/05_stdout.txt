@@ -1,0 +1,61 @@
+['/usr/local/bin/python', '-X', 'utf8', 'scripts/g3x_checks.py', '--label', 'g4_release_20261103d_clean_regressions'] exit 0
+['/usr/local/bin/python', '-X', 'utf8', 'scripts/g4_evals.py', '--label', 'g4_release_20261103d_clean_evals'] exit 0
+['/usr/local/bin/python', '-X', 'utf8', '-m', 'unittest', 'discover', '-s', 'tests_g4', '-v'] exit 0
+{
+  "gate": "G4",
+  "status": "PASS",
+  "acceptance": "CTO review pending",
+  "code_commit": "567165bcae9da1d7e345f2e770103b862baa485c",
+  "commands": [
+    {
+      "command": [
+        "/usr/local/bin/python",
+        "-X",
+        "utf8",
+        "scripts/g3x_checks.py",
+        "--label",
+        "g4_release_20261103d_clean_regressions"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-11-03T08:16:51.247112+00:00"
+    },
+    {
+      "command": [
+        "/usr/local/bin/python",
+        "-X",
+        "utf8",
+        "scripts/g4_evals.py",
+        "--label",
+        "g4_release_20261103d_clean_evals"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-11-03T08:19:33.008648+00:00"
+    },
+    {
+      "command": [
+        "/usr/local/bin/python",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests_g4",
+        "-v"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-11-03T08:21:05.139223+00:00"
+    }
+  ],
+  "offline_evals": 28,
+  "sqlite_tests": 65,
+  "g3x_tests": 39,
+  "adapter_tests": 20,
+  "skipped": 0,
+  "model_mode": "scripted-offline",
+  "live_api_called": false,
+  "generated_artifacts": "/state/evals/g4_release_20261103d_clean",
+  "raw_timeout_run": "13f9bf4066634a80b5352d014e942894.jsonl",
+  "timestamp": "2026-11-03T08:21:11.398035+00:00",
+  "boundary": "Browser and live Groq smoke have separate receipts. G5 not authorized."
+}

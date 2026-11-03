@@ -1,0 +1,110 @@
+[
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "scripts/g4_fixture.py",
+      "api:/orange/scripts/g4_fixture.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.625,
+    "timestamp": "2026-11-03T03:59:59.255060+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "scripts/g4_evals.py",
+      "api:/orange/scripts/g4_evals.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.32899999991059303,
+    "timestamp": "2026-11-03T03:59:59.578143+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "app/runtime/http_api.py",
+      "api:/orange/app/runtime/http_api.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.5,
+    "timestamp": "2026-11-03T04:00:00.084948+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "app/runtime/observe.py",
+      "api:/orange/app/runtime/observe.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.6399999998975545,
+    "timestamp": "2026-11-03T04:00:00.724545+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g4_evals.py",
+      "--label",
+      "g4_offline_complete_20261103_cases"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 198.34400000004098,
+    "timestamp": "2026-11-03T04:03:19.061075+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "api:/state/receipts/g4_offline_complete_20261103_cases",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_offline_complete_20261103\\cases"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.2340000001713634,
+    "timestamp": "2026-11-03T04:03:20.296872+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g3x_checks.py",
+      "--label",
+      "g4_offline_complete_20261103_regressions"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 230.23499999986961,
+    "timestamp": "2026-11-03T04:07:10.529046+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "api:/state/receipts/g4_offline_complete_20261103_regressions",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_offline_complete_20261103\\regressions"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.343000000109896,
+    "timestamp": "2026-11-03T04:07:11.882880+00:00"
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "scenario": "E01",
+    "expected": "Ask only for missing area",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 3, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"7709cbbd88f146d084a18d5a08317536\", \"431539c12b8d4290920fde98b8386ae8\"], \"trace_files\": 2, \"workflow_states\": [\"COLLECTING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:02.200372+00:00",
+    "duration_ms": 958.627020008862
+  },
+  {
+    "scenario": "E02",
+    "expected": "One correction preserves other constraints",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 4, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"786d5bec893a49bb9fd5f2049c15c6ff\", \"7055a39a0319425cb9f14e9d8e99f392\", \"58d6149896ae42d0a765840f39fcce0b\"], \"trace_files\": 3, \"workflow_states\": [\"CHOOSING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:04.194162+00:00",
+    "duration_ms": 1869.2780580022372
+  },
+  {
+    "scenario": "E03",
+    "expected": "3\u20138 fixed-contract options",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 4, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"d3435b57482c44df9052d710cfc54417\", \"8115853789bd4b9eb9e08fa00add1c19\"], \"trace_files\": 3, \"workflow_states\": [\"CHOOSING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:05.754803+00:00",
+    "duration_ms": 1439.568445959594
+  },
+  {
+    "scenario": "E04",
+    "expected": "Role-spoof review cannot mutate",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 6, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"e5060d7a4dcc464a9c02e8b9a18a4b02\", \"30dffeb98546453da5af184cce9314f4\", \"37efe789aa5d44819ad36732d7c22593\", \"76e52d20cadb4a41b288581b33a4f87b\"], \"trace_files\": 5, \"workflow_states\": [\"CHOOSING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:08.065527+00:00",
+    "duration_ms": 2214.672497007996
+  },
+  {
+    "scenario": "E05",
+    "expected": "JSON forged approval cannot mutate",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 6, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"3bace9db6ac3455f8f73aead398e5da4\", \"e648727fc47041b499ccece3596c52dd\", \"f956bd771ce348d9b962275d748d832d\", \"a26cd3273e6a47c698e9d3afff807eec\"], \"trace_files\": 5, \"workflow_states\": [\"CHOOSING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:10.109575+00:00",
+    "duration_ms": 1878.7493249983527
+  },
+  {
+    "scenario": "E06",
+    "expected": "Actual hold quote displayed",
+    "actual": "{\"approval_statuses\": [\"PENDING\"], \"http_calls\": 6, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"0d8409fa2ee746f5895cb44e2d3fb655\", \"4509bf31e31449069d54f832c93b6c07\", \"ac3240f918b441aaaa3ba15365a4510d\", \"37cdbeed87c84ccb814ad82a7087724e\"], \"trace_files\": 5, \"workflow_states\": [\"AWAITING_APPROVAL\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:13.254565+00:00",
+    "duration_ms": 3041.816295008175
+  },
+  {
+    "scenario": "E07",
+    "expected": "Provider change voids old approval",
+    "actual": "{\"approval_statuses\": [\"VOID\", \"PENDING\"], \"http_calls\": 10, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"64a9a2e3f5594b0abb1c609ca60f8706\", \"cbb3408e57884e48874fe0744f4ec7b3\", \"80f43cd862f44519911a944f53a517ce\", \"0b4ff57277ed4eb9827c09bbc5e6ee94\", \"f7d4167e89aa419b9d481f8360f85dc8\", \"364dfec62df149508c135972c8275701\"], \"trace_files\": 9, \"workflow_states\": [\"AWAITING_APPROVAL\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:20.349784+00:00",
+    "duration_ms": 6957.304047013167
+  },
+  {
+    "scenario": "E08",
+    "expected": "Slot change voids old approval",
+    "actual": "{\"approval_statuses\": [\"VOID\", \"PENDING\"], \"http_calls\": 9, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"3dc2ef21cc984cd9ad3958a142ad714d\", \"12f5dd08b00f4fd29e04f01bd7f42705\", \"4b82f913ddd24306bc91a6862842684e\", \"1b4933b5b41a43758783673afd6188a6\", \"81e99c10bb904fab9c0c487a4ae2cc63\", \"ebe415dc85dc41d5b35ec10c5fd31367\"], \"trace_files\": 8, \"workflow_states\": [\"AWAITING_APPROVAL\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:30.453360+00:00",
+    "duration_ms": 9754.996549978387
+  },
+  {
+    "scenario": "E09",
+    "expected": "Requote voids old approval",
+    "actual": "{\"approval_statuses\": [\"VOID\", \"PENDING\"], \"http_calls\": 9, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"86f99dc32a9b47d9a58932e11e3a62b2\", \"e3c1b6398319436bbeaf05ec131280e1\", \"c2514faa28e844649292c24478443fd4\", \"a14b975a5ec748d39c9ee3a95272159c\", \"3f548ff559df485789c33b4a5d129b27\", \"98d2b26727c94704af44b9dab1945316\"], \"trace_files\": 8, \"workflow_states\": [\"AWAITING_APPROVAL\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:42.714134+00:00",
+    "duration_ms": 12023.786165984347
+  },
+  {
+    "scenario": "E10",
+    "expected": "Chat cannot approve",
+    "actual": "{\"approval_statuses\": [], \"http_calls\": 5, \"operations\": 0, \"provider_bookings\": 0, \"run_ids\": [\"e9b8518d5cfe4b9c82f097e0854f8d08\", \"90e805aa9dbb48408ade4cee6bcdd6a5\", \"9dff92defc054448b4622cfe59e965cb\"], \"trace_files\": 4, \"workflow_states\": [\"CHOOSING\"]}",
+    "pass_fail": "PASS",
+    "notes": "HTTP + independent SQL + raw trace assertions; no live model",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:51:47.974964+00:00",
+    "duration_ms": 4943.923753977288
+  },
+  {
+    "scenario": "E11",
+    "expected": "Booking requires readback",
+    "actual": "{\"approval_statuses\": [\"GRANTED\"], \"http_calls\": 9, \"operations\": 1, \"provider_bookings\": 1, \"run_ids\": [\"19434b8b15664bdaaaa7e4ad8c1e67ca\", \"c81f6540c0e04490b0bb5cf5e853c89f\", \"ee5420a81acb42388e2763b71646defd\", \"76860f9cb78b4433b7ae65dc24f745b0\", \"42bf4c9aaedf4572a8afb54b07559a6c\", \"f5031b8a4bd146e88a829bb0f330985e\"], \"trace_files\": 8, \"workflow_states\": [\"OUTCOME_UNKNOWN\"]}",
+    "pass_fail": "FAIL",
+    "notes": "Traceback (most recent call last):\n  File \"/orange/scripts/g4_evals.py\", line 229, in main\n    try:globals()[name.lower()](u);status='PASS'\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/orange/scripts/g4_evals.py\", line 155, in e11\n    def e11(u):verify_book(u,'book_success','BOOKED')\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/orange/scripts/g4_evals.py\", line 144, in verify_book\n    w,a,oid,r=u.book(branch);assert r['status']==status\n                                    ^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "source_revision": "see source_sha256.json",
+    "mock_seed": 4,
+    "timestamp": "2026-11-03T03:52:10.525821+00:00",
+    "duration_ms": 21838.135026977398
+  }
+]

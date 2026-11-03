@@ -1,0 +1,41 @@
+[
+  {
+    "command": [
+      "/usr/local/bin/python",
+      "-X",
+      "utf8",
+      "scripts/g3x_checks.py",
+      "--label",
+      "g4_release_20261103d_clean_regressions"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-03T08:16:51.247112+00:00"
+  },
+  {
+    "command": [
+      "/usr/local/bin/python",
+      "-X",
+      "utf8",
+      "scripts/g4_evals.py",
+      "--label",
+      "g4_release_20261103d_clean_evals"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-03T08:19:33.008648+00:00"
+  },
+  {
+    "command": [
+      "/usr/local/bin/python",
+      "-X",
+      "utf8",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests_g4",
+      "-v"
+    ],
+    "exit_code": 0,
+    "started_at": "2026-11-03T08:21:05.139223+00:00"
+  }
+]

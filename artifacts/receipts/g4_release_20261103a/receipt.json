@@ -1,0 +1,224 @@
+{
+  "gate": "G4",
+  "status": "FAIL",
+  "code_commit": "5290e9301ff4de91d0ccb14623192ee21d5238ce",
+  "checkout_commit": "078e0bb12dd0208f70812a980602e6911f8f6f0c",
+  "clean_worktree": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+  "proof_project": "orange-g4-proof-48d7fcc7",
+  "demo_project": "orange-g4-demo-5290e930",
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 0,
+      "elapsed_seconds": 0.06300000008195639,
+      "timestamp": "2026-11-03T07:47:57.155337+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "down"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 0,
+      "elapsed_seconds": 10.233999999938533,
+      "timestamp": "2026-11-03T07:48:07.388889+00:00"
+    },
+    {
+      "command": [
+        "git",
+        "worktree",
+        "add",
+        "--detach",
+        "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+        "078e0bb12dd0208f70812a980602e6911f8f6f0c"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 0,
+      "elapsed_seconds": 6.391000000061467,
+      "timestamp": "2026-11-03T07:48:13.786981+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "up",
+        "-d",
+        "--build",
+        "--wait"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 72.0,
+      "timestamp": "2026-11-03T07:49:25.792579+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-X",
+        "utf8",
+        "scripts/g4_checks.py",
+        "--label",
+        "g4_release_20261103a_clean",
+        "--require-committed"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 225.875,
+      "timestamp": "2026-11-03T07:53:11.677474+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "cp",
+        "api:/state/receipts/g4_release_20261103a_clean",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103a\\offline"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 0.4529999999795109,
+      "timestamp": "2026-11-03T07:53:12.134216+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "cp",
+        "api:/state/receipts/g4_release_20261103a_clean_regressions",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103a\\regressions"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7819999998901039,
+      "timestamp": "2026-11-03T07:53:12.906331+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "cp",
+        "api:/state/receipts/g4_release_20261103a_clean_evals",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103a\\evals"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 2.25,
+      "timestamp": "2026-11-03T07:53:15.161935+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "cp",
+        "api:/state/evals/g4_release_20261103a_clean",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103a\\generated"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 0.9069999998901039,
+      "timestamp": "2026-11-03T07:53:16.085887+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "down"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 14.546000000089407,
+      "timestamp": "2026-11-03T07:53:30.628759+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-5290e930",
+        "up",
+        "-d",
+        "--wait"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 0,
+      "elapsed_seconds": 30.765999999828637,
+      "timestamp": "2026-11-03T07:54:01.400880+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-5290e930",
+        "exec",
+        "-T",
+        "api",
+        "python",
+        "-X",
+        "utf8",
+        "scripts/g4_live_smoke.py",
+        "--label",
+        "g4_release_20261103a_live"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 1,
+      "elapsed_seconds": 8.436999999918044,
+      "timestamp": "2026-11-03T07:54:09.840767+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-demo-5290e930",
+        "cp",
+        "api:/state/receipts/g4_release_20261103a_live",
+        "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_release_20261103a\\live"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment",
+      "exit_code": 0,
+      "elapsed_seconds": 0.5780000002123415,
+      "timestamp": "2026-11-03T07:54:10.426654+00:00"
+    },
+    {
+      "command": [
+        "docker",
+        "compose",
+        "--project-name",
+        "orange-g4-proof-48d7fcc7",
+        "down"
+      ],
+      "cwd": "C:\\Users\\marke\\Desktop\\orange-g4-clean-48d7fcc7",
+      "exit_code": 0,
+      "elapsed_seconds": 0.4529999999795109,
+      "timestamp": "2026-11-03T07:54:10.886342+00:00"
+    }
+  ],
+  "stopped": "G4 only; G5 not started",
+  "error": "Failed command 11; raw evidence retained"
+}

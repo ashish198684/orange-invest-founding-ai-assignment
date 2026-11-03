@@ -1,0 +1,93 @@
+{
+  "gate": "G4",
+  "status": "ENGINEERING_PASS",
+  "acceptance": "CTO ACCEPTANCE PENDING",
+  "code_commit": "b6d4bb72e5108e691fe38d1dfc994cf7dae8771c",
+  "checkout_commit": "8a7754010e1865e2660f255e403ddca9294c36c0",
+  "release_receipt": "artifacts\\receipts\\g4_release_20261103e\\receipt.json",
+  "release_receipt_sha256": "491b53385b470906ce82eb37fdd6804347cb4c876d426e7dc4775620d2f40d98",
+  "tests": {
+    "sqlite_tests": 65,
+    "g3x_tests": 39,
+    "offline_evals": 28,
+    "adapter_tests": 20,
+    "skipped": 0
+  },
+  "live_model_turns": [
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 758.2536700065248,
+      "token_in": 914,
+      "token_out": 216,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": [
+        "date_window:calendar_resolved"
+      ]
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 923.8457249593921,
+      "token_in": 984,
+      "token_out": 196,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": []
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 959.7463750396855,
+      "token_in": 989,
+      "token_out": 160,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": []
+    }
+  ],
+  "browser_checks": [
+    "real login/chat",
+    "review injection displayed as text",
+    "exact hold quote",
+    "old card removed after correction",
+    "timeout-after-success verified",
+    "reload same workflow and one appointment",
+    "memory correct/forget",
+    "reschedule with new approval",
+    "cancel 503 recovery with new approval",
+    "mobile layout",
+    "session logout"
+  ],
+  "independent_audit": {
+    "gate": "G4 independent live/browser audit",
+    "status": "PASS",
+    "code_commit": "b6d4bb72e5108e691fe38d1dfc994cf7dae8771c",
+    "model_results": 5,
+    "model_spans": 5,
+    "provider_bookings": 2,
+    "live_verified_bookings": 1,
+    "browser_verified_cancelled_bookings": 1,
+    "browser_committed_actions": 3,
+    "raw_trace_files": 103,
+    "checks": [
+      "exact granted fingerprints and user/provider/price",
+      "one book effect per logical request",
+      "reschedule/cancel readback",
+      "correct/forgotten memory tombstone",
+      "actual Groq groq-intent-v3 identity/usage/spans",
+      "timeout and authoritative readback",
+      "no raw preference values in traces"
+    ]
+  },
+  "secret_scan_exit_code": 0,
+  "stopped": "G4 acceptance gate; G5 NOT STARTED; no push or submission",
+  "timestamp": "2026-11-03T08:36:46.365810+00:00"
+}

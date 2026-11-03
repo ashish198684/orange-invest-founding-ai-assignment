@@ -1,0 +1,80 @@
+[
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "scripts/g4_fixture.py",
+      "api:/orange/scripts/g4_fixture.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.45399999991059303,
+    "timestamp": "2026-11-03T03:40:55.839539+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "scripts/g4_evals.py",
+      "api:/orange/scripts/g4_evals.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.3600000001024455,
+    "timestamp": "2026-11-03T03:40:56.213069+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "app/runtime/http_api.py",
+      "api:/orange/app/runtime/http_api.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.4529999999795109,
+    "timestamp": "2026-11-03T03:40:56.663955+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "app/runtime/observe.py",
+      "api:/orange/app/runtime/observe.py"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.3589999999385327,
+    "timestamp": "2026-11-03T03:40:57.013418+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "exec",
+      "-T",
+      "api",
+      "python",
+      "-X",
+      "utf8",
+      "scripts/g4_evals.py",
+      "--label",
+      "g4_evals_first_20261103_cases"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 123.75,
+    "timestamp": "2026-11-03T03:43:00.767490+00:00"
+  },
+  {
+    "command": [
+      "docker",
+      "compose",
+      "cp",
+      "api:/state/receipts/g4_evals_first_20261103_cases",
+      "C:\\Users\\marke\\Desktop\\OrangeInvest-FoundingAI-Assignment\\artifacts\\receipts\\g4_evals_first_20261103\\cases"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.0160000000614673,
+    "timestamp": "2026-11-03T03:43:01.784785+00:00"
+  }
+]

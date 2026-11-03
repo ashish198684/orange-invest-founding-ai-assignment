@@ -2,9 +2,9 @@
 ## Canonical engineering specification and Codex execution contract
 
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
-**Status:** `G3X CTO-ACCEPTED; G4 PREPARED BUT NOT DISPATCHED; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
+**Status:** `G3X CTO-ACCEPTED; G4 SPONSOR-DISPATCHED / RUNNING; LIVE GROQ SPONSOR-PRIORITIZED; EMPLOYER SUBMISSION NO-GO`  
 **Date:** 2026-11-02 (Asia/Kolkata)
-**Current authoritative Codex directions:** Section P4 prepares the NEXT manually dispatched G4 gate, governed by P1–P3, Sections M/L and original employer PDF; L4/M2–M4 remain historical G3X execution authority. All Codex instructions are in this canonical, not chat.  
+**Current authoritative Codex directions:** Section P4 governs the sponsor-manually-dispatched G4 gate, governed by P1–P3, Sections M/L and original employer PDF; L4/M2–M4 remain historical G3X execution authority. All Codex instructions are in this canonical, not chat.  
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
@@ -871,3 +871,45 @@ This journal records executed evidence under the sponsor-authorized update polic
 **G5 remains independently sponsor-dispatched:** Max-two-page design note, generated eval table, three actual bug accounts, raw timeout-after-success trace with annotation, README with <=3 real commands, accessible repo and an **authentic 3–5-minute screen recording** showing actual chat and trace side by side, one booking and one live failure. This whole package is required by the emailed deadline, not after it.
 
 **Governance:** Prior complete canonical SHA-256 `33f46a8db52f1ae0745ab885e1c511d85d2615e21d558ba8749656deb67a70d8` frozen at `docs/canonical_history/CANONICAL_EXECUTION_33f46a8db52f1ae0745ab885e1c511d85d2615e21d558ba8749656deb67a70d8_FROZEN.md`. All previous PDFs, archives, receipts and historical hashes remain immutable.
+
+### G4 execution record 2026-11-03T04:07:49.178543+00:00
+
+- **Evidence:** `artifacts/receipts/g4_offline_complete_20261103/cases/receipt.json`, SHA-256 `32372ee806b331d369cb6e1d73edf19c9623ae55d4aaeaae14c8f0c8a010d9b6`.
+- **Observed:** Sponsor manually dispatched G4 under Section P4. Actual Chromium chat, untrusted review display, current quote card, stale-card removal, timeout-after-success readback, reload and memory correction/forget passed after preserving and fixing an ignored-click UI defect. All 28 scripted-user HTTP evaluations now pass with independent SQL and retained raw traces; earlier grader failures and an interrupted rebuild attempt remain preserved. Original 65 SQLite regressions passed; the 39 G3X checks are still running. Groq integration and final source-bound browser reconciliation remain pending. G4 is RUNNING, not accepted; G5 and submission remain unauthorized.
+- **Source attribution:** `see hashed source snapshot`.
+- **Prior canonical SHA-256:** `1765e03a3fad899fed1f4abe0fb3d966fa23fc283b5cd372c3883e26c474d84f`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_1765e03a3fad899fed1f4abe0fb3d966fa23fc283b5cd372c3883e26c474d84f_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G4 only under sponsor-dispatched Section P4; CTO acceptance pending. G5, push and submission remain unauthorized.
+
+### G4 execution record 2026-11-03T05:06:09.399163+00:00
+
+- **Evidence:** `artifacts/receipts/g4_groq_live_first_20261103/cases/receipt.json`, SHA-256 `0401c9ff4d159f021a637dea7f18bb834337c697f50dc6a0cf1793a1abd59888`.
+- **Observed:** Fresh deterministic baseline passed: 65 SQLite regressions, 39 G3X checks and 28 scripted-user HTTP evaluations, zero failures/skips, following preserved RPC startup and provider-restart recovery defects. Fifteen separate offline Groq adapter defenses passed. Real Groq authentication/catalog returned HTTP 200 with the target listed; three actual openai/gpt-oss-20b structured turns passed complex request, one-fact correction and plan-only intent. Measured model-request latencies were 1127.493, 631.319 and 978.089 ms with returned token usage; cost remains null. Separate card-bound consent followed by timeout-after-success produced one independently inspected provider booking and one granted operation. Malicious reviews are read as untrusted and excluded from model extraction context; this is not model immunity. Final frozen-source clean checkout, extended browser reconciliation and final receipt remain pending. G4 RUNNING; stop before G5.
+- **Source attribution:** `UNCOMMITTED`.
+- **Prior canonical SHA-256:** `43f4058cea8da3ccddb2bcd0ac6bfb11af26c27163f3c690c543a23831fdda54`; archived unchanged at `docs/canonical_history/CANONICAL_EXECUTION_43f4058cea8da3ccddb2bcd0ac6bfb11af26c27163f3c690c543a23831fdda54_FROZEN.md`. Required contract pins remain; the verifier additionally checks this preserved execution revision.
+- **Gate boundary:** G4 only under sponsor-dispatched Section P4; CTO acceptance pending. G5, push and submission remain unauthorized.
+
+## Q. CTO emergency release audit — 2026-11-03, approximately 12:10 IST
+
+**G4 decision:** NOT ACCEPTED; employer submission NO-GO. This is a deadline-first review, not authorization to execute G5, publish, push or submit. P4 remains the already sponsor-dispatched G4 order; original employer PDF retains priority. G5 requires distinct sponsor dispatch.
+
+**Evidence verified directly on laptop:** Docker Compose API/API2/PG/provider/gateway/workers/telemetry are running, health checks healthy where defined; canonical source integrity 15/15 passed prior to this record. G4 code is heavily **uncommitted**, on top of Git HEAD `3c77ecdbc1fc912df6be79496fad3569b8ea4e6c`. No Git remote is configured. No 3–5-minute .mp4/.mov/.webm recording was found in the project. Dedicated final <=2-page design note and full G5 package were not found. Do not misrepresent the local checkout as an accessible employer repo.
+
+**Earned intermediate progress:** `artifacts/receipts/g4_fresh_recoveryfix_20261103/cases/receipt.json` records 28/28 scripted-user offline passes. Earlier fresh-realm runs recorded 65/65 SQLite and 39/39 PostgreSQL regressions. `artifacts/receipts/g4_browser_queuefix_20261103/receipt.json` records a passing real Chromium browser journey; an extended newer live-browser candidate failed. `artifacts/receipts/g4_groq_live_first_20261103/cases/receipt.json` shows HTTP-200 model catalog, three actual Groq `openai/gpt-oss-20b` structured turns and one provider-verified booking after approved timeout recovery. The live proof is tied to **UNCOMMITTED Groq prompt v1**, not latest changed prompt v2.
+
+**Current hard blocker:** `artifacts/receipts/g4_grounded_adapter_20261103/00_stderr.txt` reports **19 Groq adapter tests, one failure**: `test_relative_week_and_morning_cannot_be_invented_by_model`. Expected next-Monday end-exclusive local IST midnight `2026-11-09T00:00:00+05:30`; actual output `2026-11-09T05:30:00+05:30`. Diagnose normalization through `ScriptedModel().interpret(span,now)` for UTC-vs-IST calendar midnight. Do not weaken the test expectation merely to claim PASS. Test relative week, timezone conversion and not inventing earliest_hour from 'mornings only'.
+
+### Q1. Mandatory deadline recovery priority — directions to Codex within the existing G4 dispatch
+
+1. Preserve G4 uncommitted source, original test failures, historical receipts, local volumes, and ignored `.env`. No reset, no unrelated feature work, no new agents or infrastructure.
+2. Fix the exact calendar/date regression and rerun the complete Groq adapter suite with newly passing red→green evidence. Preserve immutable approval and memory guards.
+3. On ONE frozen source revision, rerun 65 original SQLite regressions, 39 G3X checks, 28 offline HTTP scripted-user scenarios, all adapter defenses, Chromium actual browser journey, independent SQL/trace reconciliation, local source integrity and secret scan. Any failure = G4 NO-GO.
+4. Execute a separately identified REAL Groq smoke against the final model/prompt revision. No false reliance on successful older v1 receipt. If the live route remains unstable, a clearly labeled scripted-offline demo still meets the employer's optional-LLM clause; do not let Groq delay the required deliverables.
+5. Commit only reviewed G4 implementation and necessary evidence; exclude `.env`, secret values, unnecessary huge receipt trees and old unrelated untracked drafts. Execute <=3-command **clean-checkout** proof against the exact committed revision and source manifest. Record code SHA, test commands/exits, API, browser, SQL and model versions.
+6. Prepare a precise G5 acceptance handoff, without automatically executing G5: generated scenario/expected/actual/grade/notes CSV/JSON; <=2-page design note; three real bugs and their regression tests; full unmodified timeout-after-success JSONL with annotated excerpt; working <=3-command README; authentic **3–5-minute** screen recording of real chat/trace with one booking and handled failure; Git repository accessible to Orange hiring team. Original employer email requires video AND all deliverables **by 2 PM Nov 3** (timezone unstated; target 2 PM IST).
+7. Stop all unnecessary experiments. Don't repeat expensive G3X 100-workflow benchmarks absent a correctness regression. No production-grade/100x throughput claims; keep truthful unknown and simulated credentials limitations.
+
+**Sponsor parallel action while Codex usage limited until ~1:02 PM IST:** App presently accessible at `http://127.0.0.1:8080/`. The sponsor can start an authentic real-browser recording immediately, showing actual booking and a real handled failure with side-by-side trace. A scripted-offline recording is valid if live mode is not reliable. Also prepare Git hosting/access; actual push and submission require explicit sponsor approval. Do not claim the last video has been created until file and playback are verified.
+
+**Architecture conclusion:** Deterministic approval authority, independent mock-provider commit + status reconciliation, durable outbox, guarded memory, bounded proposal-only Groq and source-bound eval receipts are consistent with AWS Well-Architected Agentic AI Lens and Anthropic effective-agent guidance. But passing prior test runs does not substitute for a clean release; no AWS/Anthropic certification or universal superiority is claimed.
+
+**Previous canonical preservation:** The immediately preceding file, SHA-256 `1e02c7e22b257dd165259e0e03ae4972e3cc974c9b7ac7853b5f93c8876941b4`, is frozen byte-exact at `docs/canonical_history/CANONICAL_EXECUTION_1e02c7e22b257dd165259e0e03ae4972e3cc974c9b7ac7853b5f93c8876941b4_FROZEN.md`.

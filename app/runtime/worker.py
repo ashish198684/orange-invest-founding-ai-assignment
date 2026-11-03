@@ -54,8 +54,12 @@ def perform(job,fault=None):
         with c.store.connect(write=True) as db:
             op=db.execute('SELECT * FROM operations WHERE operation_id=?',(oid,)).fetchone()
             retry=(result['status']=='OUTCOME_UNKNOWN' and op['attempts']<3 and job['claims']<6)
-            db.execute("UPDATE jobs SET state=?,available_at=clock_timestamp()+interval '1 second',lease_until=NULL,finished_at=clock_timestamp() "
-                       "WHERE operation_id=? AND generation=?",('READY' if retry else 'DEAD' if result['status']=='OUTCOME_UNKNOWN' else 'DONE',oid,generation))
+            # Fast failed reads must not burn every durable recovery claim while
+            # an independently crashed provider is still restarting. The delay
+            # is persisted; restarts do not replenish claims/attempts/deadline.
+            delay=min(2**job['claims'],20) if retry else 0
+            db.execute("UPDATE jobs SET state=?,available_at=clock_timestamp()+make_interval(secs=>?),lease_until=NULL,finished_at=clock_timestamp() "
+                       "WHERE operation_id=? AND generation=?",('READY' if retry else 'DEAD' if result['status']=='OUTCOME_UNKNOWN' else 'DONE',delay,oid,generation))
         run.emit('run_exit',status=result['status'],exit_reason='pending' if retry else result['status'])
         return result
 

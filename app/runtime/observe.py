@@ -54,11 +54,12 @@ class Run:
             'trace_id':self.last_trace_id,'span_id':format(span.span_id,'016x'),
             'user_id_hash':hashlib.sha256(self.user_id.encode()).hexdigest(),
             'monotonic_offset_ms':(time.monotonic()-self.started)*1000,
-            'model_id':'scripted','prompt_version':'scripted-v1','workflow_version':'g2-v1',
+            'model_id':getattr(self,'model_id','scripted'),'prompt_version':getattr(self,'prompt_version','scripted-v1'),'workflow_version':'g2-v1',
+            'model_mode':getattr(self,'model_mode','scripted-offline'),
             'policy_version':'g3x-v1','tool_contract_version':'employer-v1','schema_migration_version':3,
             'code_git_sha':build_sha(),'model_call_count':self.models,'tool_call_count':self.tools,
-            'token_in':None,'token_out':None,'cost_usd':None,'event_type':event,
-            'model_name_or_scripted':'scripted','model_prompt_version':'scripted-v1',
+            'token_in':getattr(self,'token_in',None),'token_out':getattr(self,'token_out',None),'cost_usd':None,'event_type':event,
+            'model_name_or_scripted':getattr(self,'model_id','scripted'),'model_prompt_version':getattr(self,'prompt_version','scripted-v1'),
             'tool_name':values.get('tool'),'sanitized_args':None,'sanitized_result':None,
             'error_class':None,'idempotency_key_suffix_or_hash':None,'approval_fingerprint_prefix':None,
             'duration_ms':(time.monotonic()-self.started)*1000 if event=='run_exit' else None,
@@ -80,6 +81,11 @@ class Run:
         encoded=json.dumps(record,sort_keys=True)
         folder=Path(os.getenv('RUNTIME_STATE','data/runtime'))/'traces'; folder.mkdir(exist_ok=True,parents=True)
         with (folder/(self.run_id+'.jsonl')).open('a') as f: f.write(encoded+'\n')
+        if self.workflow_id and re.fullmatch('[a-f0-9]{32}',self.workflow_id):
+            # An append-only per-workflow projection avoids scanning every other
+            # customer's raw trace on each browser poll. Raw run files remain proof.
+            index=folder.parent/'activity'/record['user_id_hash'];index.mkdir(parents=True,exist_ok=True)
+            with (index/(self.workflow_id+'.jsonl')).open('a') as f:f.write(encoded+'\n')
         return record
 
 @lru_cache(maxsize=1)

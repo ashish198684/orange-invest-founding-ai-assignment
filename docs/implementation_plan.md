@@ -1,5 +1,21 @@
 # Implementation plan - G0/G1 pass, 2026-11-01
 
+## G4 dispatch / 2026-11-03
+
+The sponsor dispatched Section P4. Historical plans below remain unchanged.
+G4 adds `app/web/` over the accepted authenticated HTTP/controller boundary;
+`scripts/g4_browser.py` executes actual Chromium interactions and screenshots;
+`scripts/g4_evals.py` drives 28 scripted-user HTTP journeys and independent
+read-only provider/authority SQL graders, retaining all failures and raw traces.
+Its private HTTP test server uses the production Handler with a fixed injected
+interpreter clock and delayed queue availability so real worker subprocesses can
+be killed/restarted reproducibly. Those constructor overrides are not API fields.
+Existing 65 SQLite and 39 G3X regressions remain separate checks. Next, a versioned
+Groq proposal adapter will be enabled separately with server-only environment
+injection; offline defaults and all consent/operation authority remain unchanged.
+The final G4 receipt binds screenshots, SQL, traces, source hashes and exact exits.
+Stop at G4; G5/video/submission/push remain outside this dispatch.
+
 Authority: full `CANONICAL.md` (ORANGE-FOUNDINGAI-20261101-001), `AGENTS.md`,
 `source/ASSIGNMENT_TRANSCRIPTION.txt`, and original three-page PDF. The PDF was
 found in Downloads; SHA-256 matches the frozen contract and it is copied unchanged

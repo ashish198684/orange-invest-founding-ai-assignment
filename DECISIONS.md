@@ -1,5 +1,68 @@
 # Architecture decisions — Orange Invest
 
+## ADR-012 / 2026-11-03 — Groq extracts proposals; deterministic code composes status
+
+- Implements canonical P2/P4, not a new orchestration layer or optional model-routing
+  feature. Target is `openai/gpt-oss-20b`; the deterministic adapter stays the default.
+  Only API replicas receive the ignored environment key. No new dependency is added.
+- Use nonstreaming strict JSON Schema, then independent Python validation of domain,
+  types, money, dates and retained time constraints. The schema has no approval,
+  identity, provider-write or memory fields. No tools are supplied to Groq. Model
+  refusals, malformed output, rate limits, missing credentials and timeouts fail
+  explicitly without changing the plan or silently switching adapters.
+- Context is freshly retrieved typed constraints. Reviews, raw history, identity,
+  approval IDs and operation keys are excluded. Workflow and memory revisions are
+  rechecked inside the correction transaction after the remote call. Status and
+  consent copy are composed by code from actual state; model text cannot claim
+  success. Existing provider hold/consent/readback paths remain authoritative.
+- Official support verified against [Groq structured outputs](https://console.groq.com/docs/structured-outputs)
+  and [API reference](https://console.groq.com/docs/api-reference): GPT-OSS 20B strict
+  mode is supported; this path uses neither streaming nor tool use.
+- Actual first live evidence: `artifacts/receipts/g4_groq_live_first_20261103/cases/receipt.json`.
+  Catalog/authentication HTTP 200, three real turns, actual returned model ID,
+  latency and usage, one separately approved provider booking after timeout.
+  The sample is not a general reliability score or evidence that a model is
+  immune to injection. Review exclusion and deterministic write guards are the
+  demonstrated defenses. Final source-bound replay remains a separate receipt.
+- A new adversarial regression exposed forgetting between context retrieval and
+  its initial revision capture. The original failure is retained in
+  `g4_context_race_red_20261103`. Context construction now checks the memory
+  revision before and after retrieval on one shared DB connection, and checks
+  again before applying the returned proposal. The test uses a fake interpreter
+  boundary; no forgotten preference was actually sent to Groq in that test.
+- Actual live Chromium v1 exposed an over-narrow date window and an invented
+  earliest hour (`g4_browser_live_candidate_20261103_screens`). Prompt/schema v2
+  requires source evidence from the latest message for changed constraints.
+  Recognized relative calendars and morning bounds are resolved independently
+  in code; unsupported new fields are discarded and their field names recorded.
+  Raw evidence spans are not logged. Regression fixtures preserve the observed
+  wrong date and prevent a budget-only correction from rewriting the calendar.
+
+## ADR-011 / 2026-11-03 — Keep hard RPC isolation with a minimal child
+
+- Under G4's regression sequence, retained fresh-realm failures in
+  `artifacts/receipts/g4_fresh_baseline_20261103/regressions/` showed timeout
+  recovery exhausting the eight-second worker budget before all three permitted
+  attempts. The previous multiprocessing spawn re-imported the parent worker,
+  controller, PostgreSQL and telemetry modules for each individual HTTP call.
+- Replace only that transport child with a minimal stdlib HTTP subprocess. The
+  parent still enforces the same killable call deadline, semaphore, tool count,
+  eight public signatures, trusted identity, trace propagation and same-key
+  provider protocol. Secrets travel on stdin; no shell or secret command argument.
+  No worker/lease/response budget is increased, and no new orchestrator is added.
+- The fencing test also assumed its own `claim` must beat a legitimate live
+  worker. It now verifies the winning replacement's booked result before asserting
+  stale-worker rejection and exactly one provider effect. This preserves the
+  tested business invariant rather than asserting a particular race winner.
+- Original red receipts and source snapshots remain immutable. The complete
+  65+39 suite and 28 scripted-user scenarios must pass again before Groq work.
+- The faster transport exposed a second genuine recovery defect: six one-second
+  unavailable-status retries could exhaust all claims before Docker restarted a
+  provider that had already committed. The retained `g4_fresh_rpcfix_20261103`
+  process-death case is red. Recovery now persists bounded 2/4/8/16/20-second
+  delays between claims, under the existing six-claim/five-minute recovery bound.
+  Write attempts, user-facing deadlines and operation identity are unchanged.
+
 ## ADR-000 / 2026-11-01 — initial CTO freeze
 - **Status:** Accepted implementation baseline, NOT implementation evidence.
 - **Decision:** A single deterministic workflow controller with local SQLite state, immutable user approval records, stable idempotency operations, scripted or recorded parser, optional LLM, eight exact mock tools, bounded execution, and scoped persistent preferences.

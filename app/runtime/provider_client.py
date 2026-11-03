@@ -2,11 +2,10 @@
 import json
 import hashlib
 import time
-import multiprocessing as mp
+import subprocess
+import sys
 import os
 from pathlib import Path
-import urllib.request
-import urllib.error
 from threading import BoundedSemaphore
 from app.provider_mock import ProviderError,ProviderTimeout
 from app.runtime.observe import active,current_traceparent,tracer,BudgetExceeded
@@ -14,18 +13,6 @@ _slots=BoundedSemaphore(3)
 
 def settings():
     return json.loads((Path(os.getenv('RUNTIME_STATE','data/runtime'))/'runtime.json').read_text())
-
-def _request_child(pipe,url,body,secret,parent):
-    try:
-        request=urllib.request.Request(url,data=json.dumps(body).encode(),headers={
-            'Content-Type':'application/json','X-Provider-Key':secret,'traceparent':parent})
-        try:
-            with urllib.request.urlopen(request,timeout=15) as response: data=json.load(response)
-        except urllib.error.HTTPError as exc: data=json.loads(exc.read())
-        pipe.send(data)
-    except BaseException:
-        pipe.send({'error':'transport_unavailable','http_status':503})
-    finally: pipe.close()
 
 class ProviderClient:
     def __init__(self,user_id,*,timeout=5): self.user_id=user_id; self.timeout=timeout
@@ -57,20 +44,21 @@ class ProviderClient:
         limit=min(self.timeout,run.remaining() if run else self.timeout)
         if limit<=0: raise BudgetExceeded('wall_limit')
         with tracer.start_as_current_span('provider.'+name):
-            context=mp.get_context('spawn')
-            recv,send=context.Pipe(duplex=False)
-            child=context.Process(target=_request_child,args=(send,os.getenv('PROVIDER_URL','http://provider:8090')+'/rpc',
-                 {'method':name,'args':list(args),'user_id':self.user_id},settings()['provider_secret'],current_traceparent()))
-            child.start(); send.close()
+            payload={'url':os.getenv('PROVIDER_URL','http://provider:8090')+'/rpc',
+                     'body':{'method':name,'args':list(args),'user_id':self.user_id},
+                     'secret':settings()['provider_secret'],'parent':current_traceparent()}
+            # A minimal child avoids importing the calling worker/controller and
+            # OTel stack on every RPC. Secrets travel on stdin, never argv/logs.
+            child=subprocess.Popen([sys.executable,'-m','app.runtime.rpc_transport'],
+                stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             try:
-                if not recv.poll(limit):
-                    raise ProviderTimeout()
-                result=recv.recv()
+                raw,_=child.communicate(json.dumps(payload).encode(),timeout=limit)
+                if child.returncode:raise ProviderError('transport_unavailable',503)
+                result=json.loads(raw)
+            except subprocess.TimeoutExpired:
+                child.kill();child.communicate(timeout=.3);raise ProviderTimeout() from None
             finally:
-                if child.is_alive(): child.terminate()
-                child.join(timeout=.3)
-                if child.is_alive(): child.kill(); child.join(timeout=.3)
-                recv.close()
+                if child.poll() is None:child.kill();child.communicate(timeout=.3)
             if 'error' in result:
                 if result['error']=='timeout': raise ProviderTimeout()
                 raise ProviderError(result['error'],result.get('http_status',503))

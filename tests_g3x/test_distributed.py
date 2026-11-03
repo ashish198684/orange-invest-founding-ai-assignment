@@ -221,8 +221,11 @@ class Distributed(unittest.TestCase):
         w,a,oid=self.reserve();old=claim(oid)
         with psycopg.connect(**dsn('postgres')) as db:
             db.execute("UPDATE authority.jobs SET lease_until=clock_timestamp()-interval '1 second' WHERE operation_id=%s",(oid,))
-        replacement=claim(oid);self.assertIsNotNone(replacement)
-        self.assertEqual(perform(replacement)['status'],'BOOKED')
+        replacement=claim(oid)
+        # A real background worker may legitimately win the expired-lease race.
+        # The invariant is that the winner verifies one booking and fences old.
+        if replacement:self.assertEqual(perform(replacement)['status'],'BOOKED')
+        else:self.assertEqual(self.poll(oid)['status'],'BOOKED')
         stale=PgController(self.uid,fence=(oid,old['generation']))
         with self.assertRaises(LostLease):stale.execute(oid)
         self.assertEqual(len(self.sql('SELECT * FROM provider.provider_bookings WHERE user_id=%s',(self.uid,))),1)

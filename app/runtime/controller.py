@@ -6,6 +6,7 @@ from app.runtime.provider_client import ProviderClient
 from app.runtime.model import IsolatedModel
 from app.runtime.memory import Memory
 from app.runtime.observe import active
+from app.agent.groq import GroqInterpreter
 _memory_revision=ContextVar('memory_revision',default=None)
 
 class PgController(WorkflowController):
@@ -13,6 +14,38 @@ class PgController(WorkflowController):
         super().__init__('postgres-runtime',user_id=user_id,provider=provider or ProviderClient(user_id),
                          store=PgStore(user_id,fence=fence,database=database),execution_scope=nullcontext)
         self.interpreter=IsolatedModel()
+
+    def _validate_correction_context(self,db,w):
+        guard=getattr(self,'_proposal_guard',None)
+        if guard and (w['revision']!=guard[0] or Memory(self.context.user_id).revision(db)!=guard[1]):
+            raise SafetyError('model_context_changed_retry')
+
+    def chat_live(self,workflow_id,text):
+        if not isinstance(text,str) or not 1<=len(text)<=4000:raise SafetyError('invalid_message')
+        if text.strip().lower() in {'yes','y','confirm','approved','approve','ok','okay'}:raise SafetyError('approval_required')
+        memory=Memory(self.context.user_id)
+        with self.store.connect() as db:
+            w=self._owned(db,workflow_id);revision=w['revision'];memory_revision=memory.revision(db)
+            context=self._draft(w,db)
+            if memory_revision!=memory.revision(db):raise SafetyError('model_context_changed_retry')
+        model=GroqInterpreter()
+        # No transaction is held during the remote model. Reviews, approval IDs,
+        # operation keys, user identity and raw history never enter its context.
+        patch=model.interpret(text,self._now(),context)
+        self._proposal_guard=(revision,memory_revision)
+        try:
+            if patch:self.propose(workflow_id,patch)
+            else:
+                with self.store.connect() as db:self._validate_correction_context(db,self._owned(db,workflow_id))
+        finally:self._proposal_guard=None
+        question=self.next_question(workflow_id);view=self.view(workflow_id)
+        action=model.last_result['action_proposal']
+        if action=='show_bookings':question=None
+        message=('Your appointments below are read from the provider records.' if action=='show_bookings' else question['message'] if question else
+                 'Choose the appointment below, then review a fresh '+action+' approval card.' if action in {'cancel','reschedule'} else
+                 'Your plan is ready below. Review an available slot and its exact quote before approving.')
+        return {'workflow':view,'question':question,'message':message,'action_proposal':action,
+                'model':{'mode':'groq',**model.last_result}}
 
     def search(self,workflow_id):
         memory=Memory(self.context.user_id);before=memory.revision()

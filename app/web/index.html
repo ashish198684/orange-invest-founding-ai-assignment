@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orange · Errands, with your say</title><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head>
+<body>
+<header><a class="brand" href="/" aria-label="Orange home"><span class="logo">o</span> orange<span class="brand-note">HOME CONCIERGE</span></a><span class="local"><i></i> Local demo · Mock providers</span><button id="signout" hidden>Sign out</button></header>
+<main>
+<section id="login-panel" class="login">
+ <p class="eyebrow">A LITTLE LESS ON YOUR PLATE</p><h1>Your errands.<br>Your final say.</h1><p class="lede">Find a trusted professional, review the real quote,<br>and approve every change. We’ll keep you in the loop.</p>
+ <form id="login-form"><h2>Welcome to your local workspace</h2><label>Username<input id="username" autocomplete="username" value="alice" required></label><label>Password<input id="password" type="password" autocomplete="current-password" value="demo-alice" required></label><button class="primary" type="submit">Open workspace <span>↗</span></button><p class="muted">Synthetic demo accounts: alice / demo-alice · bob / demo-bob</p></form>
+</section>
+<section id="workspace" hidden>
+ <div class="workspace-heading"><div><p class="eyebrow">YOUR DAY, TAKEN CARE OF</p><h1>What can we help with?</h1><p class="muted">A conversation to plan. Your approval to act.</p></div><div class="session"><span id="account"></span><label class="sr-only" for="interpreter">Conversation mode</label><select id="interpreter"><option value="scripted">Scripted · Offline</option><option value="groq">Groq · Live</option></select><span id="mode" class="pill">Offline</span><button id="new-request">＋ New request</button></div></div>
+ <div class="layout">
+  <section class="conversation panel" aria-label="Conversation and approval">
+   <div class="panel-heading"><h2>Let’s make a plan</h2><span id="status" class="pill">Ready</span></div>
+   <div id="chat-log" role="log" aria-live="polite"><div class="bubble assistant">Tell me the service, area and time you have in mind. You can change details as we go.<small>Try: Find a plumber in Indiranagar this week, mornings only, under ₹1,500.</small></div></div>
+   <div id="draft" class="draft" hidden></div>
+   <div id="approval" hidden aria-live="polite"></div>
+   <div id="providers"></div>
+   <form id="chat-form"><label class="sr-only" for="message">Your request or correction</label><textarea id="message" rows="2" placeholder="Find a plumber for my kitchen tap…" maxlength="4000" required></textarea><div class="compose-footer"><span>Nothing is booked until you approve.</span><button class="primary" type="submit" id="send">Send ↗</button></div></form>
+   <div class="conversation-tools"><button id="search">Find providers</button><button id="refresh">Reconnect / refresh</button><span id="connection" role="status">Connected</span></div>
+  </section>
+  <aside class="right-column">
+   <section class="panel trace-panel"><div class="panel-heading"><h2><i class="live-dot"></i> Live activity</h2><span class="muted">Verified events</span></div><p class="trace-intro">Follow the request from plan to provider read-back.</p><ol id="trace" aria-label="Live activity trace"><li class="empty">Your activity will appear here.</li></ol><details><summary>Trace and verification details</summary><pre id="trace-raw">No run yet.</pre></details></section>
+   <section class="panel memory-panel"><div class="panel-heading"><h2>Your preferences</h2><button id="memory-refresh">View</button></div><p class="muted">Remember only what you choose. Correct or forget at any time.</p><div id="memories"></div><form id="memory-form"><label class="sr-only" for="memory-key">Preference</label><select id="memory-key"><option value="area">Area</option><option value="earliest_hour">Earliest hour (IST)</option><option value="technician">Technician</option></select><label class="sr-only" for="memory-value">Preference value</label><input id="memory-value" placeholder="e.g. Indiranagar" required maxlength="128"><button type="submit">Remember</button></form></section>
+  </aside>
+ </div>
+ <section class="panel bookings-panel"><div class="panel-heading"><h2>Your appointments</h2><button id="bookings-refresh">Refresh appointments</button></div><div id="bookings"><p class="muted">Loading provider records…</p></div></section>
+ <footer>Local authenticated demo · Prices in INR · Times in IST · No real providers or payments</footer>
+</section>
+<div id="notice" role="alert" hidden></div>
+</main></body></html>

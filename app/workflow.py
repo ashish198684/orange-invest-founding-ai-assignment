@@ -264,6 +264,7 @@ class WorkflowController:
         with self.store.connect(write=True) as db:
             w=self._owned(db,workflow_id)
             self._editable(db,w,booking=True)
+            self._validate_correction_context(db,w)
             draft=json.loads(w['draft_json'])
             if 'preferences' in fields:
                 fields['preferences']={**draft.get('preferences',{}),**fields['preferences']}
@@ -273,6 +274,10 @@ class WorkflowController:
                        (encode(draft),workflow_id))
             self._state(db,workflow_id,'COLLECTING' if any(not draft.get(k) for k in ['service','area','date_window']) else 'CHOOSING')
         return self.view(workflow_id)
+
+    def _validate_correction_context(self,db,w):
+        """Adapter hook for context-aware proposals; default parser is stateless."""
+        pass
 
     def propose(self, workflow_id, proposal):
         return self.correct(workflow_id,**self._patch(proposal))

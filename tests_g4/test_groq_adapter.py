@@ -11,6 +11,13 @@ from app.runtime.observe import Run,scope
 NOW=datetime(2026,11,3,10,tzinfo=timezone.utc)
 def proposal():return {'service':None,'area':None,'budget_inr':None,'date_window':None,'preferences':{'earliest_hour':None,'latest_hour':None,'technician':None},'action_proposal':'plan','evidence':{k:None for k in ['service','area','budget_inr','date_window','earliest_hour','latest_hour','technician']}}
 class Semantics(unittest.TestCase):
+    def test_morning_proposal_uses_actual_source_when_evidence_is_paraphrased(self):
+        v=proposal();v['preferences']['latest_hour']=12;v['evidence']['latest_hour']='morning hours'
+        grounded,names=normalize_proposal(v,'Make it a morning visit after ten.',NOW,{})
+        self.assertEqual(validate(grounded,NOW)['preferences']['latest_hour'],12)
+        self.assertIn('latest_hour:source_morning_resolved',names)
+        grounded,_=normalize_proposal(v,'Keep the budget unchanged.',NOW,{})
+        self.assertNotIn('preferences',validate(grounded,NOW))
     def test_budget_must_match_numeric_or_spelled_source_amount(self):
         for span,expected in [('₹1,500',1500),('eighteen hundred rupees',1800)]:
             v=proposal();v['budget_inr']=1900;v['evidence']['budget_inr']=span

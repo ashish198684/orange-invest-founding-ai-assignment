@@ -88,6 +88,12 @@ def normalize_proposal(value,text,now,context):
         if proposed is None:continue
         span=evidence[key]
         supported=isinstance(span,str) and 0<len(span)<=1000 and span.casefold() in text.casefold()
+        # Ground the model's morning proposal in the actual request when its
+        # evidence paraphrases the source. This adds no inferred/default hour.
+        if key=='latest_hour' and not supported:
+            morning=re.search(r'\b(?:mornings only|a morning visit)\b',text,re.I)
+            if morning:
+                span=morning.group();supported=True;names.append('latest_hour:source_morning_resolved')
         if proposed==known and not supported:continue
         if supported and key=='earliest_hour':supported=any(x in span.lower() for x in ['before','after','earlier','later','from','between','starting','at '])
         if supported and key=='latest_hour':supported=any(x in span.lower() for x in ['before','until','latest','morning','noon','by ','between'])

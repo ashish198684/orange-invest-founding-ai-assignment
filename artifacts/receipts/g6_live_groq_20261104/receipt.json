@@ -1,0 +1,170 @@
+{
+  "gate": "G4 separate live Groq smoke",
+  "code_commit": "4c5e531cd23f2a5705489322b75a3042458c9246",
+  "target_model": "openai/gpt-oss-20b",
+  "status": "PASS",
+  "live_api_called": true,
+  "timestamp": "2026-11-04T02:19:11.760876+00:00",
+  "authentication_and_model_catalog": {
+    "http_status": 200,
+    "target_listed": true
+  },
+  "model_turns": [
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 1058.3217240000522,
+      "token_in": 914,
+      "token_out": 216,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": [
+        "date_window:calendar_resolved",
+        "service:source_service_resolved"
+      ]
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 1049.8181779998959,
+      "token_in": 984,
+      "token_out": 196,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": [
+        "service:unsupported_removed"
+      ]
+    },
+    {
+      "mode": "groq",
+      "action_proposal": "plan",
+      "model_id": "openai/gpt-oss-20b",
+      "prompt_version": "groq-intent-v3",
+      "latency_ms": 610.3968919999261,
+      "token_in": 989,
+      "token_out": 160,
+      "cost_usd": null,
+      "verified": true,
+      "normalizations": [
+        "service:unsupported_removed"
+      ]
+    }
+  ],
+  "workflow_id": "0c3295247708464a9bb253c0fa82d4b5",
+  "operation_id": "448a3068b407415c97cb09cc006d9970",
+  "approval": {
+    "card_id": "87df8910abae4bb58bd4a94075b73b18",
+    "approval_id": "3ec20e1807614c3f954d7f122fcb8621",
+    "snapshot": {
+      "action": "book",
+      "booking_id": null,
+      "expires_at": "2026-11-04T07:59:15.825231+05:30",
+      "hold_id": "243e8ea47e7941cc8598228d79c4a162",
+      "new_price_status": "hold_quote",
+      "new_slot": "2026-11-07T11:00:00+05:30",
+      "old_slot": null,
+      "original_price": null,
+      "price_amount": 937,
+      "price_status": "hold_quote",
+      "provider_id": "plumber-1-0",
+      "revision": 3,
+      "user_id": "eval-live_user-22f978601e",
+      "workflow_id": "0c3295247708464a9bb253c0fa82d4b5"
+    },
+    "fingerprint": "501896d4b3ce1ba3c390425620b2c3c14e7c609624c6642bfe2af8ce494db8d6",
+    "revision": 3,
+    "evidence": "issued; not proof of human perception",
+    "run_id": "f74b65bf1be34be08f435e9d15733dff",
+    "trace_id": "8f681de31c9ef352e6369ba7d775d2b6"
+  },
+  "provider_result": {
+    "booking": {
+      "id": "eb8d0c8626b9403bbedc17e949228dd9",
+      "provider": "plumber-1-0",
+      "service": "plumber",
+      "slot": "2026-11-07T11:00:00+05:30",
+      "status": "booked"
+    },
+    "booking_id": "eb8d0c8626b9403bbedc17e949228dd9",
+    "message": "Booking verified with the provider.",
+    "operation_id": "448a3068b407415c97cb09cc006d9970",
+    "reason": null,
+    "status": "BOOKED",
+    "run_id": "ce7044bca3924a7585ebe38cab06c9d4",
+    "trace_id": "798e3b68622abb6f2ad774d8e8bf2641"
+  },
+  "assertions": [
+    "real catalog authentication",
+    "real strict structured completions",
+    "complex request with spelled-out budget",
+    "one-fact correction retains other constraints",
+    "model proposal is not consent",
+    "real quote approved separately",
+    "timeout-after-success reconciles one booking",
+    "malicious reviews read as untrusted and excluded from extractor context"
+  ],
+  "limitations": "Separate integration smoke, not a live reliability score. Reviews are excluded from the intent extractor by construction; this is not a claim of model immunity to arbitrary injected context.",
+  "independent_sql_summary": {
+    "provider_bookings": 1,
+    "operations": 1,
+    "approval_statuses": [
+      "GRANTED"
+    ],
+    "workflow_states": [
+      "BOOKED"
+    ],
+    "trace_files": 16,
+    "http_calls": 16,
+    "run_ids": [
+      "bed147ebe087432f9bd64a74ab8fc8e4",
+      "f8409192ff5a4268993dd330fd663a6a",
+      "b1efc59439fb4df299cf6ee43b50f088",
+      "962ab94b69af40ada5999d497b4929fa",
+      "ec9621308649408c91e9b9c6deffa98a",
+      "f74b65bf1be34be08f435e9d15733dff",
+      "5a4db66c736a45618f974ad6ff503503",
+      "cf1e0fa2da6d4c57aafe97533bff20c7",
+      "d0699c078ba244329334ed82135f5467",
+      "a6f169b103d04ccbb3fe3a353cdea733",
+      "b8b503fae861485280e27d259d0b0da4",
+      "44b3aca83b2b433c938fb7f2f461e5f1",
+      "ce7044bca3924a7585ebe38cab06c9d4"
+    ]
+  },
+  "source_sha256": {
+    "app/storage.py": "4f6dcaa4b7832e589f975e9c8eee5a5ef40bcc67680de9dfc90dd0943d06798d",
+    "app/__init__.py": "d983fae5c189eb2593dfb08bc5143cea5ac57b12dfd695fd599c13d49041b376",
+    "app/workflow.py": "ce34653c8b35394e96cd63ad616432276916118ac81391fbacf6c2548d77e8af",
+    "app/agent/__init__.py": "f266a1c9291b1a714e900d85f45518dcd78be3ea7a4c5064bed3b08254576cec",
+    "app/agent/scripted.py": "2db1065b55bfa32b6f58da9cc1ebac10cb119aac474d99aba7f2c5d443719c8a",
+    "app/agent/groq.py": "3dacfab8aea8e911f975f6ad95cd3e4f8b45f6a7980bd1661750e56b0d32b437",
+    "app/provider_mock/scenario_engine.py": "6adba126dd1c7966d2caadd00209f8420fec820d7a440bc72c73a5460c456633",
+    "app/provider_mock/__main__.py": "0e50f9ca57a4b25604a726b55994523cbb15c414c8a5ee3a8b735faaef7a4c7b",
+    "app/provider_mock/tools.py": "17034458d23d48772d3ceb1a1d81b79e484edc81fb72e7be5c035463f882c87c",
+    "app/provider_mock/fixtures.py": "ef21c97717aa7a8efccef9d130360f6901fe34e003774e8e279822b452dc1c7c",
+    "app/provider_mock/__init__.py": "4ded9d322a05db2a1990dd3818047f700a34a86ce697d3521003bee1257fc99f",
+    "app/runtime/model.py": "35152d1bd7cd052da526b819270bad8a962ded80c7e8bcb4a4e401b4e45334fa",
+    "app/runtime/rpc_transport.py": "0784d84e780cfb6a088ba9e46bd39238c9d07a322e04792a0f958a3aff030c5b",
+    "app/runtime/observe.py": "6e9fa08760f07f55d22155514bdfd0f2b89476b6a0a039f02cadaf02c5963e1e",
+    "app/runtime/memory.py": "31def8fd1cf548eec2b6f178fe5dad0f65f9c0effafb201d14afea9267f7603d",
+    "app/runtime/provider_server.py": "87f633418a4092700c1e7db0e281931efbca2312e1170db870a6e66b1750aa10",
+    "app/runtime/telemetry_sink.py": "223ac3812ffdd28638cb7ad5a1b3f88fadbdc29625deb9635577b51cf1ce544d",
+    "app/runtime/http_api.py": "065034f62c5ddf6f94cde214624d8afb4dc7fa8d7ab581a44e3286463519398d",
+    "app/runtime/provider_client.py": "549cc524238ca903550c2f743e04f0cd433cd933892de3923f9b1e41f257c746",
+    "app/runtime/pg.py": "fe2b4567c35324d045f6487379ceba875992e5c4ed5027630284f2f36c137345",
+    "app/runtime/__init__.py": "e55d288a6f22b56129c191e450d355c76b8babf694e0ad5a9327610028a08b7c",
+    "app/runtime/gateway.py": "14c6f50a0b949e0142bc7f509c6b2f8820a35fe5e7d9707041b3f3fcf52e5631",
+    "app/runtime/worker.py": "7684a46a23ed8e682730816e4e8cf4cf1805600a9c7175267db641ece6fe9b11",
+    "app/runtime/controller.py": "88e7ef2d01d66a3d81b80f3304eebcf6e20556421571080d2b953efde16ec729",
+    "app/runtime/migrate.py": "d06b48629bc6a88db32b096e380b12df1fe3678e0f8b9b4c958a048691f9491b",
+    "app/runtime/security.py": "6393f332a4a0e1788526dac9a3e8fbb6b3e7677d892528e506210feed65f9825",
+    "app/web/app.js": "5367e9c18e0f64386dbcd2cb52fcb1d23c19ebe6ea2cf04bdfe9c56eae01bb15",
+    "app/web/styles.css": "a824d512980ae0d8dc31f253f0cb1fb319638ecefe363e376157bedafa5d0042",
+    "app/web/index.html": "32a0725bb351fb4ccfdc4fab012770f81ddd5a3611b34f1b7b85be0821a607eb",
+    "scripts/g4_live_smoke.py": "9f3222b87a695568177291050b12a6f4fd7c153bfb012178287c5ea10a450692"
+  }
+}

@@ -123,4 +123,4 @@ test infrastructure and are not customer-controlled routes.
 See [the authoritative canonical](CANONICAL.md), [decisions](DECISIONS.md),
 [G3X test map](docs/g3x_traceability.md), and source-bound receipts in
 artifacts/receipts/. Actual evidence determines gate status. Nothing here claims
-100× throughput, production high availability or completion of G5. Current engineering acceptance and delivery status are in CANONICAL Sections U and V.
+100× throughput, production high availability or completion of employer delivery. Current G6 engineering acceptance and delivery status are in CANONICAL Section X; Sections U and V preserve earlier acceptance records.

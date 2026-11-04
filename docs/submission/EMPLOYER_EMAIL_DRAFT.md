@@ -17,7 +17,7 @@ The application runs locally against the assignment's fixed mock-provider contra
 - Three real bugs and fixes: https://github.com/ashish198684/orange-invest-founding-ai-assignment/blob/main/docs/submission/THREE_BUGS.md
 - Raw timeout trace and annotation: https://github.com/ashish198684/orange-invest-founding-ai-assignment/blob/main/docs/submission/TIMEOUT_TRACE_ANNOTATION.md
 
-The accepted release passed 65 original regressions, 39 distributed checks, 28 offline end-to-end evaluations, 20 Groq adapter tests and five additional security/trace tests. The browser tests cover code-enforced approval, timeout-after-success recovery and the polling defect found during live review. The repository retains both failing and passing evidence.
+The final G6 source passed 65 original regressions, 39 distributed checks, 28 offline end-to-end evaluations, 30 Groq/history/action tests and five additional security/trace tests. Its new local browser replay verified a real mocked timeout-after-success reconciled to one booking. The browser tests cover code-enforced approval, timeout-after-success recovery and the polling defect found during live review. The repository retains both failing and passing evidence.
 
 The design note distinguishes the proposed 100x scaling plan from measured local behavior. Providers and payments are simulated; no production availability or general model-reliability claim is made.
 

@@ -11,6 +11,39 @@ from app.runtime.observe import Run,scope
 NOW=datetime(2026,11,3,10,tzinfo=timezone.utc)
 def proposal():return {'service':None,'area':None,'budget_inr':None,'date_window':None,'preferences':{'earliest_hour':None,'latest_hour':None,'technician':None},'action_proposal':'plan','evidence':{k:None for k in ['service','area','budget_inr','date_window','earliest_hour','latest_hour','technician']}}
 class Semantics(unittest.TestCase):
+    def test_long_form_service_is_grounded_from_actual_utterance_not_model_paraphrase(self):
+        text=('Please help with my leaking kitchen tap: a plumber in Indiranagar '
+              'this week, mornings only, with a ceiling of eighteen hundred rupees.')
+        v=proposal();v['service']='plumber';v['evidence']['service']='a plumbing professional'
+        grounded,names=normalize_proposal(v,text,NOW,{})
+        self.assertEqual(validate(grounded,NOW).get('service'),'plumber')
+        self.assertIn('service:source_service_resolved',names)
+
+    def test_ac_saturday_reschedule_proposal_stays_proposal_only(self):
+        v=proposal()
+        v['service']='ac servicing';v['evidence']['service']='AC servicing'
+        v['date_window']={'start':'2026-11-07T00:00:00+05:30','end':'2026-11-08T00:00:00+05:30'}
+        v['evidence']['date_window']='Saturday'
+        v['action_proposal']='reschedule'
+        grounded,_=normalize_proposal(v,'Move my AC servicing to Saturday.',NOW,{})
+        patch=validate(grounded,NOW)
+        self.assertEqual(patch['service'],'ac servicing')
+        self.assertEqual(patch['date_window']['start'],'2026-11-07T00:00:00+05:30')
+        self.assertEqual(grounded['action_proposal'],'reschedule')
+        self.assertNotIn('approval_id',patch)
+        self.assertNotIn('booking_id',patch)
+
+    def test_model_cannot_relabel_service_by_pointing_to_an_unrelated_text_span(self):
+        v=proposal();v['service']='electrician';v['evidence']['service']='plumber'
+        grounded,names=normalize_proposal(v,'Find a plumber in Indiranagar.',NOW,{})
+        self.assertNotIn('service',validate(grounded,NOW))
+        self.assertIn('service:unsupported_removed',names)
+
+    def test_ambiguous_multiple_services_require_clarification(self):
+        v=proposal();v['service']='plumber';v['evidence']['service']='plumber'
+        grounded,_=normalize_proposal(v,'Find a plumber or electrician this week.',NOW,{})
+        self.assertNotIn('service',validate(grounded,NOW))
+
     def test_morning_proposal_uses_actual_source_when_evidence_is_paraphrased(self):
         v=proposal();v['preferences']['latest_hour']=12;v['evidence']['latest_hour']='morning hours'
         grounded,names=normalize_proposal(v,'Make it a morning visit after ten.',NOW,{})
@@ -112,6 +145,79 @@ class ContextGuards(unittest.TestCase):
         from scripts.g4_fixture import create_user
         from app.runtime.controller import PgController
         self.uid=create_user('model-guard-'+uuid.uuid4().hex[:12]);self.c=PgController(self.uid);self.w=self.c.create_request('one',service='plumber')['workflow_id']
+    def test_same_electrician_resolves_only_authenticated_prior_provider_without_approval(self):
+        class Fake:
+            last_result={'action_proposal':'plan'}
+            def interpret(fake,*args):return {'service':'electrician','preferences':{'earliest_hour':10}}
+        rows=[{'id':'prior-1','provider':'electrician-0-1','service':'electrician',
+               'slot':'2026-11-05T11:00:00+05:30','status':'booked'}]
+        info={'id':'electrician-0-1','attributes':{'service':'electrician','area':'Indiranagar','technician':'Tech'}}
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()):
+            with patch.object(self.c.provider,'list_bookings',return_value=rows),patch.object(self.c.provider,'get_provider',return_value=info):
+                result=self.c.chat_live(self.w,'Book the same electrician as last time, but not before 10 a.m.')
+        draft=self.c.view(self.w)['draft']
+        self.assertEqual(draft['service'],'electrician')
+        self.assertEqual(draft['area'],'Indiranagar')
+        self.assertEqual(draft['provider_id'],'electrician-0-1')
+        self.assertEqual(draft['preferences']['earliest_hour'],10)
+        self.assertEqual(result['question']['field'],'date_window')
+        self.assertIn('previous',result['message'].lower())
+        with self.c.store.connect() as db:
+            self.assertIsNone(db.execute('SELECT 1 FROM approval_snapshots WHERE user_id=?',(self.uid,)).fetchone())
+            self.assertIsNone(db.execute('SELECT 1 FROM operations WHERE user_id=?',(self.uid,)).fetchone())
+
+    def test_real_provider_booking_history_is_scoped_to_authenticated_user(self):
+        from datetime import datetime,timedelta
+        from app.provider_mock.fixtures import IST
+        from scripts.g4_fixture import create_user
+        from app.runtime.controller import PgController
+        now=datetime.now(IST)
+        start=now.replace(hour=0,minute=0,second=0,microsecond=0)
+        window={'start':start.isoformat(),'end':(start+timedelta(days=9)).isoformat()}
+        providers=self.c.provider.search_providers('electrician','Indiranagar',window)
+        prior_provider=providers[0]
+        hold=self.c.provider.hold_slot(prior_provider['id'],prior_provider['free_slots'][0])
+        self.c.provider.book(hold['hold_id'],'history-fixture-'+uuid.uuid4().hex)
+        before=self.c.provider.list_bookings(self.uid)
+        self.assertEqual(len(before),1)
+        class Fake:
+            last_result={'action_proposal':'plan'}
+            def interpret(fake,*args):return {'service':'electrician','preferences':{'earliest_hour':10}}
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()):
+            answer=self.c.chat_live(self.w,'Book the same electrician as last time, but not before 10 a.m.')
+        draft=self.c.view(self.w)['draft']
+        self.assertEqual(draft['provider_id'],prior_provider['id'])
+        self.assertEqual(draft['area'],'Indiranagar')
+        self.assertEqual(answer['question']['field'],'date_window')
+        self.assertEqual(len(self.c.provider.list_bookings(self.uid)),1)
+        stranger=create_user('history-foreign-'+uuid.uuid4().hex[:12])
+        separate=PgController(stranger)
+        other=separate.create_request('new')['workflow_id']
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()):
+            res=separate.chat_live(other,'Book the same electrician as last time, but not before 10 a.m.')
+        self.assertNotIn('provider_id',separate.view(other)['draft'])
+        self.assertIn('could not find',res['message'].lower())
+
+    def test_ambiguous_prior_provider_is_never_silently_selected(self):
+        class Fake:
+            last_result={'action_proposal':'plan'}
+            def interpret(fake,*args):return {'service':'electrician','preferences':{'earliest_hour':10}}
+        rows=[{'id':'prior-1','provider':'electrician-0-0','service':'electrician','status':'booked'},
+              {'id':'prior-2','provider':'electrician-0-1','service':'electrician','status':'booked'}]
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()),patch.object(self.c.provider,'list_bookings',return_value=rows):
+            result=self.c.chat_live(self.w,'Book the same electrician as last time, but not before 10 a.m.')
+        self.assertNotIn('provider_id',self.c.view(self.w)['draft'])
+        self.assertIn('multiple',result['message'].lower())
+
+    def test_no_prior_provider_does_not_claim_historical_match(self):
+        class Fake:
+            last_result={'action_proposal':'plan'}
+            def interpret(fake,*args):return {'service':'electrician','preferences':{'earliest_hour':10}}
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()),patch.object(self.c.provider,'list_bookings',return_value=[]):
+            result=self.c.chat_live(self.w,'Book the same electrician as last time, but not before 10 a.m.')
+        self.assertNotIn('provider_id',self.c.view(self.w)['draft'])
+        self.assertIn('could not find',result['message'].lower())
+
     def test_inflight_forget_discards_remote_proposal(self):
         from app.runtime.memory import Memory
         from app.workflow import SafetyError

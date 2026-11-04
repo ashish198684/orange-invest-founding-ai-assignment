@@ -73,6 +73,23 @@ def amount_from_span(span):
         elif word in {'thousand','lakh'} and found:total+=current*(1000 if word=='thousand' else 100000);current=0
     return total+current if found else None
 
+_SERVICE_SOURCE_PATTERNS={
+    'plumber':r'\b(?:plumbers?|plumbing)\b',
+    'electrician':r'\b(?:electricians?|electrical\s+repair)\b',
+    'ac servicing':r'\b(?:ac|air\s+conditioner)\s+(?:servicing|service|maintenance)\b',
+}
+
+def _explicit_service_reference(text):
+    """Return only an unambiguous, non-negated service named by the user."""
+    found=[]
+    for service,pattern in _SERVICE_SOURCE_PATTERNS.items():
+        for match in re.finditer(pattern,text,re.I):
+            leading=text[max(0,match.start()-32):match.start()]
+            if re.search(r'\b(?:not|no|without|avoid)\s+(?:(?:a|an)\s+)?$',leading,re.I):
+                continue
+            found.append((service,match.group()))
+    return found[0] if found and len({s for s,_ in found})==1 else (None,None)
+
 def normalize_proposal(value,text,now,context):
     """Ground new facts in this turn and resolve supported relative dates in code."""
     from app.agent.scripted import ScriptedModel
@@ -87,6 +104,16 @@ def normalize_proposal(value,text,now,context):
         proposed=bucket.get(key);known=context.get('preferences',{}).get(key) if prefs else context.get(key)
         if proposed is None:continue
         span=evidence[key]
+        if key=='service':
+            source_service,source_span=_explicit_service_reference(text)
+            if source_service!=proposed:
+                bucket[key]=None
+                names.append('service:unsupported_removed')
+                continue
+            if span!=source_span:
+                evidence[key]=source_span
+                span=source_span
+                names.append('service:source_service_resolved')
         supported=isinstance(span,str) and 0<len(span)<=1000 and span.casefold() in text.casefold()
         # Ground the model's morning proposal in the actual request when its
         # evidence paraphrases the source. This adds no inferred/default hour.

@@ -1,5 +1,6 @@
 from contextlib import nullcontext
 from contextvars import ContextVar
+import re
 from app.workflow import WorkflowController,SafetyError
 from app.runtime.pg import PgStore
 from app.runtime.provider_client import ProviderClient
@@ -20,6 +21,44 @@ class PgController(WorkflowController):
         if guard and (w['revision']!=guard[0] or Memory(self.context.user_id).revision(db)!=guard[1]):
             raise SafetyError('model_context_changed_retry')
 
+    @staticmethod
+    def _prior_service_reference(text):
+        """Only a user's explicit 'same ... as last time' phrase triggers history lookup."""
+        m=re.search(r'\bsame\s+(electrician|plumber|ac servicing)\s+as\s+(?:the\s+)?last\s+time\b',text,re.I)
+        return m.group(1).lower() if m else None
+
+    def _ground_prior_provider(self,text,patch):
+        """Lookup the authenticated user's provider history, never model memory.
+
+        The fixed list_bookings contract has no created_at; when more than one
+        historical provider matches, last-time ordering is unprovable.
+        """
+        service=self._prior_service_reference(text)
+        if not service:return patch,None
+        if patch.get('service') not in (None,service):
+            raise SafetyError('history_service_conflict')
+        patch={**patch,'service':service}
+        history=self.provider.list_bookings(self.context.user_id)
+        matches={b['provider'] for b in history if b.get('service')==service and b.get('status')=='booked'}
+        if not matches:
+            return patch,'I could not find a previous '+service+' booking in this account. Please choose a provider from the results.'
+        if len(matches)>1:
+            return patch,('I found multiple previous '+service+' providers. The booking list has no '
+                          'creation timestamps, so I cannot identify the last one. Choose a provider from the results.')
+        provider_id=next(iter(matches))
+        detail=self.provider.get_provider(provider_id)
+        attributes=detail.get('attributes',{})
+        if detail.get('id')!=provider_id or attributes.get('service')!=service:
+            raise SafetyError('history_provider_mismatch')
+        area=attributes.get('area')
+        if not area:raise SafetyError('history_provider_missing_area')
+        if patch.get('area') not in (None,area):
+            return patch,('Your previous '+service+' provider serves '+area+
+                          ', which conflicts with the new requested area. Please clarify before selecting a slot.')
+        patch={**patch,'provider_id':provider_id,'area':area}
+        return patch,('I found your previous '+service+' provider in '+area+
+                      '. You will still review and approve the exact new quote and slot.')
+
     def chat_live(self,workflow_id,text):
         if not isinstance(text,str) or not 1<=len(text)<=4000:raise SafetyError('invalid_message')
         if text.strip().lower() in {'yes','y','confirm','approved','approve','ok','okay'}:raise SafetyError('approval_required')
@@ -32,6 +71,7 @@ class PgController(WorkflowController):
         # No transaction is held during the remote model. Reviews, approval IDs,
         # operation keys, user identity and raw history never enter its context.
         patch=model.interpret(text,self._now(),context)
+        patch,history_note=self._ground_prior_provider(text,patch)
         self._proposal_guard=(revision,memory_revision)
         try:
             if patch:self.propose(workflow_id,patch)
@@ -44,6 +84,7 @@ class PgController(WorkflowController):
         message=('Your appointments below are read from the provider records.' if action=='show_bookings' else question['message'] if question else
                  'Choose the appointment below, then review a fresh '+action+' approval card.' if action in {'cancel','reschedule'} else
                  'Your plan is ready below. Review an available slot and its exact quote before approving.')
+        if history_note:message=history_note+' '+message
         return {'workflow':view,'question':question,'message':message,'action_proposal':action,
                 'model':{'mode':'groq',**model.last_result}}
 

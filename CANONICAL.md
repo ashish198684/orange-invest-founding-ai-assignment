@@ -4,7 +4,7 @@
 **Canonical ID:** `ORANGE-FOUNDINGAI-20261102-003` (current; V1/V2 preserved under `docs/canonical_history/`)  
 **Status:** `G6 ENGINEERING CTO-ACCEPTED; VERIFIED LIVE GROQ AND BROWSER; EMPLOYER SUBMISSION NO-GO (HOSTED VIDEO + EMAIL PENDING)`
 **Date:** 2026-11-03 (Asia/Kolkata)
-**Current authoritative directions:** Section X governs G6 engineering acceptance and remaining delivery; W governs the preceding remediation plan, U/V preserve history. Employer PDF has first priority.
+**Current authoritative directions:** Section Y controls sponsor-directed privacy of recording and email preparation; Section X remains G6 engineering acceptance; employer PDF has first priority.
 **Roles:** User = sponsor/product authority; ChatGPT = CTO/principal architect and design reviewer; Codex = founding engineer/implementer  
 **Source of truth:** This file, including Section M's amendments to Section L, governs implementation decisions. The three-page employer assignment has first priority for what must be delivered. Chat messages, generated summaries, and an agent claiming “done” are **not** implementation evidence.
 
@@ -1029,3 +1029,15 @@ This journal records executed evidence under the sponsor-authorized update polic
 **Outstanding and no-go:** The sponsor chose manual OBS. A verified, real 3–5-minute FINAL G6 screen recording with full booking and at least one handled failure, chat and live trace side by side; hosted PLAYABLE unlisted YouTube or Loom URL; and the actual late email to `hr@orangeinvest.app` are NOT yet provided/sent at this acceptance. Existing GitHub G4 WebM is historical and not a current hosted demo. Public repo approval was already granted, but the final publication commit and anonymous reviewer links must be checked. The original 3-Nov-2026 2 PM email deadline was missed; no claim of on-time delivery.
 
 **Governance:** Exact preceding canonical preserved at `docs/canonical_history/CANONICAL_EXECUTION_d1cd7cbb7687d943d5fd225fa83ca8d74081e35de96a330893dedb9b29a726de_FROZEN.md`. Do not delete RED receipts, fake model behavior, rewrite timestamps or claim employer GO without final video/links/email verified. New source changes require an explicit new versioned canonical receipt.
+
+## Y. Candidate-private recording and email preparation; public package correction — 2026-11-04
+
+**Sponsor's explicit current direction:** The three candidate-only files are not part of the public hiring submission and must be removed from the current public GitHub branch: docs/submission/EMPLOYER_EMAIL_DRAFT.md, docs/submission/OBS_FINAL_MINIMAL_SCRIPT.md, and docs/submission/OBS_RECORDING_SCRIPT.md.
+
+**Privacy and preservation:** The three original Markdown files are preserved byte-exact outside the Git working tree under the candidate's Desktop/OrangeInvest-Private-Submission folder. Their SHA values were validated against the current published Git revision before removal. Current branch removal is not a rewrite of past Git commits. Older commits may still contain the files, so this is a current-branch removal, not a claim of erasure from Git history. No source history rewrite is authorized: doing so would invalidate source-bound engineering receipts and pinned source revision evidence.
+
+**Public navigation correction:** The public README and submission index no longer link to those three absent Markdown files, and instead clarify that the candidate maintains private recording and email instructions. The candidate has received a separate private, two-page downloadable Word guide through ChatGPT with checked synthetic fixture accounts, click sequence, and narration. Do not add that document to the public repository.
+
+**Scope and acceptance:** This is a submission packaging/privacy change only. No application source, fixed mock-provider API, payment/provider database, login behavior, Docker volume, 162-test engineering result, or live-booking evidence is changed. G6 engineering remains accepted for its recorded source. Employer delivery remains NO-GO until a genuine 3–5 minute current-G6 hosted video is viewable by the employer and the late submission email is actually sent. Nothing here asserts that the deadline was met.
+
+**Verification required:** Commit the three deletions and two corrected public navigation files with this archived canonical/verifier update. Confirm 23+ canonical integrity pins, a clean tracked working tree, current GitHub main commit synchronization, 404 responses for the three removed paths on current main, public readability of the six employer-required artifacts that remain, and no changes to the G6 application source. Preserve all red and green receipts.

@@ -4,7 +4,7 @@
 
 ## Start here
 
-**Current status:** G6 verified source `1eb5759` on local demo; sponsor-approved public repo. Final accepted source run recorded **65+39+28+30 = 162** passed checks, with five additional security checks, actual Groq smoke and post-release Chromium booking proof. A current-source 3–5-minute Loom/unlisted YouTube link and employer email **remain pending**. Use the [short, robust OBS script](OBS_FINAL_MINIMAL_SCRIPT.md) ([older extended plan](OBS_RECORDING_SCRIPT.md)) and [late-delivery email draft](EMPLOYER_EMAIL_DRAFT.md).
+**Current status:** G6 verified source `1eb5759` on local demo; sponsor-approved public repo. Final accepted source run recorded **65+39+28+30 = 162** passed checks, with five additional security checks, actual Groq smoke and post-release Chromium booking proof. A current-source 3–5-minute Loom/unlisted YouTube link and employer email **remain pending**. The recording script, demo credentials and email draft are kept privately by the candidate and excluded from the public repository.
 
 - **Local run:** [README](../../README.md) — three tested commands for a fresh Docker Compose checkout.
 - **Technical design, two pages actually verified:** [ARCHITECTURE_DESIGN_NOTE.pdf](ARCHITECTURE_DESIGN_NOTE.pdf) ([Markdown source](ARCHITECTURE_DESIGN_NOTE.md)). Describes explicit state, signed/immutable approval, provider idempotency, timeout recovery, memory lifecycle, traces and a measured-gates plan for 100× demand.

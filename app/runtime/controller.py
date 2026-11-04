@@ -59,6 +59,17 @@ class PgController(WorkflowController):
         return patch,('I found your previous '+service+' provider in '+area+
                       '. You will still review and approve the exact new quote and slot.')
 
+    @staticmethod
+    def _explicit_change_action(text):
+        """Recognize only an explicit customer request to *prepare* a change."""
+        if re.search(r"\b(?:do not|don't|dont|never|not)\s+(?:\w+\s+){0,4}(?:move|reschedule|cancel)\b",text,re.I):
+            return 'plan'
+        if re.search(r'\b(?:move|reschedule)\s+(?:my|the)\s+.{0,40}\b(?:servicing|appointment|booking)\b',text,re.I):
+            return 'reschedule'
+        if re.search(r'\bcancel\s+(?:my|the)\s+.{0,40}\b(?:servicing|appointment|booking)\b',text,re.I):
+            return 'cancel'
+        return None
+
     def chat_live(self,workflow_id,text):
         if not isinstance(text,str) or not 1<=len(text)<=4000:raise SafetyError('invalid_message')
         if text.strip().lower() in {'yes','y','confirm','approved','approve','ok','okay'}:raise SafetyError('approval_required')
@@ -80,7 +91,10 @@ class PgController(WorkflowController):
         finally:self._proposal_guard=None
         question=self.next_question(workflow_id);view=self.view(workflow_id)
         action=model.last_result['action_proposal']
-        if action=='show_bookings':question=None
+        explicit_action=self._explicit_change_action(text)
+        if explicit_action is not None:
+            action=explicit_action
+        if action in {'show_bookings','cancel','reschedule'}:question=None
         message=('Your appointments below are read from the provider records.' if action=='show_bookings' else question['message'] if question else
                  'Choose the appointment below, then review a fresh '+action+' approval card.' if action in {'cancel','reschedule'} else
                  'Your plan is ready below. Review an available slot and its exact quote before approving.')

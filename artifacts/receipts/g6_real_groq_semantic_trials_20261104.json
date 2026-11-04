@@ -1,0 +1,166 @@
+{
+  "gate": "real_groq_g6_finite_trials",
+  "source_commit": "4c5e531cd23f2a5705489322b75a3042458c9246",
+  "model": "openai/gpt-oss-20b",
+  "total": 9,
+  "passed": 3,
+  "status": "FAIL",
+  "cases": [
+    {
+      "case": "complex_long_form",
+      "trial": 1,
+      "status": "PASS",
+      "checks": {
+        "service": true,
+        "area": true,
+        "budget_inr": true,
+        "latest_hour": true,
+        "date_window": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1025.796130000117,
+      "token_in": 904,
+      "token_out": 253,
+      "normalizations": [
+        "date_window:calendar_resolved",
+        "earliest_hour:unsupported_removed",
+        "service:source_service_resolved"
+      ],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "complex_long_form",
+      "trial": 2,
+      "status": "PASS",
+      "checks": {
+        "service": true,
+        "area": true,
+        "budget_inr": true,
+        "latest_hour": true,
+        "date_window": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1593.3666710000125,
+      "token_in": 904,
+      "token_out": 211,
+      "normalizations": [
+        "date_window:calendar_resolved",
+        "earliest_hour:unsupported_removed",
+        "service:source_service_resolved"
+      ],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "complex_long_form",
+      "trial": 3,
+      "status": "PASS",
+      "checks": {
+        "service": true,
+        "area": true,
+        "budget_inr": true,
+        "latest_hour": true,
+        "date_window": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1150.3289490001407,
+      "token_in": 904,
+      "token_out": 211,
+      "normalizations": [
+        "date_window:calendar_resolved",
+        "earliest_hour:unsupported_removed",
+        "service:source_service_resolved"
+      ],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "history_reference",
+      "trial": 1,
+      "status": "FAIL",
+      "checks": {
+        "service": false,
+        "earliest_hour": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1582.558453999809,
+      "token_in": 891,
+      "token_out": 202,
+      "normalizations": [],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "history_reference",
+      "trial": 2,
+      "status": "FAIL",
+      "checks": {
+        "service": false,
+        "earliest_hour": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1428.2249489999685,
+      "token_in": 891,
+      "token_out": 202,
+      "normalizations": [],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "history_reference",
+      "trial": 3,
+      "status": "FAIL",
+      "checks": {
+        "service": false,
+        "earliest_hour": true
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1130.738324000049,
+      "token_in": 891,
+      "token_out": 202,
+      "normalizations": [],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "ac_to_saturday",
+      "trial": 1,
+      "status": "FAIL",
+      "checks": {
+        "service": true,
+        "date_window": true,
+        "action_proposal": false
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 1312.6158680001936,
+      "token_in": 882,
+      "token_out": 299,
+      "normalizations": [
+        "date_window:calendar_resolved"
+      ],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "ac_to_saturday",
+      "trial": 2,
+      "status": "FAIL",
+      "checks": {
+        "service": true,
+        "date_window": true,
+        "action_proposal": false
+      },
+      "model_id": "openai/gpt-oss-20b",
+      "latency_ms": 824.228248000054,
+      "token_in": 882,
+      "token_out": 301,
+      "normalizations": [
+        "date_window:calendar_resolved"
+      ],
+      "no_booking_operation_executed": true
+    },
+    {
+      "case": "ac_to_saturday",
+      "trial": 3,
+      "status": "FAIL",
+      "error_type": "ModelUnavailable",
+      "error_class": "model_rate_limited",
+      "no_booking_operation_executed": true
+    }
+  ],
+  "not_inference": "finite live trials only; not 100% accuracy or offline reproducible evaluation"
+}

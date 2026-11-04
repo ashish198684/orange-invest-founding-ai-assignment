@@ -166,6 +166,33 @@ class ContextGuards(unittest.TestCase):
             self.assertIsNone(db.execute('SELECT 1 FROM approval_snapshots WHERE user_id=?',(self.uid,)).fetchone())
             self.assertIsNone(db.execute('SELECT 1 FROM operations WHERE user_id=?',(self.uid,)).fetchone())
 
+    def test_ac_move_to_saturday_uses_explicit_user_action_not_model_guessed_action(self):
+        class Fake:
+            last_result={'action_proposal':'plan','verified':True}
+            def interpret(fake,*args):
+                return {'service':'ac servicing','date_window':{
+                    'start':'2026-11-07T00:00:00+05:30','end':'2026-11-08T00:00:00+05:30'}}
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()):
+            result=self.c.chat_live(self.w,'Move my AC servicing to Saturday.')
+        self.assertEqual(result['action_proposal'],'reschedule')
+        self.assertEqual(result['model']['action_proposal'],'plan')
+        self.assertIsNone(result['question'])
+        self.assertIn('choose the appointment',result['message'].lower())
+        with self.c.store.connect() as db:
+            self.assertIsNone(db.execute('SELECT 1 FROM approval_snapshots WHERE user_id=?',(self.uid,)).fetchone())
+            self.assertIsNone(db.execute('SELECT 1 FROM operations WHERE user_id=?',(self.uid,)).fetchone())
+
+    def test_negative_cancel_instruction_never_becomes_action_or_approval(self):
+        class Fake:
+            last_result={'action_proposal':'cancel','verified':True}
+            def interpret(fake,*args):return {}
+        with patch('app.runtime.controller.GroqInterpreter',return_value=Fake()):
+            result=self.c.chat_live(self.w,'Do not cancel my booking.')
+        self.assertEqual(result['action_proposal'],'plan')
+        with self.c.store.connect() as db:
+            self.assertIsNone(db.execute('SELECT 1 FROM approval_snapshots WHERE user_id=?',(self.uid,)).fetchone())
+            self.assertIsNone(db.execute('SELECT 1 FROM operations WHERE user_id=?',(self.uid,)).fetchone())
+
     def test_real_provider_booking_history_is_scoped_to_authenticated_user(self):
         from datetime import datetime,timedelta
         from app.provider_mock.fixtures import IST
